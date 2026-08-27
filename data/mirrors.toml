@@ -1,0 +1,230 @@
+# Download mirrors for EndeavourOS.
+#
+# The three URLs shown for each mirror are COMPOSED, never stored:
+#
+#     {base}/{release.iso}
+#     {base}/{release.iso}{sha512Suffix}
+#     {base}/{release.iso}{sigSuffix}
+#
+# so publishing a new ISO touches release.toml only and every mirror URL on the
+# site regenerates. Adding a mirror means appending one stanza here.
+#
+# `base` is the directory holding the ISO, https, with NO trailing slash.
+# Set `active = false` to hide a mirror without deleting its record.
+
+# ---------- Africa ----------
+
+[[mirrors]]
+id          = "urban-wave-za"
+continent   = "Africa"
+country     = "South Africa"
+countryCode = "ZA"
+name        = "Urban Wave"
+base        = "https://mirrors.urbanwave.co.za/endeavouros/iso"
+
+# ---------- Asia ----------
+
+[[mirrors]]
+id          = "jilin-university-cn"
+continent   = "Asia"
+country     = "China"
+countryCode = "CN"
+name        = "Jilin University"
+base        = "https://mirrors.jlu.edu.cn/endeavouros/iso"
+
+[[mirrors]]
+id          = "sjtu-cn"
+continent   = "Asia"
+country     = "China"
+countryCode = "CN"
+name        = "SJTU"
+base        = "https://mirror.sjtu.edu.cn/endeavouros/iso"
+
+[[mirrors]]
+id          = "tuna-cn"
+continent   = "Asia"
+country     = "China"
+countryCode = "CN"
+name        = "Tuna"
+base        = "https://mirrors.tuna.tsinghua.edu.cn/endeavouros/iso"
+
+[[mirrors]]
+id          = "albony-in"
+continent   = "Asia"
+country     = "India"
+countryCode = "IN"
+name        = "Albony"
+base        = "https://mirror.albony.in/endeavouros/iso"
+
+[[mirrors]]
+id          = "nxtgen-in"
+continent   = "Asia"
+country     = "India"
+countryCode = "IN"
+name        = "Nxtgen"
+base        = "https://mirrors.nxtgen.com/endeavouros-mirror/iso"
+
+[[mirrors]]
+id          = "miraa-jp"
+continent   = "Asia"
+country     = "Japan"
+countryCode = "JP"
+name        = "Miraa"
+base        = "https://www.miraa.jp/endeavouros/iso"
+
+[[mirrors]]
+id          = "freedif-sg"
+continent   = "Asia"
+country     = "Singapore"
+countryCode = "SG"
+name        = "Freedif"
+base        = "https://mirror.freedif.org/EndeavourOS/iso"
+
+[[mirrors]]
+id          = "jingk-sg"
+continent   = "Asia"
+country     = "Singapore"
+countryCode = "SG"
+name        = "Jingk"
+base        = "https://mirror.jingk.ai/endeavouros/iso"
+
+[[mirrors]]
+id          = "yurumirror-kr"
+continent   = "Asia"
+country     = "South Korea"
+countryCode = "KR"
+name        = "YuruMirror"
+base        = "https://mirror.funami.tech/endeavouros/iso"
+
+[[mirrors]]
+id          = "archlinux-taiwan-tw"
+continent   = "Asia"
+country     = "Taiwan"
+countryCode = "TW"
+name        = "Archlinux Taiwan"
+base        = "https://mirror.archlinux.tw/EndeavourOS/iso"
+
+# ---------- Europe ----------
+
+[[mirrors]]
+id          = "belnet-be"
+continent   = "Europe"
+country     = "Belgium"
+countryCode = "BE"
+name        = "Belnet"
+base        = "https://ftp.belnet.be/mirror/endeavouros/iso"
+
+[[mirrors]]
+id          = "c0urier-dk"
+continent   = "Europe"
+country     = "Denmark"
+countryCode = "DK"
+name        = "C0urier"
+base        = "https://mirrors.c0urier.net/linux/endeavouros/iso"
+
+[[mirrors]]
+id          = "rznet-fr"
+continent   = "Europe"
+country     = "France"
+countryCode = "FR"
+name        = "Rznet"
+base        = "https://mirror.rznet.fr/endeavouros/iso"
+
+[[mirrors]]
+id          = "alpix-de"
+continent   = "Europe"
+country     = "Germany"
+countryCode = "DE"
+name        = "Alpix"
+base        = "https://mirror.alpix.eu/endeavouros/iso"
+
+[[mirrors]]
+id          = "diyarciftci-de"
+continent   = "Europe"
+country     = "Germany"
+countryCode = "DE"
+name        = "Diyarciftci"
+base        = "https://mirror.diyarciftci.xyz/endeavouros/iso"
+
+[[mirrors]]
+id          = "moson-de"
+continent   = "Europe"
+country     = "Germany"
+countryCode = "DE"
+name        = "Moson"
+base        = "https://mirror.moson.org/endeavouros/iso"
+
+[[mirrors]]
+id          = "rz-tu-bs-de"
+continent   = "Europe"
+country     = "Germany"
+countryCode = "DE"
+name        = "RZ TU-BS"
+base        = "https://ftp.rz.tu-bs.de/pub/mirror/endeavouros/iso"
+
+[[mirrors]]
+id          = "fosszone-gr"
+continent   = "Europe"
+country     = "Greece"
+countryCode = "GR"
+name        = "Fosszone"
+base        = "https://fosszone.csd.auth.gr/endeavouros/iso"
+
+[[mirrors]]
+id          = "retropc-se"
+continent   = "Europe"
+country     = "Sweden"
+countryCode = "SE"
+name        = "Retropc"
+base        = "https://mirror.retropc.se/endeavouros/iso"
+
+[[mirrors]]
+id          = "ume-university-se"
+continent   = "Europe"
+country     = "Sweden"
+countryCode = "SE"
+name        = "Umeå University"
+base        = "https://mirror.accum.se/mirror/endeavouros/iso"
+
+[[mirrors]]
+id          = "adfinis-ch"
+continent   = "Europe"
+country     = "Switzerland"
+countryCode = "CH"
+name        = "Adfinis"
+base        = "https://pkg.adfinis-on-exoscale.ch/endeavouros/iso"
+
+[[mirrors]]
+id          = "go-foss-ch"
+continent   = "Europe"
+country     = "Switzerland"
+countryCode = "CH"
+name        = "Go Foss"
+base        = "https://mirror.gofoss.xyz/endeavouros/iso"
+
+[[mirrors]]
+id          = "distrohub-ua"
+continent   = "Europe"
+country     = "Ukraine"
+countryCode = "UA"
+name        = "Distrohub"
+base        = "https://distrohub.kyiv.ua/endeavouros/iso"
+
+[[mirrors]]
+id          = "c48-gb"
+continent   = "Europe"
+country     = "United Kingdom"
+countryCode = "GB"
+name        = "C48"
+base        = "https://repo.c48.uk/endeavouros/iso"
+
+# ---------- North America ----------
+
+[[mirrors]]
+id          = "gigenet-us"
+continent   = "North America"
+country     = "United States"
+countryCode = "US"
+name        = "Gigenet"
+base        = "https://mirrors.gigenet.com/endeavouros/iso"
+

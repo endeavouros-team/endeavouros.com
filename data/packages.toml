@@ -1,0 +1,59 @@
+# The preset software shown on the homepage, and the bootloader choice offered
+# by the installer. Copy lives here rather than in a template so it can be
+# edited without touching either site's markup.
+
+[[packages]]
+name = "Firefox"
+desc = "A free and open-source web browser."
+url  = "https://www.mozilla.org/firefox/"
+
+[[packages]]
+name = "Pacman"
+desc = "The package manager for Arch and EndeavourOS."
+url  = "https://wiki.archlinux.org/title/Pacman"
+
+[[packages]]
+name = "Yay"
+desc = "An AUR helper that makes installing from the Arch User Repository straightforward."
+url  = "https://github.com/Jguer/yay"
+
+[[packages]]
+name = "FirewallD"
+desc = "A firewall running the default public zone out of the box."
+url  = "https://firewalld.org/"
+
+[[packages]]
+name = "Pipewire"
+desc = "A low-level multimedia framework for audio and video capture and playback, with low latency. Supports PulseAudio, JACK, ALSA and GStreamer."
+url  = "https://pipewire.org/"
+
+[[packages]]
+name = "EOS-hwtool"
+desc = "Our hardware management tool for handling VM and GPU drivers."
+url  = "https://github.com/endeavouros-team/PKGBUILDS"
+
+[[packages]]
+name = "Dracut"
+desc = "A flexible tool for building initramfs images. Convertible to mkinitcpio if you prefer."
+url  = "https://github.com/dracut-ng/dracut-ng"
+
+[[packages]]
+name = "Power-profile-daemon"
+desc = "Adjusts system behaviour to your power preference. Enabled by default."
+url  = "https://gitlab.freedesktop.org/upower/power-profiles-daemon"
+
+[[packages]]
+name = "Glances"
+desc = "A cross-platform system monitoring tool written in Python."
+url  = "https://nicolargo.github.io/glances/"
+
+[[bootloaders]]
+name = "systemd-boot"
+desc = "Fast and minimal, for modern EFI systems. The EndeavourOS default."
+
+[[bootloaders]]
+name = "GRUB"
+desc = "Broad compatibility across EFI and older BIOS systems, and the only option on legacy hardware."
+
+[bootloaderNote]
+text = "You can also skip bootloader installation entirely and add EndeavourOS to an existing bootloader yourself."

@@ -1,0 +1,91 @@
+# Site chrome: identity, navigation and footer. Read by both tracks so the two
+# builds cannot disagree about what the site is called or where it links.
+
+name        = "EndeavourOS"
+tagline     = "Start your Endeavour"
+subtitle    = "with a lightweight Arch-based, terminal-centric system ready to personalise and a stellar community at your side"
+description = "A terminal-centric Arch-based Linux distribution with a vibrant and friendly community at its core."
+url         = "https://endeavouros.com"
+
+# Primary navigation.
+#
+# `external = true` points at the current WordPress site: those sections are not
+# migrated yet. `wip = true` renders them muted with a tooltip, so an internal
+# reviewer can see the full nav shape without us pretending the pages exist.
+# Flip both to false as each section lands.
+
+[[nav]]
+name = "Home"
+url  = "/"
+
+[[nav]]
+name     = "News"
+url      = "https://endeavouros.com/news/"
+external = true
+wip      = true
+
+[[nav]]
+name     = "EndeavourOS ARM"
+url      = "https://endeavouros.com/endeavouros-arm/"
+external = true
+wip      = true
+
+[[nav]]
+name     = "Help"
+url      = "https://discovery.endeavouros.com/"
+external = true
+
+[[nav]]
+name     = "Community"
+url      = "https://forum.endeavouros.com/"
+external = true
+
+[[nav]]
+name     = "Info"
+url      = "https://endeavouros.com/info/"
+external = true
+wip      = true
+
+[[nav]]
+name     = "Support us"
+url      = "https://endeavouros.com/donate/"
+external = true
+wip      = true
+
+[[nav]]
+name = "Download"
+url  = "/download/"
+cta  = true
+
+[[footer]]
+heading = "Project"
+[[footer.links]]
+name = "GitHub"
+url  = "https://github.com/endeavouros-team"
+[[footer.links]]
+name = "Wiki"
+url  = "https://discovery.endeavouros.com/"
+[[footer.links]]
+name = "Forum"
+url  = "https://forum.endeavouros.com/"
+
+[[footer]]
+heading = "Community"
+[[footer.links]]
+name = "Telegram"
+url  = "https://t.me/endeavouros"
+[[footer.links]]
+name = "Mastodon"
+url  = "https://mastodon.social/@endeavouros"
+[[footer.links]]
+name = "Bluesky"
+url  = "https://bsky.app/profile/endeavouros.com"
+
+[[footer]]
+heading = "Support us"
+[[footer.links]]
+name = "Donate"
+url  = "https://opencollective.com/endeavouros"
+[[footer.links]]
+name = "Merchandise"
+url  = "https://www.redbubble.com/people/EndeavourOS/shop"

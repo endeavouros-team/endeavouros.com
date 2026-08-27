@@ -1,0 +1,35 @@
+# The current EndeavourOS release.
+#
+# PUBLISHING A NEW RELEASE: edit the five values in [current] below, then run
+# `make check` and `make mirrors`. Every mirror URL, every shell command in the
+# verification instructions, and the download buttons regenerate from these.
+# No HTML is ever touched.
+
+[current]
+codename  = "Titan Neo"
+date      = 2026-04-27
+iso       = "EndeavourOS_Titan-Neo-2026.04.27.iso"
+sha512    = "968657495b81e5a393dd877397725b30dc274ff9f54c23c7e6d653126c796fbbafc00cd52e0b243954b52b14c888d101b55a09a7b5e2689a9247a51a8ef5ab7b"
+sizeBytes = 3739254784
+
+# Suffixes appended to `iso` to build the checksum and signature URLs.
+sha512Suffix = ".sha512"
+sigSuffix    = ".sig"
+
+magnet  = "magnet:?xt=urn:btih:9bfbeea55c2a802ad30674a272f81ed14b3e7841&dn=EndeavourOS_Titan-Neo-2026.04.27.iso&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Fopen.stealth.si%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.torrent.eu.org%3A451%2Fannounce&tr=udp%3A%2F%2Ftracker.moeking.me%3A6969%2Fannounce&tr=udp%3A%2F%2Fexodus.desync.com%3A6969%2Fannounce&tr=udp%3A%2F%2Fp4p.arenabg.com%3A1337%2Fannounce"
+torrent = "https://mirror.rznet.fr/endeavouros/iso/EndeavourOS_Titan-Neo-2026.04.27.iso.torrent"
+
+# The key the ISO is signed with. Users verify against this fingerprint, so it
+# is rendered verbatim and must never be edited casually.
+[current.signing]
+name        = "Johannes Kamprad"
+email       = "joekamprad@endeavouros.com"
+fingerprint = "8F43 FC37 4CD4 CEEA 19CE E323 E3D8 752A CDF5 95A1"
+shortKey    = "CDF595A1"
+keyserver   = "keyserver.ubuntu.com"
+
+[current.requirements]
+diskGb = 15
+ramGb  = 4
+cpu    = "64-bit dual-core Intel or AMD processor"
+note   = "The installer still handles older machines, but modern EFI (UEFI) systems without legacy CSM mode work best."
