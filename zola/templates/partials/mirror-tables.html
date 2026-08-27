@@ -1,0 +1,62 @@
+{# One table per continent. The three URLs per mirror are composed here from
+   base + release.iso, which is the point of the data model: a new release
+   regenerates all 78 links without anyone editing markup.
+
+   A plain partial rather than a macro, because Tera does not allow `import`
+   inside an included template, and `include` already inherits `mirrors`/`rel`.
+
+   Grouping uses an explicit counter loop: Zola 0.23 ships neither a
+   `filter(attribute=..., value=...)` nor a `concat` filter, so a continent's
+   rows cannot be collected into an array first. #}
+
+{%- set continents = ["Africa", "Asia", "Europe", "North America", "South America", "Oceania"] -%}
+
+<nav class="mirror-nav" aria-label="Jump to a continent">
+{%- for c in continents %}
+  {%- set_global n = 0 -%}
+  {%- for m in mirrors.mirrors %}{% if m.continent == c %}{% set_global n = n + 1 %}{% endif %}{% endfor -%}
+  {%- if n > 0 %}
+  <a href="#mirrors-{{ c | slugify }}">{{ c }} <span>{{ n }}</span></a>
+  {%- endif %}
+{%- endfor %}
+</nav>
+
+{%- for c in continents %}
+  {%- set_global n = 0 -%}
+  {%- for m in mirrors.mirrors %}{% if m.continent == c %}{% set_global n = n + 1 %}{% endif %}{% endfor -%}
+  {%- if n > 0 %}
+<section class="mirror-group" aria-labelledby="mirrors-{{ c | slugify }}">
+  <h3 class="mirror-group__title" id="mirrors-{{ c | slugify }}">
+    {{ c }} <span class="mirror-group__count">{{ n }} mirror{% if n != 1 %}s{% endif %}</span>
+  </h3>
+  <table class="mirrors">
+    <caption class="sr-only">{{ c }} mirrors for {{ rel.iso }}. Each row links to the ISO, its sha512 checksum and its GPG signature.</caption>
+    <thead>
+      <tr>
+        <th scope="col">Location</th>
+        <th scope="col">Mirror</th>
+        <th scope="col">Verify</th>
+      </tr>
+    </thead>
+    <tbody>
+    {%- for m in mirrors.mirrors %}{% if m.continent == c %}
+      {%- set iso = m.base ~ "/" ~ rel.iso %}
+      <tr>
+        <th scope="row" class="c-loc">
+          <span class="cc" aria-hidden="true">{{ m.countryCode }}</span><span class="country">{{ m.country }}</span>
+        </th>
+        <td class="c-name">
+          <a href="{{ iso }}" rel="noopener noreferrer">{{ m.name }}<span class="sr-only"> &mdash; download {{ rel.iso }}</span></a>
+          <span class="host">{{ m.base | split(pat="/") | nth(n=2) }}</span>
+        </td>
+        <td class="c-verify">
+          <a href="{{ iso ~ rel.sha512Suffix }}" rel="noopener noreferrer">sha512<span class="sr-only"> checksum for {{ m.name }}</span></a>
+          <a href="{{ iso ~ rel.sigSuffix }}" rel="noopener noreferrer">sig<span class="sr-only"> GPG signature for {{ m.name }}</span></a>
+        </td>
+      </tr>
+    {%- endif %}{% endfor %}
+    </tbody>
+  </table>
+</section>
+  {%- endif %}
+{%- endfor %}

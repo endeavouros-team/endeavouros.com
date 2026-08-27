@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}{{ section.title }} &mdash; {{ site.name }}{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="container stack">
+    <h1>{{ section.title }}</h1>
+    {{ section.content | safe }}
+  </div>
+</section>
+{% include "partials/download.html" %}
+{% include "partials/verify.html" %}
+{% endblock content %}

@@ -1,0 +1,13 @@
+<section class="section" id="software">
+  <div class="container stack">
+    <h2>What you get out of the box</h2>
+    <div class="grid">
+      {%- for p in pkgs.packages %}
+      <div class="card">
+        <h3>{% if p.url %}<a href="{{ p.url }}" rel="noopener noreferrer">{{ p.name }}</a>{% else %}{{ p.name }}{% endif %}</h3>
+        <p>{{ p.desc }}</p>
+      </div>
+      {%- endfor %}
+    </div>
+  </div>
+</section>
