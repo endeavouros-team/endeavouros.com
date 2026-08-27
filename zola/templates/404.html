@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Page not found &mdash; {{ site.name }}{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="container stack">
+    <h1>Page not found</h1>
+    <p class="lede">That page does not exist. It may have moved while we rebuild the site.</p>
+    <p><a class="btn btn--primary" href="{{ get_url(path='/') }}">Back to the homepage</a></p>
+  </div>
+</section>
+{% endblock content %}

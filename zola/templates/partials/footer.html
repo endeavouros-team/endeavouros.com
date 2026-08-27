@@ -1,0 +1,19 @@
+<footer class="site-footer">
+  <div class="container">
+    <div class="grid">
+      {%- for col in site.footer %}
+      <div>
+        <h2>{{ col.heading }}</h2>
+        <ul>
+          {%- for l in col.links %}
+          <li><a href="{{ l.url }}" rel="noopener noreferrer">{{ l.name }}</a></li>
+          {%- endfor %}
+        </ul>
+      </div>
+      {%- endfor %}
+    </div>
+    <div class="site-footer__bottom">
+      <p>{{ site.name }} is free and open-source software, built by its community.</p>
+    </div>
+  </div>
+</footer>

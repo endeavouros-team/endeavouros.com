@@ -1,0 +1,40 @@
+base_url = "https://endeavouros.com"
+title = "EndeavourOS"
+description = "A terminal-centric Arch-based Linux distribution with a vibrant and friendly community at its core."
+default_language = "en"
+output_dir = "public"
+
+compile_sass = true
+minify_html = true
+build_search_index = false      # deferred; belongs with the news migration
+generate_feeds = false          # ditto
+author = "EndeavourOS"
+
+# data/ is a build-time copy of the shared ../data (see the Makefile). Zola's
+# load_data() is sandboxed to this directory and rejects a symlink pointing
+# outside it, so the copy is not optional.
+ignored_content = ["data/README.md"]
+
+[markdown]
+render_emoji = false
+external_links_no_referrer = true
+smart_punctuation = true
+
+# No [markdown.highlighting] yet: nothing in this slice renders a fenced code
+# block, and 0.23 requires a theme pair once the section exists. When the news
+# migration lands, set style = "class" with light_theme/dark_theme so highlight
+# colours are classes rather than inline styles, which keeps style-src strict.
+
+[link_checker]
+internal_level = "error"
+external_level = "warn"         # a mirror being briefly down must not fail the build
+
+[slugify]
+paths = "on"
+taxonomies = "on"
+anchors = "on"
+
+[extra]
+# Set to true only for the public launch. While false every page is noindex, so
+# the internal review build cannot compete with the live site in search.
+public = false

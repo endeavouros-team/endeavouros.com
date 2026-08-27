@@ -1,0 +1,84 @@
+// Brand primitives and the semantic tokens built from them.
+//
+// THIS IS THE ONLY FILE ALLOWED TO NAME A COLOUR. Everything else reads the
+// semantic custom properties below. `make lint-css` enforces that, which is
+// what stops this stylesheet drifting into an unmaintainable fork.
+//
+// Palette: github.com/endeavouros-team/Branding
+//
+// Measured WCAG contrast drove one decision worth recording. Brand blue-violet
+// scores only 3.15:1 on oxford-blue, so it FAILS AA as body text on the dark
+// theme, while tropical-indigo scores 5.98:1 and passes. On white the two swap:
+// blue-violet 6.24:1 passes, indigo 3.29:1 fails. So --accent resolves to a
+// different brand colour per theme. Both are official, so this is on-brand
+// rather than a compromise.
+
+$eos-blue-violet: #7f3fbf;
+$eos-indigo:      #7f7fff;
+$eos-light-red:   #ff7f7f;
+$eos-oxford:      #08052b;
+$eos-jet:         #2c2c2c;
+
+:root {
+  --eos-blue-violet: #{$eos-blue-violet};
+  --eos-indigo:      #{$eos-indigo};
+  --eos-light-red:   #{$eos-light-red};
+  --eos-oxford:      #{$eos-oxford};
+  --eos-jet:         #{$eos-jet};
+
+  --font-display: "Ailerons", ui-sans-serif, system-ui, sans-serif;
+  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", Cantarell, sans-serif;
+  --font-mono: ui-monospace, "JetBrains Mono", "Fira Code", "SFMono-Regular", Menlo, monospace;
+
+  --maxw: 72rem;
+  --radius: 0.5rem;
+  --gap: 1rem;
+}
+
+@mixin theme-dark {
+  color-scheme: dark;
+  --bg:          #{$eos-oxford};
+  --bg-elev:     #120e3a;
+  --bg-sunken:   #050318;
+  --ink:         #f3f1fb;   // 16.6:1
+  --ink-2:       #c3bee0;
+  --ink-3:       #a9a3c6;   // 8.2:1
+  --rule:        #2a2359;
+  --accent:      #{$eos-indigo};        // 6.0:1 — links and data
+  --accent-hover:#a3a3ff;
+  --accent-fill: #{$eos-blue-violet};   // fill only; white on it is 6.2:1
+  --on-fill:     #ffffff;
+  --focus:       #{$eos-light-red};     // 8.1:1
+  --warn:        #{$eos-light-red};
+  --code-bg:     #0d0930;
+  --shadow:      0 1px 3px rgb(0 0 0 / 0.5);
+}
+
+@mixin theme-light {
+  color-scheme: light;
+  --bg:          #fbfaff;
+  --bg-elev:     #f2effa;
+  --bg-sunken:   #e7e2f5;
+  --ink:         #0d0a26;
+  --ink-2:       #443d6b;
+  --ink-3:       #5b5386;
+  --rule:        #ddd8ee;
+  --accent:      #{$eos-blue-violet};   // 6.2:1 on this background
+  --accent-hover:#6a2fa6;
+  --accent-fill: #{$eos-blue-violet};
+  --on-fill:     #ffffff;
+  --focus:       #{$eos-blue-violet};   // light-red is only 2.4:1 on white
+  --warn:        #b23a3a;
+  --code-bg:     #f2effa;
+  --shadow:      0 1px 3px rgb(8 5 43 / 0.12);
+}
+
+// Dark is the default, matching the current site. A visitor with no stored
+// preference gets their OS setting from CSS alone, with no JavaScript involved
+// and so no flash. An explicit choice wins over both.
+:root                     { @include theme-dark; }
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) { @include theme-light; }
+}
+:root[data-theme="light"] { @include theme-light; }
+:root[data-theme="dark"]  { @include theme-dark; }

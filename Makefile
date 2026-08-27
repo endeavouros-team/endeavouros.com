@@ -2,7 +2,7 @@
 # so the shared data directory is mirrored into zola/ before every build.
 # zola/data/ is gitignored: data/ stays the only committed copy.
 
-.PHONY: sync check mirrors dev-zola build-zola dev-astro build-astro clean
+.PHONY: sync check lint mirrors dev-zola build-zola dev-astro build-astro clean
 
 sync:
 	@rm -rf zola/data && cp -r data zola/data
@@ -10,13 +10,22 @@ sync:
 check:
 	@python3 scripts/validate-data.py
 
+# _tokens.scss is the only file allowed to name a colour. Everything else reads
+# the semantic custom properties. Without this the stylesheet drifts into the
+# unmaintainable fork the previous Zola site ended up with.
+lint:
+	@! grep -rnE "#[0-9a-fA-F]{3,8}\\b|rgba?\\(" zola/sass --include="*.scss" \
+	   | grep -v "^zola/sass/_tokens.scss:" \
+	   || (echo "  raw colour outside _tokens.scss (see above)"; exit 1)
+	@echo "  css lint ok - no colour literals outside _tokens.scss"
+
 mirrors:
 	@python3 scripts/check-mirrors.py
 
 dev-zola: sync
 	@cd zola && zola serve --interface 0.0.0.0 --port 1111
 
-build-zola: check sync
+build-zola: check lint sync
 	@cd zola && zola build
 
 dev-astro:

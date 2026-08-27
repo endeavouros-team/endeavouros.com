@@ -1,0 +1,32 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<link rel="canonical" href="{{ current_url | default(value=config.base_url) }}">
+
+{# Until config.extra.public is flipped for launch, every page is noindex so the
+   internal review build cannot compete with the live site in search results. #}
+{%- if not config.extra.public %}
+<meta name="robots" content="noindex, nofollow">
+{%- endif %}
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{{ site.name }}">
+<meta property="og:title" content="{{ site.name }}">
+<meta property="og:description" content="{{ site.description }}">
+<meta name="twitter:card" content="summary_large_image">
+
+{# Blocking on purpose: it must run before first paint or the theme flashes. #}
+<script src="{{ get_url(path='js/theme-init.js', cachebust=true) }}"
+        integrity="sha384-{{ get_hash(path='js/theme-init.js', sha_type=384, base64=true) }}"
+        crossorigin="anonymous"></script>
+
+<link rel="stylesheet" href="{{ get_url(path='main.css', cachebust=true) }}"
+      integrity="sha384-{{ get_hash(path='main.css', sha_type=384, base64=true) }}"
+      crossorigin="anonymous">
+
+<script defer src="{{ get_url(path='js/theme-toggle.js', cachebust=true) }}"
+        integrity="sha384-{{ get_hash(path='js/theme-toggle.js', sha_type=384, base64=true) }}"
+        crossorigin="anonymous"></script>
+<script defer src="{{ get_url(path='js/copy.js', cachebust=true) }}"
+        integrity="sha384-{{ get_hash(path='js/copy.js', sha_type=384, base64=true) }}"
+        crossorigin="anonymous"></script>
