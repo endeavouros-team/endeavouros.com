@@ -1,0 +1,13 @@
+# build output
+zola/public/
+zola/static/processed_images/
+astro/dist/
+astro/.astro/
+astro/node_modules/
+
+# generated copy of the shared data dir (see Makefile: make sync)
+zola/data/
+
+# scratch
+*.log
+.DS_Store
