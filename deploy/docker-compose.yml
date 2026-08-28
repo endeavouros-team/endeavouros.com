@@ -34,3 +34,13 @@ services:
       - ./astro:/usr/share/nginx/html:ro
       - ./conf:/etc/nginx/conf.d:ro
     restart: unless-stopped
+
+  eos-wiki:
+    image: nginx:alpine
+    container_name: eos-wiki
+    ports:
+      - "127.0.0.1:8083:80"
+    volumes:
+      - ./wiki:/usr/share/nginx/html:ro
+      - ./conf-wiki:/etc/nginx/conf.d:ro
+    restart: unless-stopped

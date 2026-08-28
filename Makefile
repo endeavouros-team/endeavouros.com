@@ -2,7 +2,7 @@
 # so the shared data directory is mirrored into zola/ before every build.
 # zola/data/ is gitignored: data/ stays the only committed copy.
 
-.PHONY: sync check lint mirrors verify dev-zola build-zola dev-astro build-astro build serve deploy-preview clean
+.PHONY: sync check lint mirrors verify dev-zola build-zola dev-astro build-astro build-wiki build serve deploy-preview clean
 
 sync:
 	@rm -rf zola/data && cp -r data zola/data
@@ -36,6 +36,9 @@ dev-astro:
 
 build-astro: check
 	@cd astro && npm run build
+
+build-wiki:
+	@cd wiki && npm run build
 
 build: build-zola build-astro
 
