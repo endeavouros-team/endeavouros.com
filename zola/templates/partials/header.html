@@ -9,7 +9,7 @@
           <a class="nav__link{% if item.cta %} nav__link--cta{% endif %}{% if item.wip %} nav__link--wip{% endif %}"
              href="{{ item.url }}"
              {%- if item.external %} rel="noopener noreferrer"{% endif %}
-             {%- if item.wip %} title="Not migrated yet &mdash; opens the current site"{% endif %}
+             {%- if item.wip %} title="Opens the current site"{% endif %}
              {%- if not item.external and current_path and current_path == item.url %} aria-current="page"{% endif %}>{{ item.name }}</a>
         </li>
         {%- endfor %}

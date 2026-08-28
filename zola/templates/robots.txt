@@ -3,7 +3,6 @@ User-agent: *
 Allow: /
 Sitemap: {{ get_url(path="sitemap.xml") }}
 {%- else %}
-# Internal review build. Flip config.extra.public for launch.
 User-agent: *
 Disallow: /
 {%- endif %}

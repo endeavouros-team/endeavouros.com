@@ -70,6 +70,25 @@ def clean(src: str, dst: str, fills: dict[int, str], swaps: dict[str, str]) -> N
 
         paths[idx].set("style", style)
 
+    # A strict style-src blocks inline style attributes, which would leave every
+    # path in the logo unfilled and the mark invisible. SVG presentation
+    # attributes (fill=, opacity=) are not subject to style-src, so carry the
+    # handful of properties that matter across and drop the editor leftovers.
+    KEEP = ("fill", "fill-opacity", "fill-rule", "stroke", "stroke-width",
+            "stroke-opacity", "stroke-linejoin", "stroke-linecap", "opacity")
+    for el in root.iter():
+        style = el.get("style")
+        if not style:
+            continue
+        for decl in style.split(";"):
+            if ":" not in decl:
+                continue
+            prop, _, val = decl.partition(":")
+            prop, val = prop.strip(), val.strip()
+            if prop in KEEP and val and not el.get(prop):
+                el.set(prop, val)
+        del el.attrib["style"]
+
     out = ET.tostring(root, encoding="unicode")
     out = re.sub(r"\n\s*\n", "\n", out).strip() + "\n"
     open(dst, "w").write(out)

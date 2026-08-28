@@ -20,7 +20,7 @@ const here = Astro.url.pathname;
               class:list={['nav__link', { 'nav__link--cta': item.cta, 'nav__link--wip': item.wip }]}
               href={item.url}
               rel={item.external ? 'noopener noreferrer' : undefined}
-              title={item.wip ? 'Not migrated yet — opens the current site' : undefined}
+              title={item.wip ? 'Opens the current site' : undefined}
               aria-current={!item.external && here === item.url ? 'page' : undefined}
             >{item.name}</a>
           </li>

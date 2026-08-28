@@ -9,10 +9,9 @@ url         = "https://endeavouros.com"
 
 # Primary navigation.
 #
-# `external = true` points at the current WordPress site: those sections are not
-# migrated yet. `wip = true` renders them muted with a tooltip, so an internal
-# reviewer can see the full nav shape without us pretending the pages exist.
-# Flip both to false as each section lands.
+# `external = true` points at the current site for sections that are not rebuilt
+# yet, so the full navigation is visible and every link goes somewhere real.
+# `wip = true` renders them muted. Clear both as each section lands.
 
 [[nav]]
 name = "Home"
