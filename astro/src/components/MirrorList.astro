@@ -1,0 +1,24 @@
+---
+import MirrorTable from './MirrorTable.astro';
+import { mirrorsByContinent, release } from '../lib/site';
+const groups = await mirrorsByContinent();
+const rel = await release();
+const total = groups.reduce((n, g) => n + g.items.length, 0);
+---
+<section class="section section--sunken" id="download">
+  <div class="container stack">
+    <h2>Download mirrors</h2>
+    <p class="lede">
+      {total} mirrors worldwide, kept running by volunteers and institutions.
+      Pick one near you — then verify what you downloaded.
+    </p>
+    <nav class="mirror-nav" aria-label="Jump to a continent">
+      {groups.map((g) => (
+        <a href={`#mirrors-${g.slug}`}>{g.continent} <span>{g.items.length}</span></a>
+      ))}
+    </nav>
+    {groups.map((g) => (
+      <MirrorTable continent={g.continent} slug={g.slug} items={g.items} rel={rel} />
+    ))}
+  </div>
+</section>

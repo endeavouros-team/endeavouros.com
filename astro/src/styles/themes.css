@@ -1,0 +1,117 @@
+/*
+ * Two palettes, one contract.
+ *
+ * Layout code only ever reads these custom properties, never a literal colour.
+ * Token names are deliberately identical to the Zola track's _tokens.scss, so
+ * any visual difference between the two builds is a framework difference rather
+ * than a styling one.
+ *
+ * Palette: github.com/endeavouros-team/Branding
+ *   blue-violet #7f3fbf · tropical-indigo #7f7fff · light-red #ff7f7f
+ *   oxford-blue #08052b · jet #2c2c2c
+ *
+ * Measured WCAG contrast drove one decision. Blue-violet scores 3.15:1 on
+ * oxford-blue and FAILS AA as body text on dark, while tropical-indigo scores
+ * 5.98:1 and passes. On white they swap: blue-violet 6.24:1 passes, indigo
+ * 3.29:1 fails. So --accent resolves to a different brand colour per theme and
+ * blue-violet stays a fill, where white on it scores 6.24:1. Both are official
+ * colours, so this is on-brand rather than a compromise.
+ */
+
+:root {
+  --eos-blue-violet: #7f3fbf;
+  --eos-indigo: #7f7fff;
+  --eos-light-red: #ff7f7f;
+  --eos-oxford: #08052b;
+  --eos-jet: #2c2c2c;
+
+  --font-display: "Ailerons", ui-sans-serif, system-ui, sans-serif;
+  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", Cantarell, sans-serif;
+  --font-mono: ui-monospace, "JetBrains Mono", "Fira Code", "SFMono-Regular", Menlo, monospace;
+
+  --maxw: 72rem;
+  --radius: 0.5rem;
+  --gap: 1rem;
+}
+
+/* Dark is the default, matching the current site. */
+:root {
+  color-scheme: dark;
+  --bg: #08052b;
+  --bg-elev: #120e3a;
+  --bg-sunken: #050318;
+  --ink: #f3f1fb;
+  --ink-2: #c3bee0;
+  --ink-3: #a9a3c6;
+  --rule: #2a2359;
+  --accent: #7f7fff;
+  --accent-hover: #a3a3ff;
+  --accent-fill: #7f3fbf;
+  --on-fill: #ffffff;
+  --focus: #ff7f7f;
+  --warn: #ff7f7f;
+  --code-bg: #0d0930;
+  --shadow: 0 1px 3px rgb(0 0 0 / 0.5);
+}
+
+/* A visitor with no stored choice gets their OS setting from CSS alone: no
+   JavaScript involved, so no flash. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    color-scheme: light;
+    --bg: #fbfaff;
+    --bg-elev: #f2effa;
+    --bg-sunken: #e7e2f5;
+    --ink: #0d0a26;
+    --ink-2: #443d6b;
+    --ink-3: #5b5386;
+    --rule: #ddd8ee;
+    --accent: #7f3fbf;
+    --accent-hover: #6a2fa6;
+    --accent-fill: #7f3fbf;
+    --on-fill: #ffffff;
+    --focus: #7f3fbf;
+    --warn: #b23a3a;
+    --code-bg: #f2effa;
+    --shadow: 0 1px 3px rgb(8 5 43 / 0.12);
+  }
+}
+
+/* An explicit choice wins over both. */
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #fbfaff;
+  --bg-elev: #f2effa;
+  --bg-sunken: #e7e2f5;
+  --ink: #0d0a26;
+  --ink-2: #443d6b;
+  --ink-3: #5b5386;
+  --rule: #ddd8ee;
+  --accent: #7f3fbf;
+  --accent-hover: #6a2fa6;
+  --accent-fill: #7f3fbf;
+  --on-fill: #ffffff;
+  --focus: #7f3fbf;
+  --warn: #b23a3a;
+  --code-bg: #f2effa;
+  --shadow: 0 1px 3px rgb(8 5 43 / 0.12);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #08052b;
+  --bg-elev: #120e3a;
+  --bg-sunken: #050318;
+  --ink: #f3f1fb;
+  --ink-2: #c3bee0;
+  --ink-3: #a9a3c6;
+  --rule: #2a2359;
+  --accent: #7f7fff;
+  --accent-hover: #a3a3ff;
+  --accent-fill: #7f3fbf;
+  --on-fill: #ffffff;
+  --focus: #ff7f7f;
+  --warn: #ff7f7f;
+  --code-bg: #0d0930;
+  --shadow: 0 1px 3px rgb(0 0 0 / 0.5);
+}

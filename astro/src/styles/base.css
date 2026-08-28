@@ -1,0 +1,264 @@
+/*
+ * Layout, components and the mirror table.
+ *
+ * Kept in step with the Zola track's sass/_base.scss, _components.scss and
+ * _mirrors.scss so the bake-off compares frameworks and not two different
+ * designs. Colours come only from themes.css.
+ */
+
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+img, svg { display: block; max-width: 100%; height: auto; }
+
+a { color: var(--accent); text-underline-offset: 0.2em; }
+a:hover { color: var(--accent-hover); }
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+h1, h2, h3 { line-height: 1.15; text-wrap: balance; font-weight: 600; }
+h1 { font-family: var(--font-display); font-size: clamp(2.25rem, 6vw, 4rem); letter-spacing: 0.01em; }
+h2 { font-size: clamp(1.5rem, 3.5vw, 2.25rem); }
+h3 { font-size: 1.25rem; }
+p  { text-wrap: pretty; }
+
+code, kbd, pre { font-family: var(--font-mono); font-size: 0.9375em; }
+
+.container { width: min(100% - 2.5rem, var(--maxw)); margin-inline: auto; }
+.section   { padding-block: clamp(3rem, 8vw, 5.5rem); }
+.section--sunken { background: var(--bg-sunken); }
+.stack > * + * { margin-block-start: var(--gap); }
+.lede { font-size: 1.125rem; color: var(--ink-2); max-width: 60ch; }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap; border: 0;
+}
+
+.skip-link {
+  position: absolute; inset-inline-start: 0.5rem; inset-block-start: -4rem;
+  z-index: 10; padding: 0.6rem 1rem; border-radius: var(--radius);
+  background: var(--accent-fill); color: var(--on-fill); text-decoration: none;
+  transition: inset-block-start 0.15s;
+}
+.skip-link:focus { inset-block-start: 0.5rem; }
+
+/*
+ * A theme flip should not animate the whole page — that is the usual cause of
+ * a toggle feeling janky. Transitions here are deliberately scoped to controls.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+
+/*
+ * ---------- buttons ----------
+ */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+  min-height: 2.75rem; padding: 0.55rem 1.1rem;
+  border: 1px solid transparent; border-radius: var(--radius);
+  font: inherit; font-weight: 600; text-decoration: none; cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+}
+.btn--primary { background: var(--accent-fill); color: var(--on-fill); }
+.btn--primary:hover { background: var(--accent-hover); color: var(--on-fill); }
+.btn--ghost { background: transparent; color: var(--ink-2); border-color: var(--rule); }
+.btn--ghost:hover { color: var(--accent); border-color: var(--accent); }
+.btn--sm { min-height: 2.25rem; padding: 0.3rem 0.7rem; font-size: 0.875rem; font-weight: 500; }
+
+/*
+ * ---------- header ----------
+ */
+.site-header {
+  position: sticky; inset-block-start: 0; z-index: 5;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(8px);
+  border-block-end: 1px solid var(--rule);
+}
+.site-header__inner { display: flex; align-items: center; gap: 1rem; min-height: 4rem; }
+.brand { display: flex; align-items: center; gap: 0.6rem; font-family: var(--font-display);
+         font-size: 1.2rem; color: var(--ink); text-decoration: none; letter-spacing: 0.02em; }
+.brand svg { width: 1.9rem; height: 1.9rem; }
+
+.nav { margin-inline-start: auto; }
+.nav__list { display: flex; align-items: center; gap: 0.25rem; list-style: none; margin: 0; padding: 0; flex-wrap: wrap; }
+.nav__link {
+  display: inline-block; padding: 0.4rem 0.65rem; border-radius: var(--radius);
+  color: var(--ink-2); text-decoration: none; font-size: 0.9375rem;
+}
+.nav__link:hover { color: var(--ink); background: var(--bg-elev); }
+.nav__link[aria-current="page"] { color: var(--ink); font-weight: 600; }
+.nav__link--wip { color: var(--ink-3); }
+.nav__link--wip::after { content: "\2197"; font-size: 0.75em; margin-inline-start: 0.2em; vertical-align: super; }
+.nav__link--cta { background: var(--accent-fill); color: var(--on-fill); font-weight: 600; }
+.nav__link--cta:hover { background: var(--accent-hover); color: var(--on-fill); }
+
+.theme-toggle {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 2.5rem; height: 2.5rem; padding: 0;
+  background: transparent; border: 1px solid var(--rule); border-radius: var(--radius);
+  color: var(--ink-2); cursor: pointer;
+}
+.theme-toggle:hover { color: var(--accent); border-color: var(--accent); }
+.theme-toggle svg { width: 1.15rem; height: 1.15rem; }
+.theme-toggle .icon-moon { display: none; }
+:root[data-theme="light"] .theme-toggle .icon-sun { display: none; }
+:root[data-theme="light"] .theme-toggle .icon-moon { display: block; }
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) .theme-toggle .icon-sun { display: none; }
+  :root:not([data-theme]) .theme-toggle .icon-moon { display: block; }
+}
+
+/*
+ * ---------- hero ----------
+ */
+.hero { padding-block: clamp(3.5rem, 10vw, 7rem); text-align: center; position: relative; overflow: hidden; }
+.hero::after {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background: radial-gradient(ellipse 80% 55% at 50% 0%,
+              color-mix(in srgb, var(--accent-fill) 26%, transparent), transparent 70%);
+}
+.hero__sub { margin-block-start: 1.25rem; margin-inline: auto; max-width: 46ch;
+             font-size: clamp(1.05rem, 2.2vw, 1.3rem); color: var(--ink-2); }
+.hero__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; margin-block-start: 2rem; }
+.hero__meta { margin-block-start: 1.25rem; font-size: 0.875rem; color: var(--ink-3); }
+.hero__meta code { color: var(--ink-2); }
+
+/*
+ * ---------- cards ----------
+ */
+.card { padding: 1.25rem; background: var(--bg-elev); border: 1px solid var(--rule); border-radius: var(--radius); }
+.card h3 { margin-block-end: 0.35rem; }
+.card p  { color: var(--ink-2); font-size: 0.9375rem; }
+.grid { display: grid; gap: var(--gap); grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr)); }
+
+.stat { text-align: center; }
+.stat__value { font-family: var(--font-display); font-size: clamp(2rem, 5vw, 2.75rem); color: var(--accent); }
+.stat__label { color: var(--ink-2); font-size: 0.9375rem; }
+
+/*
+ * ---------- verification ----------
+ */
+.copyfield {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.6rem 0.75rem; background: var(--code-bg);
+  border: 1px solid var(--rule); border-radius: var(--radius);
+}
+.copyfield code { flex: 1; overflow-wrap: anywhere; font-size: 0.8125rem; color: var(--ink-2); }
+pre.cmd { padding: 0.85rem 1rem; background: var(--code-bg); border: 1px solid var(--rule);
+          border-radius: var(--radius); overflow-x: auto; }
+pre.cmd code { color: var(--ink-2); }
+
+.callout { padding: 1rem 1.15rem; border-inline-start: 3px solid var(--warn);
+           background: var(--bg-elev); border-radius: var(--radius); }
+.callout p { color: var(--ink-2); }
+
+/*
+ * ---------- footer ----------
+ */
+.site-footer { border-block-start: 1px solid var(--rule); background: var(--bg-sunken); padding-block: 3rem 2rem; }
+.site-footer h2 { font-size: 0.8125rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-3); margin-block-end: 0.6rem; }
+.site-footer ul { list-style: none; margin: 0; padding: 0; }
+.site-footer li + li { margin-block-start: 0.35rem; }
+.site-footer a { color: var(--ink-2); text-decoration: none; font-size: 0.9375rem; }
+.site-footer a:hover { color: var(--accent); text-decoration: underline; }
+.site-footer__bottom { margin-block-start: 2.5rem; padding-block-start: 1.5rem;
+                       border-block-start: 1px solid var(--rule); color: var(--ink-3); font-size: 0.875rem; }
+
+
+/*
+ * The live site's mirror table is five columns wide, two of which hold
+ * six-character links. That cannot survive a 360px viewport. This collapses to
+ * three columns of unequal weight instead:
+ *
+ * Location — country code chip plus name
+ * Mirror   — the operator name IS the ISO link, so the primary action gets
+ * the largest target; hostname below it, because who is serving
+ * you the image is useful information the old table buried in a URL
+ * Verify   — checksum and signature as small pills
+ *
+ * Three columns fit a phone without display:block row-flattening. That matters:
+ * flattening a table to blocks strips the row/column semantics screen readers
+ * depend on, and it is the most common "responsive table" mistake.
+ */
+
+.mirror-nav { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-block-end: 2rem; }
+.mirror-nav a {
+  padding: 0.35rem 0.75rem; border: 1px solid var(--rule); border-radius: 999px;
+  color: var(--ink-2); text-decoration: none; font-size: 0.875rem;
+}
+.mirror-nav a:hover { color: var(--accent); border-color: var(--accent); }
+.mirror-nav span { color: var(--ink-3); }
+
+.mirror-group + .mirror-group { margin-block-start: 2.5rem; }
+.mirror-group__title {
+  display: flex; align-items: baseline; gap: 0.6rem;
+  margin-block-end: 0.75rem; scroll-margin-block-start: 5rem;
+}
+.mirror-group__count { font-size: 0.8125rem; font-weight: 400; color: var(--ink-3); }
+
+table.mirrors { width: 100%; border-collapse: collapse; }
+.mirrors th, .mirrors td {
+  text-align: start; padding: 0.7rem 0.75rem;
+  border-block-end: 1px solid var(--rule); vertical-align: baseline;
+}
+.mirrors thead th {
+  font-size: 0.75rem; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.06em; color: var(--ink-3);
+}
+.mirrors tbody tr:hover { background: var(--bg-elev); }
+
+.mirrors .c-loc { font-weight: 400; white-space: nowrap; }
+.cc {
+  display: inline-block; min-width: 2.3em; margin-inline-end: 0.5em;
+  padding: 0.05em 0.4em; border: 1px solid var(--rule); border-radius: 3px;
+  font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-3); text-align: center;
+}
+.mirrors .c-name a { font-weight: 600; text-decoration: none; }
+.mirrors .c-name a:hover { text-decoration: underline; }
+.mirrors .host {
+  display: block; margin-block-start: 0.15rem;
+  font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-3);
+  overflow-wrap: anywhere;
+}
+.mirrors .c-verify { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.mirrors .c-verify a {
+  padding: 0.15rem 0.6rem; border: 1px solid var(--rule); border-radius: 999px;
+  font-size: 0.8125rem; color: var(--ink-2); text-decoration: none;
+}
+.mirrors .c-verify a:hover { color: var(--accent); border-color: var(--accent); }
+
+/*
+ * Below 34rem the country code alone carries the location. The full country
+ * name stays in the accessibility tree rather than being removed.
+ */
+@media (max-width: 34rem) {
+  .mirrors th, .mirrors td { padding: 0.6rem 0.35rem; }
+  .mirrors .country {
+    position: absolute; width: 1px; height: 1px;
+    overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+  }
+  .cc { margin-inline-end: 0; }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "endeavouros-website-astro",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "check": "astro check",
+    "build": "node scripts/audit-lock.mjs && astro build && node scripts/check-build.mjs",
+    "build:only": "astro build",
+    "preview": "astro preview --port 4321",
+    "check:lock": "node scripts/audit-lock.mjs",
+    "check:build": "node scripts/check-build.mjs"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "3.7.3",
+    "astro": "7.2.9",
+    "smol-toml": "1.8.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.10",
+    "typescript": "6.0.3"
+  }
+}

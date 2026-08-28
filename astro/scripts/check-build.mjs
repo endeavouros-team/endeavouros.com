@@ -1,0 +1,100 @@
+#!/usr/bin/env node
+/**
+ * Build-output integrity gate — the WordPress lesson, mechanised.
+ *
+ * The site was compromised by injected markup in served pages. This asserts
+ * that dist/ contains no script we did not write and no outbound origin we did
+ * not put there. It fails the build; it does not warn.
+ *
+ * Mirror origins are derived from ../data/mirrors.toml, so adding a mirror to
+ * the shared data permits its origin automatically and the allowlist cannot
+ * drift away from the content.
+ */
+import { createHash } from 'node:crypto';
+import { readFileSync, readdirSync, statSync } from 'node:fs';
+import { join, extname, relative } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { parse as parseToml } from 'smol-toml';
+
+const root = fileURLToPath(new URL('..', import.meta.url));
+const dist = join(root, 'dist');
+const dataDir = join(root, '..', 'data');
+
+/** Inline scripts we intend to ship. Regenerate with --update when they change. */
+const EXPECTED = new Set(JSON.parse(readFileSync(join(root, 'scripts/inline-scripts.json'), 'utf8')));
+
+const mirrors = parseToml(readFileSync(join(dataDir, 'mirrors.toml'), 'utf8')).mirrors;
+const site = parseToml(readFileSync(join(dataDir, 'site.toml'), 'utf8'));
+const release = parseToml(readFileSync(join(dataDir, 'release.toml'), 'utf8')).current;
+
+const allowed = new Set([
+  ...mirrors.map((m) => new URL(m.base).origin),
+  new URL(release.torrent).origin,
+  new URL(site.url).origin,
+  ...site.nav.filter((n) => n.external).map((n) => new URL(n.url).origin),
+  ...site.footer.flatMap((c) => c.links.map((l) => new URL(l.url).origin)),
+]);
+// Package links are editorial and change with packages.toml.
+for (const p of parseToml(readFileSync(join(dataDir, 'packages.toml'), 'utf8')).packages) {
+  if (p.url) allowed.add(new URL(p.url).origin);
+}
+
+const walk = (dir) => readdirSync(dir).flatMap((e) => {
+  const p = join(dir, e);
+  return statSync(p).isDirectory() ? walk(p) : [p];
+});
+
+const fails = [];
+const seen = new Set();
+const update = process.argv.includes('--update');
+
+for (const file of walk(dist)) {
+  if (extname(file) !== '.html') continue;
+  const rel = relative(dist, file);
+  const html = readFileSync(file, 'utf8');
+
+  for (const m of html.matchAll(/<script([^>]*)>([\s\S]*?)<\/script>/gi)) {
+    const [, attrs, body] = m;
+    if (/\ssrc=/i.test(attrs)) {
+      const src = /src=["']?([^"'\s>]+)/i.exec(attrs)?.[1] ?? '';
+      if (/^https?:/i.test(src)) fails.push(`${rel}: external <script src=${src}>`);
+      continue;
+    }
+    if (/type=["']?application\/ld\+json/i.test(attrs)) continue; // data, not code
+    const hash = 'sha256-' + createHash('sha256').update(body, 'utf8').digest('base64');
+    seen.add(hash);
+    if (!update && !EXPECTED.has(hash)) fails.push(`${rel}: unexpected inline <script> ${hash}`);
+  }
+
+  for (const m of html.matchAll(/(?:src|href|action|poster)=["']?(https?:\/\/[^"'\s>]+)/gi)) {
+    const { origin } = new URL(m[1]);
+    if (!allowed.has(origin)) fails.push(`${rel}: unexpected external origin ${origin}`);
+  }
+
+  for (const bad of ['eval(', 'document.write(', 'atob(']) {
+    if (html.includes(bad)) fails.push(`${rel}: dynamic-code construct ${bad}`);
+  }
+}
+
+if (update) {
+  const { writeFileSync } = await import('node:fs');
+  writeFileSync(join(root, 'scripts/inline-scripts.json'), JSON.stringify([...seen].sort(), null, 2) + '\n');
+  console.log(`  recorded ${seen.size} inline script hash(es)`);
+  process.exit(0);
+}
+
+// The CSP and the hash allowlist must agree, or one silently drifts.
+const headers = readFileSync(join(root, 'public/_headers'), 'utf8');
+for (const h of EXPECTED) {
+  if (!headers.includes(`'${h}'`)) fails.push(`public/_headers: CSP is missing ${h}`);
+}
+
+if (fails.length) {
+  console.error(`\n  check-build: ${fails.length} problem(s)\n`);
+  for (const f of fails) console.error(`    ${f}`);
+  console.error('\n  If an inline script changed on purpose: npm run check:build -- --update,');
+  console.error('  then paste the new hashes into public/_headers.\n');
+  process.exit(1);
+}
+
+console.log(`  check-build ok — ${seen.size} inline scripts all expected, every external origin allowlisted`);

@@ -1,0 +1,23 @@
+---
+import { siteData } from '../lib/site';
+const site = await siteData();
+---
+<footer class="site-footer">
+  <div class="container">
+    <div class="grid">
+      {site.footer.map((col) => (
+        <div>
+          <h2>{col.heading}</h2>
+          <ul>
+            {col.links.map((l) => (
+              <li><a href={l.url} rel="noopener noreferrer">{l.name}</a></li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+    <div class="site-footer__bottom">
+      <p>{site.name} is free and open-source software, built by its community.</p>
+    </div>
+  </div>
+</footer>

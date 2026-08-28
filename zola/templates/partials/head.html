@@ -16,17 +16,17 @@
 <meta name="twitter:card" content="summary_large_image">
 
 {# Blocking on purpose: it must run before first paint or the theme flashes. #}
-<script src="{{ get_url(path='js/theme-init.js', cachebust=true) }}"
+<script src="/js/theme-init.js?h={{ get_hash(path='js/theme-init.js', sha_type=256, base64=false) | truncate(length=12, end='') }}"
         integrity="sha384-{{ get_hash(path='js/theme-init.js', sha_type=384, base64=true) }}"
         crossorigin="anonymous"></script>
 
-<link rel="stylesheet" href="{{ get_url(path='main.css', cachebust=true) }}"
+<link rel="stylesheet" href="/main.css?h={{ get_hash(path='main.css', sha_type=256, base64=false) | truncate(length=12, end='') }}"
       integrity="sha384-{{ get_hash(path='main.css', sha_type=384, base64=true) }}"
       crossorigin="anonymous">
 
-<script defer src="{{ get_url(path='js/theme-toggle.js', cachebust=true) }}"
+<script defer src="/js/theme-toggle.js?h={{ get_hash(path='js/theme-toggle.js', sha_type=256, base64=false) | truncate(length=12, end='') }}"
         integrity="sha384-{{ get_hash(path='js/theme-toggle.js', sha_type=384, base64=true) }}"
         crossorigin="anonymous"></script>
-<script defer src="{{ get_url(path='js/copy.js', cachebust=true) }}"
+<script defer src="/js/copy.js?h={{ get_hash(path='js/copy.js', sha_type=256, base64=false) | truncate(length=12, end='') }}"
         integrity="sha384-{{ get_hash(path='js/copy.js', sha_type=384, base64=true) }}"
         crossorigin="anonymous"></script>

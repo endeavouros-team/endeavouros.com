@@ -1,0 +1,19 @@
+---
+import { getCollection } from 'astro:content';
+const packages = (await getCollection('packages'))
+  .map((e) => e.data)
+  .sort((a, b) => a.order - b.order);
+---
+<section class="section" id="software">
+  <div class="container stack">
+    <h2>What you get out of the box</h2>
+    <div class="grid">
+      {packages.map((p) => (
+        <div class="card">
+          <h3>{p.url ? <a href={p.url} rel="noopener noreferrer">{p.name}</a> : p.name}</h3>
+          <p>{p.desc}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

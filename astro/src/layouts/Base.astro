@@ -1,0 +1,47 @@
+---
+import '../styles/themes.css';
+import '../styles/base.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { siteData } from '../lib/site';
+
+interface Props { title?: string; description?: string }
+const site = await siteData();
+const { title = `${site.name} — ${site.description}`, description = site.description } = Astro.props;
+
+// Unset until the public launch, so every internal review build is noindex and
+// cannot compete with the live site while the ranking problem is still open.
+const indexable = import.meta.env.PUBLIC_INDEXABLE === 'true';
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark light" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+  {!indexable && <meta name="robots" content="noindex, nofollow" />}
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content={site.name} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta name="twitter:card" content="summary_large_image" />
+  {/* Must run before first paint or the theme flashes. With no stored choice it
+      sets nothing and CSS resolves the OS preference on its own. */}
+  <script is:inline>
+    try {
+      var t = localStorage.getItem("eos-theme");
+      if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <Header />
+  <main id="main"><slot /></main>
+  <Footer />
+</body>
+</html>

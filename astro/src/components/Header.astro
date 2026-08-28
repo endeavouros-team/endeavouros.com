@@ -1,0 +1,32 @@
+---
+import ThemeToggle from './ThemeToggle.astro';
+import { siteData } from '../lib/site';
+const site = await siteData();
+const here = Astro.url.pathname;
+---
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a class="brand" href="/">
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6">
+        <path d="M12 2 3 20l9-5 9 5z" stroke-linejoin="round" />
+      </svg>
+      {site.name}
+    </a>
+    <nav class="nav" aria-label="Main">
+      <ul class="nav__list">
+        {site.nav.map((item) => (
+          <li>
+            <a
+              class:list={['nav__link', { 'nav__link--cta': item.cta, 'nav__link--wip': item.wip }]}
+              href={item.url}
+              rel={item.external ? 'noopener noreferrer' : undefined}
+              title={item.wip ? 'Not migrated yet — opens the current site' : undefined}
+              aria-current={!item.external && here === item.url ? 'page' : undefined}
+            >{item.name}</a>
+          </li>
+        ))}
+        <li><ThemeToggle /></li>
+      </ul>
+    </nav>
+  </div>
+</header>

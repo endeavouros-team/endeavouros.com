@@ -1,0 +1,43 @@
+---
+import { mirrorUrls, type Mirror, type Release } from '../lib/site';
+interface Props { continent: string; slug: string; items: Mirror[]; rel: Release }
+const { continent, slug, items, rel } = Astro.props;
+---
+<section class="mirror-group" aria-labelledby={`mirrors-${slug}`}>
+  <h3 class="mirror-group__title" id={`mirrors-${slug}`}>
+    {continent}
+    <span class="mirror-group__count">{items.length} mirror{items.length === 1 ? '' : 's'}</span>
+  </h3>
+  <table class="mirrors">
+    <caption class="sr-only">
+      {continent} mirrors for {rel.iso}. Each row links to the ISO, its sha512 checksum and its GPG signature.
+    </caption>
+    <thead>
+      <tr>
+        <th scope="col">Location</th>
+        <th scope="col">Mirror</th>
+        <th scope="col">Verify</th>
+      </tr>
+    </thead>
+    <tbody>
+      {items.map((m) => {
+        const u = mirrorUrls(m, rel);
+        return (
+          <tr>
+            <th scope="row" class="c-loc">
+              <span class="cc" aria-hidden="true">{m.countryCode}</span><span class="country">{m.country}</span>
+            </th>
+            <td class="c-name">
+              <a href={u.iso} rel="noopener noreferrer">{m.name}<span class="sr-only"> — download {rel.iso}</span></a>
+              <span class="host">{new URL(m.base).host}</span>
+            </td>
+            <td class="c-verify">
+              <a href={u.sha512} rel="noopener noreferrer">sha512<span class="sr-only"> checksum for {m.name}</span></a>
+              <a href={u.sig} rel="noopener noreferrer">sig<span class="sr-only"> GPG signature for {m.name}</span></a>
+            </td>
+          </tr>
+        );
+      })}
+    </tbody>
+  </table>
+</section>

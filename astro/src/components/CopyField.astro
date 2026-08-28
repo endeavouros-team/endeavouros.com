@@ -1,0 +1,29 @@
+---
+interface Props { id: string; value: string }
+const { id, value } = Astro.props;
+---
+<div class="copyfield">
+  <code id={id}>{value}</code>
+  <button class="btn btn--ghost btn--sm" type="button" data-copy={id} hidden>Copy</button>
+  <span class="sr-only" data-copy-status role="status" aria-live="polite"></span>
+</div>
+
+<script>
+  // Progressive enhancement: the button is revealed only if the API exists.
+  if (navigator.clipboard) {
+    document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((btn) => {
+      btn.hidden = false;
+      btn.addEventListener('click', () => {
+        const target = document.getElementById(btn.dataset.copy!);
+        if (!target) return;
+        navigator.clipboard.writeText(target.textContent!.trim()).then(() => {
+          const live = btn.parentElement?.querySelector('[data-copy-status]');
+          if (live) {
+            live.textContent = 'Copied';
+            setTimeout(() => { live.textContent = ''; }, 2000);
+          }
+        });
+      });
+    });
+  }
+</script>

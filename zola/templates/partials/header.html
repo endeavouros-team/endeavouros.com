@@ -1,6 +1,6 @@
 <header class="site-header">
   <div class="container site-header__inner">
-    <a class="brand" href="{{ get_url(path='/') }}">
+    <a class="brand" href="/">
       <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6">
         <path d="M12 2 3 20l9-5 9 5z" stroke-linejoin="round"/>
       </svg>
@@ -12,7 +12,7 @@
         {%- for item in site.nav %}
         <li>
           <a class="nav__link{% if item.cta %} nav__link--cta{% endif %}{% if item.wip %} nav__link--wip{% endif %}"
-             href="{% if item.external %}{{ item.url }}{% else %}{{ get_url(path=item.url) }}{% endif %}"
+             href="{{ item.url }}"
              {%- if item.external %} rel="noopener noreferrer"{% endif %}
              {%- if item.wip %} title="Not migrated yet &mdash; opens the current site"{% endif %}
              {%- if not item.external and current_path and current_path == item.url %} aria-current="page"{% endif %}>{{ item.name }}</a>

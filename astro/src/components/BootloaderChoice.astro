@@ -1,0 +1,20 @@
+---
+import { getCollection } from 'astro:content';
+const bootloaders = (await getCollection('bootloaders'))
+  .map((e) => e.data)
+  .sort((a, b) => a.order - b.order);
+---
+<section class="section section--sunken" id="bootloader">
+  <div class="container stack">
+    <h2>Choose your bootloader</h2>
+    <div class="grid">
+      {bootloaders.map((b) => (
+        <div class="card"><h3>{b.name}</h3><p>{b.desc}</p></div>
+      ))}
+    </div>
+    <p class="lede">
+      You can also skip bootloader installation entirely and add EndeavourOS to an existing
+      bootloader yourself.
+    </p>
+  </div>
+</section>
