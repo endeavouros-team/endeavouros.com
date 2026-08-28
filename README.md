@@ -2,9 +2,9 @@
 
 A statically generated replacement for endeavouros.com.
 
-The current site runs WordPress and was compromised through spoofed plugins. A static site
-has no interpreter, no admin panel and no writable webroot, so that entire class of attack
-disappears.
+The current site runs WordPress and was affected by a compromise originating upstream in the
+WordPress plugin ecosystem, not on our own infrastructure. A static site has no interpreter,
+no admin panel and no writable webroot, so that entire class of attack disappears.
 
 ## Status
 
