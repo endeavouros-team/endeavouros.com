@@ -6,6 +6,9 @@
 
 sync:
 	@rm -rf zola/data && cp -r data zola/data
+	@cp brand/favicon.svg zola/static/favicon.svg
+	@cp brand/favicon.svg astro/public/favicon.svg
+	@python3 scripts/gen-logo-partial.py
 
 check:
 	@python3 scripts/validate-data.py

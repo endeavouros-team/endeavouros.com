@@ -1,11 +1,6 @@
 <header class="site-header">
   <div class="container site-header__inner">
-    <a class="brand" href="/">
-      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6">
-        <path d="M12 2 3 20l9-5 9 5z" stroke-linejoin="round"/>
-      </svg>
-      {{ site.name }}
-    </a>
+    <a class="brand" href="/">{% include "partials/logo.html" %}</a>
 
     <nav class="nav" aria-label="Main">
       <ul class="nav__list">

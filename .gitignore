@@ -11,3 +11,4 @@ zola/data/
 # scratch
 *.log
 .DS_Store
+shots/

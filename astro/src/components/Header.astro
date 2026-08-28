@@ -1,5 +1,8 @@
 ---
 import ThemeToggle from './ThemeToggle.astro';
+// Astro inlines an imported SVG as a component, which is what the lockup needs:
+// its wordmark path is currentColor, and that does not cross into an <img>.
+import Logo from '../../../brand/logo-horizontal.svg';
 import { siteData } from '../lib/site';
 const site = await siteData();
 const here = Astro.url.pathname;
@@ -7,10 +10,7 @@ const here = Astro.url.pathname;
 <header class="site-header">
   <div class="container site-header__inner">
     <a class="brand" href="/">
-      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6">
-        <path d="M12 2 3 20l9-5 9 5z" stroke-linejoin="round" />
-      </svg>
-      {site.name}
+      <Logo class="brand__logo" role="img" aria-label={site.name} />
     </a>
     <nav class="nav" aria-label="Main">
       <ul class="nav__list">
