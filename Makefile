@@ -2,7 +2,7 @@
 # so the shared data directory is mirrored into zola/ before every build.
 # zola/data/ is gitignored: data/ stays the only committed copy.
 
-.PHONY: sync check lint mirrors verify dev-zola build-zola dev-astro build-astro build serve clean
+.PHONY: sync check lint mirrors verify dev-zola build-zola dev-astro build-astro build serve deploy-preview clean
 
 sync:
 	@rm -rf zola/data && cp -r data zola/data
@@ -53,6 +53,10 @@ serve:
 	@(cd zola/public && python3 -m http.server 8811 --bind 0.0.0.0 >/dev/null 2>&1 &) ; \
 	 (cd astro/dist  && python3 -m http.server 8812 --bind 0.0.0.0 >/dev/null 2>&1 &) ; \
 	 echo "  serving; stop with: pkill -f 'http.server 881'"
+
+# Publish both tracks to the always-on preview host (see docs/preview-hosting.md).
+deploy-preview:
+	@scripts/deploy-preview.sh
 
 clean:
 	@rm -rf zola/public zola/data astro/dist astro/.astro

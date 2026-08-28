@@ -1,0 +1,36 @@
+# Preview stack for the EndeavourOS draft site on sra-oracle.
+#
+# Both tracks are served, one per container, because the builds use
+# root-relative URLs (/main.css, /favicon.svg, /download/) and would break
+# under a shared path prefix. One hostname per track is required.
+#
+# Bound to 127.0.0.1: only cloudflared needs to reach these. The box's iptables
+# already rejects external traffic on these ports, so this is a second layer.
+#
+# Content arrives by rsync from scripts/deploy-preview.sh; the volumes are bind
+# mounts, so a redeploy needs no container restart.
+#
+# The config is mounted as a DIRECTORY, not a single file. A single-file bind
+# mount pins one inode, and rsync writes a replacement and renames it, so the
+# container would keep serving the old config forever with no visible error.
+
+services:
+  eos-zola:
+    image: nginx:alpine
+    container_name: eos-zola
+    ports:
+      - "127.0.0.1:8081:80"
+    volumes:
+      - ./zola:/usr/share/nginx/html:ro
+      - ./conf:/etc/nginx/conf.d:ro
+    restart: unless-stopped
+
+  eos-astro:
+    image: nginx:alpine
+    container_name: eos-astro
+    ports:
+      - "127.0.0.1:8082:80"
+    volumes:
+      - ./astro:/usr/share/nginx/html:ro
+      - ./conf:/etc/nginx/conf.d:ro
+    restart: unless-stopped
