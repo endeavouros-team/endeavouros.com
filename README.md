@@ -8,13 +8,16 @@ no admin panel and no writable webroot, so that entire class of attack disappear
 
 ## Status
 
-Phase 1, in progress: a vertical slice of the **homepage and download section**, built twice
-so the team can compare real output before committing to a toolchain.
+**Astro, for both the main site and the wiki.** The slice was built twice — once in Zola,
+once in Astro — so the choice rested on real output rather than preference. `docs/bake-off.md`
+records what that measured and why the decision went the way it did.
 
-- `zola/` — Zola track. One static binary, `pacman -S zola`, no npm.
-- `astro/` — Astro track. Better image pipeline and a typed data contract, at the cost of a
-  Node toolchain.
+- `astro/` — the main site. Homepage and download section.
+- `wiki/` — Discovery, on Starlight. A demo with three converted articles, not a migration.
+- `zola/` — the Zola track, frozen at decision time. Kept until the team has read the
+  comparison; it found two real bugs in the Astro track by disagreeing with it.
 
+`docs/status.md` is the current picture: what is done, what is open, and what is next.
 Migration of the 106 existing news posts is deferred pending a scope decision.
 
 ## The shared data directory
@@ -45,11 +48,20 @@ See `data/README.md` for the field contract.
 
     make dev-astro   # astro dev on :4321
     make build-astro # -> astro/dist/
+    make build-wiki  # -> wiki/dist/
+
+    make verify      # build everything, then run both integrity gates
+    make deploy-preview
 
 Zola is in the Arch `extra` repository: `sudo pacman -S zola`.
 
 ## Documentation
 
+- `docs/status.md` — where the work stands, what is open, what is next
 - `docs/bake-off.md` — the Zola vs Astro comparison, written from measured output
+- `docs/preview-hosting.md` — how the three previews are served, and what breaks them
+
+Planned, and listed in `docs/status.md`:
+
 - `docs/release-bump.md` — how to publish a new ISO release
 - `docs/seo-recovery.md` — reclaiming the search index from the injected spam
