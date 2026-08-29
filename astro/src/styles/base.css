@@ -102,7 +102,10 @@ code, kbd, pre { font-family: var(--font-mono); font-size: 0.9375em; }
  * The official horizontal lockup, inlined. Its wordmark path is currentColor,
  * so it follows --ink between themes while the tri-colour mark stays fixed.
  */
-.brand { display: inline-flex; align-items: center; color: var(--ink); text-decoration: none; }
+.brand { display: inline-flex; align-items: center; color: var(--ink); text-decoration: none;
+         /* Without this the wrapping nav squeezes the logo to a few pixels on
+            narrow screens, since both share one flex row. */
+         flex-shrink: 0; }
 .brand__logo { width: auto; height: 2rem; display: block; }
 @media (max-width: 30rem) { .brand__logo { height: 1.6rem; } }
 
@@ -144,8 +147,20 @@ code, kbd, pre { font-family: var(--font-mono); font-size: 0.9375em; }
   background: radial-gradient(ellipse 80% 55% at 50% 0%,
               color-mix(in srgb, var(--accent-fill) 26%, transparent), transparent 70%);
 }
+/*
+ * The mark sits beside the text rather than above it: the wordmark is already
+ * in the header, so repeating it here would say the name twice, and the mark
+ * alone anchors the hero without competing with the headline.
+ * Below 48rem it stacks and the whole block centres.
+ */
+.hero__inner { display: grid; gap: clamp(1.5rem, 4vw, 3rem); justify-items: center; }
+.hero__mark { width: clamp(6rem, 14vw, 10.5rem); height: auto; }
+.hero__text { min-width: 0; }
+
 .hero__sub { margin-block-start: 1.25rem; margin-inline: auto; max-width: 46ch;
-             font-size: clamp(1.05rem, 2.2vw, 1.3rem); color: var(--ink-2); }
+             font-size: clamp(1.05rem, 2.2vw, 1.3rem); color: var(--ink-2);
+             /* keeps "your side" off a line of its own */
+             text-wrap: pretty; }
 .hero__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; margin-block-start: 2rem; }
 .hero__meta { margin-block-start: 1.25rem; font-size: 0.875rem; color: var(--ink-3); }
 .hero__meta code { color: var(--ink-2); }
@@ -266,3 +281,25 @@ table.mirrors { width: 100%; border-collapse: collapse; }
   }
   .cc { margin-inline-end: 0; }
 }
+
+/*
+ * Side-by-side from 48rem. This block must stay after the .hero__sub and
+ * .hero__actions declarations above: same specificity, so source order decides,
+ * and putting it earlier silently leaves the subtitle centred while the
+ * headline moves left.
+ */
+@media (min-width: 48rem) {
+  .hero { text-align: start; }
+  .hero__inner {
+    grid-template-columns: auto minmax(0, 1fr);
+    justify-items: start;
+    /* Aligned to the top of the text, not its centre: the meta paragraphs make
+       the column tall, and centring leaves the mark drifting by the subtitle
+       instead of anchoring the headline. */
+    align-items: start;
+  }
+  .hero__mark { margin-block-start: 0.35em; }
+  .hero__sub { margin-inline: 0; }
+  .hero__actions { justify-content: flex-start; }
+}
+

@@ -1,11 +1,16 @@
 ---
 import { release, siteData, formatBytes } from '../lib/site';
+// The mark rather than the full lockup: the header already carries the
+// wordmark, and a 3.8:1 lockup does not sit beside a block of text.
+import Mark from '../../../brand/mark.svg';
 const rel = await release();
 const site = await siteData();
 const date = rel.date.toISOString().slice(0, 10);
 ---
 <section class="hero">
-  <div class="container">
+  <div class="container hero__inner">
+    <Mark class="hero__mark" role="presentation" aria-hidden="true" />
+    <div class="hero__text">
     <h1>{site.tagline}</h1>
     <p class="hero__sub">{site.subtitle}</p>
     <div class="hero__actions">
@@ -18,5 +23,6 @@ const date = rel.date.toISOString().slice(0, 10);
       The magnet and torrent links need a torrent client. A DHT-capable client is required and a
       WebSeed-capable one downloads fastest. If you have bandwidth to spare, keep seeding afterwards.
     </p>
+    </div>
   </div>
 </section>
