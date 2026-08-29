@@ -97,7 +97,7 @@ code, kbd, pre { font-family: var(--font-mono); font-size: 0.9375em; }
   backdrop-filter: blur(8px);
   border-block-end: 1px solid var(--rule);
 }
-.site-header__inner { display: flex; align-items: center; gap: 1rem; min-height: 4rem; }
+.site-header__inner { display: flex; align-items: center; gap: 0.5rem; min-height: 4rem; }
 /*
  * The official horizontal lockup, inlined. Its wordmark path is currentColor,
  * so it follows --ink between themes while the tri-colour mark stays fixed.
@@ -110,6 +110,20 @@ code, kbd, pre { font-family: var(--font-mono); font-size: 0.9375em; }
 @media (max-width: 30rem) { .brand__logo { height: 1.6rem; } }
 
 .nav { margin-inline-start: auto; }
+/* Sized and coloured like .theme-toggle so the two controls read as a pair.
+   Hidden until the media query below opts it in, so it never appears on a
+   desktop and never appears with scripting off. */
+.nav-toggle {
+  display: none; align-items: center; justify-content: center;
+  width: 2.5rem; height: 2.5rem; padding: 0;
+  background: transparent; border: 1px solid var(--rule); border-radius: var(--radius);
+  color: var(--ink-2); cursor: pointer;
+}
+.nav-toggle:hover { color: var(--accent); border-color: var(--accent); }
+.nav-toggle svg { width: 1.3rem; height: 1.3rem; }
+.nav-toggle .icon-close { display: none; }
+.nav-toggle[aria-expanded="true"] .icon-bars { display: none; }
+.nav-toggle[aria-expanded="true"] .icon-close { display: block; }
 .nav__list { display: flex; align-items: center; gap: 0.25rem; list-style: none; margin: 0; padding: 0; flex-wrap: wrap; }
 .nav__link {
   display: inline-block; padding: 0.4rem 0.65rem; border-radius: var(--radius);
@@ -303,3 +317,65 @@ table.mirrors { width: 100%; border-collapse: collapse; }
   .hero__actions { justify-content: flex-start; }
 }
 
+/*
+ * ---------- mobile navigation ----------
+ *
+ * Measured: the eight nav items, the logo and the theme toggle need 973px to
+ * sit on one row. Below that the list wraps, and because the header is sticky
+ * a phone loses a quarter of its viewport to it at every scroll position —
+ * 208px of header on a 390px screen.
+ *
+ * The breakpoint is 64rem rather than the measured 61rem because --font-body
+ * is system-ui: that is Segoe UI on Windows and SF on macOS, whose metrics
+ * differ from the Linux rendering the 973px came from. Erring wide costs a
+ * hamburger on a 1024px window; erring narrow puts the four-line header back
+ * for some visitors.
+ *
+ * Everything here is gated on .js, set by the inline script in Base.astro. With
+ * scripting off none of it applies: no hamburger, and the nav wraps as before.
+ *
+ * Must stay after the .nav__link and .site-header__inner rules above — same
+ * specificity on some of these, so source order is what decides.
+ */
+@media (max-width: 63.99rem) {
+  .js .nav-toggle { display: inline-flex; }
+  .js .site-header__inner { min-height: 3.5rem; }
+
+  .js .nav__list {
+    display: none;
+    /* .site-header is sticky and carries a backdrop-filter, either of which
+       makes it the containing block, so 100% is the underside of the bar and
+       the panel spans its full width rather than the .container's. */
+    position: absolute;
+    inset-inline: 0;
+    inset-block-start: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.125rem;
+    /* 0.5rem here plus 0.75rem on each link puts the labels on the same
+       20px line as the logo, while the link's own padding keeps its hover
+       highlight off the panel edge. */
+    padding: 0.5rem 0.5rem 1rem;
+    /* Opaque, unlike the bar: the header's translucency is right for one row
+       of text over the page, and unreadable behind a panel of links. */
+    background: var(--bg);
+    border-block-end: 1px solid var(--rule);
+    box-shadow: var(--shadow);
+    max-block-size: calc(100dvh - 3.5rem);
+    overflow-y: auto;
+  }
+  .js .nav__list[data-open] { display: flex; }
+
+  .js .nav__link {
+    display: flex; align-items: center;
+    min-height: 2.75rem;
+    padding-inline: 0.75rem;
+    font-size: 1rem;
+  }
+  .js .nav__link--cta { justify-content: center; margin: 0.5rem 0.75rem 0; }
+}
+
+/* Below 30rem the lockup is already reduced; give the two controls the room. */
+@media (max-width: 30rem) {
+  .js .site-header__inner { gap: 0.35rem; }
+}

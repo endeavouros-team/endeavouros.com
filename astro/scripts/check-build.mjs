@@ -83,17 +83,27 @@ if (update) {
   process.exit(0);
 }
 
-// The CSP and the hash allowlist must agree, or one silently drifts.
-const headers = readFileSync(join(root, 'public/_headers'), 'utf8');
-for (const h of EXPECTED) {
-  if (!headers.includes(`'${h}'`)) fails.push(`public/_headers: CSP is missing ${h}`);
+// The CSP and the hash allowlist must agree, or one silently drifts. The policy
+// is restated in two places — _headers for Cloudflare Pages, the nginx conf for
+// the preview host — and only checking one lets the other rot. A stale nginx
+// conf blocks the theme bootstrap, which shows up as a flash of the wrong theme
+// on the preview and nowhere else.
+const policies = {
+  'public/_headers': join(root, 'public/_headers'),
+  '../deploy/nginx-preview.conf': join(root, '..', 'deploy', 'nginx-preview.conf'),
+};
+for (const [label, path] of Object.entries(policies)) {
+  const text = readFileSync(path, 'utf8');
+  for (const h of EXPECTED) {
+    if (!text.includes(`'${h}'`)) fails.push(`${label}: CSP is missing ${h}`);
+  }
 }
 
 if (fails.length) {
   console.error(`\n  check-build: ${fails.length} problem(s)\n`);
   for (const f of fails) console.error(`    ${f}`);
   console.error('\n  If an inline script changed on purpose: npm run check:build -- --update,');
-  console.error('  then paste the new hashes into public/_headers.\n');
+  console.error('  then paste the new hashes into public/_headers AND deploy/nginx-preview.conf.\n');
   process.exit(1);
 }
 

@@ -1,5 +1,5 @@
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-PWLFOH+LZXNhRvdviWGKytnaVyCXPhROiHjFnclKwrs=' 'sha256-fGYjnkJteui3LcvhdRqw9PBnM3zOl+LWRv2ZubzSr2k=' 'sha256-sIqcL+h1Ub+FUmbzL/PpbBsK/THKUfbkHzsczEBvJhw='; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-OPVAgLlUdHteJCCxMInmGWFbAd1S+V3x5ul4l5FPzzA=' 'sha256-PWLFOH+LZXNhRvdviWGKytnaVyCXPhROiHjFnclKwrs=' 'sha256-fGYjnkJteui3LcvhdRqw9PBnM3zOl+LWRv2ZubzSr2k=' 'sha256-xkPAaQvVJomOdU9zp7QJpREzVB1lWyoRUWidAGGD9s4='; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'; upgrade-insecure-requests
   Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY

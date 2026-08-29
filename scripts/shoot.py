@@ -55,6 +55,19 @@ def main() -> int:
                             name = f"{track}-{page_name}-{width}-{theme}.png"
                             page.screenshot(path=str(OUT / name), full_page=True)
                             shots += 1
+
+                            # The mobile nav panel is the one surface a default
+                            # capture never shows: every shot above is of a
+                            # closed menu. Only the Astro track has one.
+                            if track == "astro" and width == 390:
+                                if page.locator("#nav-toggle").is_visible():
+                                    page.click("#nav-toggle")
+                                    page.wait_for_timeout(200)
+                                    name = f"{track}-{page_name}-{width}-{theme}-menu.png"
+                                    page.screenshot(path=str(OUT / name))
+                                    shots += 1
+                                    page.keyboard.press("Escape")
+                                    page.wait_for_timeout(120)
                         ctx.close()
         finally:
             browser.close()

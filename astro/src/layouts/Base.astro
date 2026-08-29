@@ -33,6 +33,12 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
   {/* Must run before first paint or the theme flashes. With no stored choice it
       sets nothing and CSS resolves the OS preference on its own. */}
   <script is:inline>
+    // The collapsible nav must be marked here, not from a bundled module: those
+    // are deferred and can paint first, which would flash the eight-item nav
+    // wrapped over four lines before it collapsed. With scripting off the class
+    // is never set, the hamburger stays hidden and the nav wraps as it always
+    // has -- degraded, but never a control that cannot work.
+    document.documentElement.classList.add("js");
     try {
       var t = localStorage.getItem("eos-theme");
       if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;

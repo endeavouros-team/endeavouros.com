@@ -12,8 +12,15 @@ const here = Astro.url.pathname;
     <a class="brand" href="/">
       <Logo class="brand__logo" role="img" aria-label={site.name} />
     </a>
+    {/*
+      The nav stays before the controls in source order so the desktop tab
+      sequence is unchanged: brand, the eight links, then the theme toggle.
+      On phones the panel is opened from a button that follows it, so the
+      script moves focus into the panel explicitly rather than leaving the
+      reader to shift-tab backwards for it.
+    */}
     <nav class="nav" aria-label="Main">
-      <ul class="nav__list">
+      <ul id="nav-list" class="nav__list">
         {site.nav.map((item) => (
           <li>
             <a
@@ -25,8 +32,74 @@ const here = Astro.url.pathname;
             >{item.name}</a>
           </li>
         ))}
-        <li><ThemeToggle /></li>
       </ul>
     </nav>
+    {/* Deliberately outside the panel: switching theme is one tap, and burying
+        it behind a menu would make it two. */}
+    <ThemeToggle />
+    <button
+      id="nav-toggle"
+      class="nav-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="nav-list"
+      aria-label="Open menu"
+    >
+      <svg class="icon-bars" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+        <path d="M4 7h16M4 12h16M4 17h16" />
+      </svg>
+      <svg class="icon-close" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+        <path d="M6 6l12 12M18 6L6 18" />
+      </svg>
+    </button>
   </div>
 </header>
+
+<script>
+  // A disclosure, not a dialog: no focus trap and no scroll lock. Nine links
+  // fit a phone without either, and both are a common source of iOS bugs.
+  const btn = document.getElementById('nav-toggle');
+  const list = document.getElementById('nav-list');
+  const header = document.querySelector('.site-header');
+
+  if (btn && list && header) {
+    // Must match the breakpoint in base.css. Above it the panel styles do not
+    // apply, so a menu left open would silently stay "open" in the markup.
+    const wide = window.matchMedia('(min-width: 64rem)');
+    const isOpen = () => btn.getAttribute('aria-expanded') === 'true';
+
+    const setOpen = (open: boolean) => {
+      btn.setAttribute('aria-expanded', String(open));
+      btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+      if (open) list.dataset.open = '';
+      else delete list.dataset.open;
+    };
+
+    btn.addEventListener('click', () => {
+      const open = !isOpen();
+      setOpen(open);
+      if (open) list.querySelector('a')?.focus();
+    });
+
+    // Following a link closes it — it matters for the two in-site links, where
+    // the view transition would otherwise leave the panel covering the page.
+    list.addEventListener('click', (e) => {
+      if ((e.target as Element).closest('a')) setOpen(false);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && isOpen()) {
+        setOpen(false);
+        btn.focus();
+      }
+    });
+
+    document.addEventListener('pointerdown', (e) => {
+      if (isOpen() && !header.contains(e.target as Node)) setOpen(false);
+    });
+
+    wide.addEventListener('change', (e) => {
+      if (e.matches) setOpen(false);
+    });
+  }
+</script>
