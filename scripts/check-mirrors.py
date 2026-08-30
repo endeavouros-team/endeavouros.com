@@ -23,14 +23,25 @@ UA = "Mozilla/5.0 (X11; Linux x86_64) endeavouros-website-mirror-check"
 
 
 def head(url: str, timeout: int) -> tuple[str, str]:
-    req = urllib.request.Request(url, method="HEAD", headers={"User-Agent": UA})
-    try:
-        with urllib.request.urlopen(req, timeout=timeout) as r:
-            return ("ok", str(r.status))
-    except urllib.error.HTTPError as e:
-        return ("warn", str(e.code))
-    except Exception as e:  # DNS, TLS, timeout, connection reset
-        return ("warn", type(e).__name__)
+    """HEAD, then a one-byte ranged GET if that fails.
+
+    The fallback is not politeness, it is correctness: mirrors that redirect to
+    presigned object storage (SJTU) sign the URL for GET, so a HEAD against it
+    comes back 403 even though the file is served perfectly. Reporting those as
+    warnings after every release bump trains everyone to ignore this output,
+    which is how a genuinely unsynced mirror would get missed.
+    """
+    for method, headers in (("HEAD", {}), ("GET", {"Range": "bytes=0-0"})):
+        req = urllib.request.Request(url, method=method, headers={"User-Agent": UA, **headers})
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as r:
+                r.read(1)
+                return ("ok", str(r.status))
+        except urllib.error.HTTPError as e:
+            result = ("warn", str(e.code))
+        except Exception as e:  # DNS, TLS, timeout, connection reset
+            result = ("warn", type(e).__name__)
+    return result
 
 
 def main() -> int:

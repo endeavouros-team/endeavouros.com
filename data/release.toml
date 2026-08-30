@@ -6,18 +6,22 @@
 # No HTML is ever touched.
 
 [current]
-codename  = "Titan Neo"
-date      = 2026-04-27
-iso       = "EndeavourOS_Titan-Neo-2026.04.27.iso"
-sha512    = "968657495b81e5a393dd877397725b30dc274ff9f54c23c7e6d653126c796fbbafc00cd52e0b243954b52b14c888d101b55a09a7b5e2689a9247a51a8ef5ab7b"
-sizeBytes = 3739254784
+codename  = "Titan Nova"
+date      = 2026-08-15
+iso       = "EndeavourOS_Titan-Nova-2026.08.15.iso"
+sha512    = "3f83bd745e9d5d518bdf6fc9a24092fb5347da449a6e109c6572bf999097b8b548c4cf1848fdfb3c7c2823f558c3f5b51a127060d9c5b81b9ad89b4041bee7fa"
+sizeBytes = 3898638336
 
 # Suffixes appended to `iso` to build the checksum and signature URLs.
-sha512Suffix = ".sha512"
+#
+# Upstream renamed the checksum file at Titan Nova: it is `.sha512sum`, not
+# `.sha512`, on every mirror. Because the URLs are composed rather than stored,
+# that rename is this one line -- `make mirrors` is what proves it across all 26.
+sha512Suffix = ".sha512sum"
 sigSuffix    = ".sig"
 
-magnet  = "magnet:?xt=urn:btih:9bfbeea55c2a802ad30674a272f81ed14b3e7841&dn=EndeavourOS_Titan-Neo-2026.04.27.iso&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Fopen.stealth.si%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.torrent.eu.org%3A451%2Fannounce&tr=udp%3A%2F%2Ftracker.moeking.me%3A6969%2Fannounce&tr=udp%3A%2F%2Fexodus.desync.com%3A6969%2Fannounce&tr=udp%3A%2F%2Fp4p.arenabg.com%3A1337%2Fannounce"
-torrent = "https://mirror.rznet.fr/endeavouros/iso/EndeavourOS_Titan-Neo-2026.04.27.iso.torrent"
+magnet  = "magnet:?xt=urn:btih:0866fdf2d998c4fafe043e6321c678c07ab674d6&dn=EndeavourOS_Titan-Nova-2026.08.15.iso&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Fopen.stealth.si%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.torrent.eu.org%3A451%2Fannounce&tr=udp%3A%2F%2Fexodus.desync.com%3A6969%2Fannounce&tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A6969%2Fannounce"
+torrent = "https://mirror.rznet.fr/endeavouros/iso/EndeavourOS_Titan-Nova-2026.08.15.iso.torrent"
 
 # The key the ISO is signed with. Users verify against this fingerprint, so it
 # is rendered verbatim and must never be edited casually.
