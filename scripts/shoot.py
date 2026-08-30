@@ -22,9 +22,36 @@ from playwright.sync_api import sync_playwright
 
 OUT = Path(__file__).resolve().parent.parent / "shots"
 TRACKS = {"zola": "http://127.0.0.1:8811", "astro": "http://127.0.0.1:8812"}
-PAGES = {"home": "/", "download": "/download/"}
+PAGES = {"home": "/", "download": "/download/", "news": "/news/"}
+# News was built on the Astro track only, so the Zola track has just the stub
+# that keeps the shared navigation from dead-ending. A post page exists on one
+# track and there is nothing to compare it against.
+ASTRO_ONLY = {"post": "/news/titan-nova-is-available/"}
 WIDTHS = (390, 768, 1440)
 THEMES = ("dark", "light")
+
+
+SETTLE = """async () => {
+  const step = window.innerHeight / 2;
+  for (let y = 0; y < document.body.scrollHeight; y += step) {
+    window.scrollTo(0, y);
+    await new Promise((r) => setTimeout(r, 40));
+  }
+  window.scrollTo(0, 0);
+  await Promise.all([...document.images].filter((i) => !i.complete)
+    .map((i) => new Promise((r) => { i.onload = i.onerror = r; })));
+}"""
+
+
+def settle(page) -> None:
+    """Scroll the whole page so lazy images load, then wait for them to decode.
+
+    A full-page screenshot does not itself trigger loading="lazy", so without
+    this every image below the first viewport captures as an empty box -- which
+    reads as a broken site in review when nothing is actually wrong.
+    """
+    page.evaluate(SETTLE)
+    page.wait_for_timeout(250)
 
 
 def main() -> int:
@@ -36,7 +63,8 @@ def main() -> int:
         browser = pw.chromium.launch(channel="msedge", headless=headless)
         try:
             for track, base in TRACKS.items():
-                for page_name, path in PAGES.items():
+                pages = {**PAGES, **(ASTRO_ONLY if track == "astro" else {})}
+                for page_name, path in pages.items():
                     for width in WIDTHS:
                         ctx = browser.new_context(
                             viewport={"width": width, "height": 900},
@@ -52,6 +80,7 @@ def main() -> int:
                                 theme,
                             )
                             page.wait_for_timeout(120)
+                            settle(page)
                             name = f"{track}-{page_name}-{width}-{theme}.png"
                             page.screenshot(path=str(OUT / name), full_page=True)
                             shots += 1

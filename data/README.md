@@ -76,6 +76,14 @@ section is not migrated yet. They render muted with a tooltip, so an internal
 reviewer sees the real nav shape without us pretending the pages exist. Clear
 `wip` and `external` as each section lands.
 
+`contentOrigins` is the allowlist of outbound hosts that imported news bodies may
+link to. Both build-output gates read it, and nothing else grants an origin to
+post content. It is hand-maintained on purpose: deriving it from the content
+would let an injected link authorise itself, which is precisely what the gates
+exist to catch. Adding a host is a reviewed one-line diff; each entry must be a
+bare `https://` origin with no path or trailing slash, which
+`scripts/validate-data.py` enforces.
+
 ## `packages.toml`
 
 The preset software list and the bootloader options shown on the homepage. Copy
