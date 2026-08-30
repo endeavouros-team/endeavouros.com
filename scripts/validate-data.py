@@ -14,6 +14,7 @@ import re
 import sys
 import tomllib
 from pathlib import Path
+from urllib.parse import urlparse
 
 DATA = Path(__file__).resolve().parent.parent / "data"
 CONTINENTS = ["Africa", "Asia", "Europe", "North America", "South America", "Oceania"]
@@ -128,6 +129,12 @@ def check_site(doc: dict) -> None:
     for key in ("name", "tagline", "subtitle", "description", "url"):
         if not doc.get(key):
             fail("site.toml", f"missing {key!r}")
+    for i, origin in enumerate(doc.get("contentOrigins", [])):
+        where = f"site.toml contentOrigins[{i}]"
+        if not origin.startswith("https://"):
+            fail(where, f"{origin!r} must be an https origin")
+        if urlparse(origin).path or origin.rstrip("/") != origin:
+            fail(where, f"{origin!r} must be a bare origin, no path or trailing slash")
     nav = doc.get("nav", [])
     if not nav:
         fail("site.toml", "no [[nav]] entries")

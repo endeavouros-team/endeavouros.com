@@ -2,6 +2,7 @@ import { getCollection, getEntry, type CollectionEntry } from 'astro:content';
 import { CONTINENTS } from '../content.config';
 
 export type Mirror = CollectionEntry<'mirrors'>['data'];
+export type NewsPost = CollectionEntry<'news'>;
 export type Release = CollectionEntry<'release'>['data'];
 
 export async function release(): Promise<Release> {
@@ -42,4 +43,42 @@ export async function mirrorOrigins() {
 
 export function formatBytes(n: number) {
   return `${(n / 1024 ** 3).toFixed(2)} GiB`;
+}
+
+/**
+ * News, newest first. The ordering lives here rather than in a template so the
+ * listing and the feed cannot quietly disagree about what "latest" means.
+ */
+export async function newsPosts(): Promise<NewsPost[]> {
+  return (await getCollection('news')).sort(
+    (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+  );
+}
+
+/**
+ * Frontmatter dates are bare YYYY-MM-DD, which parse as UTC midnight. Format in
+ * UTC too, or a reader west of Greenwich sees every announcement dated a day
+ * early.
+ */
+export function formatDate(d: Date) {
+  return d.toLocaleDateString('en-GB', {
+    day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC',
+  });
+}
+
+/**
+ * Where a post footer sends readers to discuss it. Resolved from data/site.toml
+ * by origin rather than by link text, so renaming the nav entry cannot silently
+ * drop the link, and a missing forum fails the build instead of shipping a
+ * dead end.
+ */
+export async function forumUrl(): Promise<string> {
+  const s = await siteData();
+  const urls = [
+    ...s.nav.map((n) => n.url),
+    ...s.footer.flatMap((c) => c.links.map((l) => l.url)),
+  ];
+  const found = urls.find((u) => u.startsWith('https://forum.'));
+  if (!found) throw new Error('data/site.toml has no forum link for news post footers');
+  return found;
 }

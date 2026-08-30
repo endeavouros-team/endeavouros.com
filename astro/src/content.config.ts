@@ -1,5 +1,5 @@
 import { defineCollection, z } from 'astro:content';
-import { file } from 'astro/loaders';
+import { file, glob } from 'astro/loaders';
 import { parse as parseToml } from 'smol-toml';
 
 /**
@@ -108,6 +108,7 @@ const site = defineCollection({
     subtitle: z.string(),
     description: z.string(),
     url: z.string().url(),
+    contentOrigins: z.array(z.string().url()).default([]),
     nav: z.array(navItem).min(1),
     footer: z.array(z.object({
       heading: z.string(),
@@ -139,4 +140,28 @@ const bootloaders = defineCollection({
   schema: z.object({ id: z.string(), order: z.number().int(), name: z.string(), desc: z.string() }),
 });
 
-export const collections = { mirrors, release, site, packages, bootloaders };
+/**
+ * News announcements, imported from WordPress by scripts/import-news.py.
+ *
+ * The only authored-Markdown collection on the site; everything else is TOML
+ * out of ../data. Hero images go through image() so Astro's pipeline owns the
+ * resizing and format negotiation rather than shipping the 2560px original.
+ *
+ * heroAlt is deliberately not .min(1): every alt attribute in the WordPress
+ * source is empty, so requiring it would have held the import hostage to
+ * copywriting. The empty strings are visible in review and are the team's to
+ * fill; the importer reads back anything authored here and preserves it.
+ */
+const news = defineCollection({
+  loader: glob({ pattern: '*.md', base: './src/content/news' }),
+  schema: ({ image }) => z.object({
+    title: z.string().min(4),
+    description: z.string().min(20).max(200),
+    date: z.coerce.date(),
+    author: z.string().min(2),
+    hero: image(),
+    heroAlt: z.string(),
+  }),
+});
+
+export const collections = { mirrors, release, site, packages, bootloaders, news };

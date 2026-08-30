@@ -28,6 +28,9 @@ def allowed_origins() -> set[str]:
     mirrors, site = load("mirrors.toml"), load("site.toml")
     release, packages = load("release.toml")["current"], load("packages.toml")
     origins = {urlparse(m["base"]).scheme + "://" + urlparse(m["base"]).netloc for m in mirrors["mirrors"]}
+    # Imported news bodies link out to hosts that are in no other data file.
+    # This list is hand-maintained on purpose; see data/site.toml.
+    origins.update(site.get("contentOrigins", []))
     for url in (
         [release["torrent"], site["url"]]
         + [n["url"] for n in site["nav"] if n.get("external")]

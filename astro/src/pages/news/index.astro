@@ -1,0 +1,48 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import { newsPosts, formatDate, siteData } from '../../lib/site';
+
+const site = await siteData();
+const posts = await newsPosts();
+---
+<Base
+  title={`News — ${site.name}`}
+  description="Release announcements and news from the EndeavourOS team."
+>
+  <section class="section">
+    <div class="container stack">
+      <h1>News</h1>
+      <p class="lede">
+        Release announcements from the EndeavourOS team. Each one describes what changed on the
+        ISO — running systems stay current through regular updates and never need reinstalling.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--sunken">
+    <div class="container">
+      <ul class="newslist">
+        {posts.map((post) => (
+          <li>
+            <article class="newscard">
+              <a class="newscard__media" href={`/news/${post.id}/`} tabindex="-1" aria-hidden="true">
+                <Image src={post.data.hero} alt={post.data.heroAlt} widths={[320, 640]} sizes="(min-width: 48rem) 18rem, 100vw" />
+              </a>
+              <div class="newscard__body">
+                <h2><a href={`/news/${post.id}/`}>{post.data.title}</a></h2>
+                <p class="newscard__meta">
+                  <time datetime={post.data.date.toISOString().slice(0, 10)}>
+                    {formatDate(post.data.date)}
+                  </time>
+                  <span aria-hidden="true"> · </span>{post.data.author}
+                </p>
+                <p>{post.data.description}</p>
+              </div>
+            </article>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Base>

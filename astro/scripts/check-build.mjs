@@ -33,6 +33,9 @@ const allowed = new Set([
   new URL(site.url).origin,
   ...site.nav.filter((n) => n.external).map((n) => new URL(n.url).origin),
   ...site.footer.flatMap((c) => c.links.map((l) => new URL(l.url).origin)),
+  // Imported news bodies link out to hosts that are in no other data file.
+  // Hand-maintained on purpose; see data/site.toml.
+  ...(site.contentOrigins ?? []).map((u) => new URL(u).origin),
 ]);
 // Package links are editorial and change with packages.toml.
 for (const p of parseToml(readFileSync(join(dataDir, 'packages.toml'), 'utf8')).packages) {

@@ -12,3 +12,6 @@ zola/data/
 *.log
 .DS_Store
 shots/
+
+# Python bytecode from scripts/ importing wp_common
+__pycache__/

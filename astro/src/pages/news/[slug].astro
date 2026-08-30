@@ -1,0 +1,51 @@
+---
+import { Image } from 'astro:assets';
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { newsPosts, formatDate, forumUrl, siteData } from '../../lib/site';
+import type { NewsPost } from '../../lib/site';
+
+// Slugs are the WordPress ones, character for character, so every inbound link
+// and search result that already points at these posts keeps working. That is
+// the whole reason the filenames are what they are.
+export async function getStaticPaths() {
+  return (await newsPosts()).map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+interface Props { post: NewsPost }
+const { post } = Astro.props;
+const { Content } = await render(post);
+const site = await siteData();
+const forum = await forumUrl();
+---
+<Base
+  title={`${post.data.title} — ${site.name}`}
+  description={post.data.description}
+  image={post.data.hero.src}
+>
+  <article class="section">
+    <div class="container post">
+      <header class="stack">
+        <h1>{post.data.title}</h1>
+        <p class="newscard__meta">
+          <time datetime={post.data.date.toISOString().slice(0, 10)}>
+            {formatDate(post.data.date)}
+          </time>
+          <span aria-hidden="true"> · </span>{post.data.author}
+        </p>
+      </header>
+
+      <Image class="post__hero" src={post.data.hero} alt={post.data.heroAlt} widths={[640, 960, 1280]} sizes="(min-width: 48rem) 45rem, 100vw" loading="eager" />
+
+      <div class="post__body"><Content /></div>
+
+      {/* The old site carried WordPress comments. They are not coming back --
+          they were part of the attack surface we are removing -- so point at
+          the place the conversation already happens. */}
+      <footer class="post__foot">
+        <p>Questions, or something not working? <a href={forum}>Talk to us on the forum</a>.</p>
+        <p><a href="/news/">← All news</a></p>
+      </footer>
+    </div>
+  </article>
+</Base>

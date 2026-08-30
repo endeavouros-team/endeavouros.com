@@ -7,6 +7,17 @@ subtitle    = "with a lightweight Arch-based, terminal-centric system ready to p
 description = "A terminal-centric Arch-based Linux distribution with a vibrant and friendly community at its core."
 url         = "https://endeavouros.com"
 
+# Origins that imported post bodies are permitted to link out to.
+#
+# The build-output gates derive their allowlist from this directory alone. That
+# is deliberate: deriving it from the content instead would let an injected link
+# authorise itself, which is the exact failure the gates exist to catch. So a
+# new outbound host in a news post is a hand edit here, reviewed like any other.
+contentOrigins = [
+  "https://github.com",
+  "https://archlinux.org",
+]
+
 # Primary navigation.
 #
 # `external = true` points at the current site for sections that are not rebuilt
@@ -18,10 +29,8 @@ name = "Home"
 url  = "/"
 
 [[nav]]
-name     = "News"
-url      = "https://endeavouros.com/news/"
-external = true
-wip      = true
+name = "News"
+url  = "/news/"
 
 [[nav]]
 name     = "EndeavourOS ARM"

@@ -5,14 +5,17 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { siteData } from '../lib/site';
 
-interface Props { title?: string; description?: string }
+interface Props { title?: string; description?: string; image?: string }
 const site = await siteData();
-const { title = `${site.name} — ${site.description}`, description = site.description } = Astro.props;
+const { title = `${site.name} — ${site.description}`, description = site.description, image } = Astro.props;
 
 // Unset until the public launch, so every internal review build is noindex and
 // cannot compete with the live site while the ranking problem is still open.
 const indexable = import.meta.env.PUBLIC_INDEXABLE === 'true';
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
+// Absolute, because og:image is read by crawlers that have no page context.
+// Without one a shared announcement previews as an empty card.
+const ogImage = image ? new URL(image, Astro.site).href : undefined;
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -24,12 +27,14 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
   <title>{title}</title>
   <meta name="description" content={description} />
   <link rel="canonical" href={canonical} />
+  <link rel="alternate" type="application/rss+xml" title={`${site.name} News`} href="/news/feed.xml" />
   {!indexable && <meta name="robots" content="noindex, nofollow" />}
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content={site.name} />
   <meta property="og:title" content={title} />
   <meta property="og:description" content={description} />
   <meta name="twitter:card" content="summary_large_image" />
+  {ogImage && <meta property="og:image" content={ogImage} />}
   {/* Must run before first paint or the theme flashes. With no stored choice it
       sets nothing and CSS resolves the OS preference on its own. */}
   <script is:inline>
