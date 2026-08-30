@@ -147,10 +147,13 @@ const bootloaders = defineCollection({
  * out of ../data. Hero images go through image() so Astro's pipeline owns the
  * resizing and format negotiation rather than shipping the 2560px original.
  *
- * heroAlt is deliberately not .min(1): every alt attribute in the WordPress
- * source is empty, so requiring it would have held the import hostage to
- * copywriting. The empty strings are visible in review and are the team's to
- * fill; the importer reads back anything authored here and preserves it.
+ * Alt text is a three-state decision, not a two-state one. A hero is described,
+ * or it is deliberately decorative and correctly carries no description, or
+ * nobody has looked at it yet. heroDecorative separates the middle case from
+ * the last, which is why heroAlt is not .min(1): most of these heroes are
+ * release artwork sitting directly under a heading that already names the
+ * release, and describing them would make a screen reader announce the same
+ * thing twice. An empty alt is the correct treatment there, not a gap.
  */
 const news = defineCollection({
   loader: glob({ pattern: '*.md', base: './src/content/news' }),
@@ -161,6 +164,7 @@ const news = defineCollection({
     author: z.string().min(2),
     hero: image(),
     heroAlt: z.string(),
+    heroDecorative: z.boolean().default(false),
   }),
 });
 

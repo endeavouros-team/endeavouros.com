@@ -5,6 +5,7 @@ date: 2026-03-12
 author: "Bryanpwo"
 hero: "../../assets/news/2026/EndeavourOS_TITAN__3840x2160-scaled.jpg"
 heroAlt: ""
+heroDecorative: true
 ---
 
 Earlier this month, the Linux kernel 6.19 was released, and that was a good excuse to refresh our ISO. And as you can read from the title, the changes for this one were big enough to turn it into a major release with a name that really covers this ISO. Named after the second-largest moon in our solar system, Titan. So, we borrowed Saturn’s largest moon to orbit around our purple Linux space for now. This theme is also reflected in the new wallpaper that was created by our very creative and trusty community member, Unclespellbinder.
@@ -21,7 +22,7 @@ Okay, now that’s out of the way, let’s get into the joyous news of the Titan
 
 ## The Titan release
 
-![](../../assets/news/2026/endeavouros_titan_livesession.png)
+![The Titan live session, the installer running in Finnish alongside the EndeavourOS Welcome app.](../../assets/news/2026/endeavouros_titan_livesession.png)
 
 *Wallpaper created by Unclespellbinder*
 

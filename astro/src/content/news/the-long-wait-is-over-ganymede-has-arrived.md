@@ -5,6 +5,7 @@ date: 2025-11-29
 author: "Bryanpwo"
 hero: "../../assets/news/2025/EndeavourOS_Ganymede__3840x2160-scaled.jpg"
 heroAlt: ""
+heroDecorative: true
 ---
 
 Yes, we know it has been a long time since we released an ISO refresh. So, before I start the announcement, I want to get rid of a concern or rumour: our project is still active, and we’re not going anywhere.
@@ -21,7 +22,7 @@ Now I have all that out of the way, let’s dive into our latest ISO release.
 
 ## The Ganymede release
 
-![](../../assets/news/2025/Ganymede-LiveSession.jpg)
+![The Ganymede live session: the Calamares welcome screen and the EndeavourOS Welcome app open over the Ganymede wallpaper, with Konsole running glances.](../../assets/news/2025/Ganymede-LiveSession.jpg)
 
 The live environment and the offline installer ship with:
 

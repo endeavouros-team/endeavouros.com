@@ -4,7 +4,8 @@ description: "Our refresh release, Mercury Neo, is now available with updated co
 date: 2025-03-23
 author: "Bryanpwo"
 hero: "../../assets/news/2025/Mercury_Neo-LiveSession.png"
-heroAlt: ""
+heroAlt: "The Mercury Neo live session: the EndeavourOS Welcome app listing installer and mirror-update options, with a Konsole window running glances beside it."
+heroDecorative: false
 ---
 
 Our refresh release, Mercury Neo, is now available with updated core packages for the offline installation option and the live environment and a few bug fixes and improvements for the online installation option.
@@ -19,7 +20,7 @@ Before I go on into the release notes of our Mercury Neo release I’d like to h
 
 ## The Mercury Neo release
 
-![](../../assets/news/2025/2gb-efi-systemd-boot.png)
+![The installer's summary screen for a systemd-boot install, with the EFI system partition highlighted in red at 2.00 GiB, FAT32.](../../assets/news/2025/2gb-efi-systemd-boot.png)
 
 Mercury Neo ships with:
 

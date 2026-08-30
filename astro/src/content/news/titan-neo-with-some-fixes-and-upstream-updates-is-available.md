@@ -5,6 +5,7 @@ date: 2026-05-01
 author: "Bryanpwo"
 hero: "../../assets/news/2026/EndeavourOS_TITAN_Alternate__3840x2160-scaled.jpg"
 heroAlt: ""
+heroDecorative: true
 ---
 
 Six weeks after our Titan release, we refreshed our ISO, Titan Neo, with some fixes and minor improvements.

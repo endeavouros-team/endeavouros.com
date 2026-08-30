@@ -88,16 +88,26 @@ def download(url: str) -> str:
     return rel
 
 
-def existing_alts(path: Path) -> tuple[str, dict[str, str]]:
-    """Alt text authored by hand after a previous import. Every alt in the
-    WordPress source is empty, so anything non-empty here is the team's work
-    and must survive a re-run."""
+def existing_alts(path: Path) -> tuple[str, bool, dict[str, str]]:
+    """Alt decisions made by hand after a previous import.
+
+    Every alt attribute in the WordPress source is empty, so nothing useful
+    comes across and all of this is the team's work. It must survive a re-run,
+    or the importer silently undoes it.
+
+    Three states, not two. An image is described, or it is deliberately
+    decorative and correctly carries no description, or nobody has looked at it
+    yet. `heroDecorative` is what separates the second from the third; without
+    it the "needs authoring" warning fires forever on images that are finished,
+    and a warning that never goes away stops being read.
+    """
     if not path.exists():
-        return "", {}
+        return "", False, {}
     text = path.read_text()
     hero = re.search(r'^heroAlt:\s*"(.*)"\s*$', text, re.M)
+    dec = re.search(r'^heroDecorative:\s*(true|false)\s*$', text, re.M)
     body = {m.group(2): m.group(1) for m in re.finditer(r"!\[([^\]]*)\]\(([^)]+)\)", text) if m.group(1)}
-    return (hero.group(1) if hero else ""), body
+    return (hero.group(1) if hero else ""), bool(dec and dec.group(1) == "true"), body
 
 
 def yaml_str(s: str) -> str:
@@ -145,7 +155,7 @@ def import_post(slug: str, slugs: set[str]) -> None:
     post = fetch(slug)
     title = wp.plain_title(post)
     out_path = CONTENT / f"{slug}.md"
-    hero_alt, body_alts = existing_alts(out_path)
+    hero_alt, hero_decorative, body_alts = existing_alts(out_path)
 
     def on_image(src, alt, stats):
         src = unjetpack(src)
@@ -176,6 +186,7 @@ def import_post(slug: str, slugs: set[str]) -> None:
         f"author: {yaml_str(author)}",
         f"hero: {yaml_str(hero_rel)}",
         f"heroAlt: {yaml_str(hero_alt)}",
+        f"heroDecorative: {str(hero_decorative).lower()}",
         "---",
     ]
     CONTENT.mkdir(parents=True, exist_ok=True)
@@ -183,7 +194,7 @@ def import_post(slug: str, slugs: set[str]) -> None:
     print(
         f"  {slug}.md  {post['date'][:10]}  {author}  "
         f"{st['img']} images, {relinked} links kept on-site"
-        + ("" if hero_alt else "   [heroAlt empty - needs authoring]")
+        + ("" if hero_alt or hero_decorative else "   [hero undescribed - write heroAlt, or set heroDecorative]")
     )
 
 

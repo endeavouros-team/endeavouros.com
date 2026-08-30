@@ -5,6 +5,7 @@ date: 2026-08-28
 author: "Bryanpwo"
 hero: "../../assets/news/2026/Titan-Nova-2.png"
 heroAlt: ""
+heroDecorative: true
 ---
 
 It’s been a while since we released Titan Neo back in March. And to be honest, we thought we would have our next major release, Triton, out by now. But as with most things in life, the road to the next step isn’t easy. In fact, Triton’s journey is obstructed by meteors and asteroids, so to speak. So, we need some more time to finish the work on Triton. The next release will be running Wayland in the Live environment, due to upcoming changes with the Plasma desktop environment. And as you can imagine, this is a major challenge for our development team. That is why we decided to give Titan an update boost to act as a bridge to the Triton release.
@@ -13,7 +14,7 @@ So, don’t expect big changes. This release includes the necessary hardware sup
 
 ## The Titan Nova release
 
-![](../../assets/news/2026/Titan_Nova.png)
+![The Titan Nova live session: the Calamares installer and the EndeavourOS Welcome app open over the Titan Nova wallpaper.](../../assets/news/2026/Titan_Nova.png)
 
 Of course, it is unnecessary to mention, but I will remind you, though.
 

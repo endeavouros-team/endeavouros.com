@@ -5,6 +5,7 @@ date: 2026-01-15
 author: "Bryanpwo"
 hero: "../../assets/news/2025/EndeavourOS_Ganymede__3840x2160-scaled.jpg"
 heroAlt: ""
+heroDecorative: true
 ---
 
 We’re kicking off 2026 with the release of Ganymede Neo. As you are accustomed to with our Neo releases, this release includes upstream updates and minor changes compared to the [Ganymede ISO](/news/the-long-wait-is-over-ganymede-has-arrived/).

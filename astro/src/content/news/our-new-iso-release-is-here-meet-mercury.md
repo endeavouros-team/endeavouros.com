@@ -4,7 +4,8 @@ description: "It has been a while since we released our last ISO, Endeavour Neo,
 date: 2025-02-10
 author: "Bryanpwo"
 hero: "../../assets/news/2025/EndeavourOS_Mercury_livesession.png"
-heroAlt: ""
+heroAlt: "The EndeavourOS Mercury live session: the Calamares installer's welcome screen open over the Mercury wallpaper, with the desktop taskbar along the bottom."
+heroDecorative: false
 ---
 
 It has been a while since we released our last ISO, Endeavour Neo, and even though this new ISO comes with many improvements and technical challenges we had to tackle, like resolving issues that came with Linux kernel 6.13, the Xfce 4.20 update, sfdisk and Calamares’ kpmcore, those challenges weren’t the main reason for the long hiatus between Endeavour Neo and Mercury.
