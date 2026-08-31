@@ -2,7 +2,7 @@
 # so the shared data directory is mirrored into zola/ before every build.
 # zola/data/ is gitignored: data/ stays the only committed copy.
 
-.PHONY: sync check lint mirrors verify dev-zola build-zola dev-astro build-astro build-wiki build serve deploy-preview clean
+.PHONY: sync check lint mirrors spam-check verify dev-zola build-zola dev-astro build-astro build-wiki build serve deploy-preview clean
 
 sync:
 	@rm -rf zola/data && cp -r data zola/data
@@ -24,6 +24,12 @@ lint:
 
 mirrors:
 	@python3 scripts/check-mirrors.py
+
+# Probe the live production site for a recurrence of the referrer-cloak hijack.
+# Needs no access to that host, which is why it is ours to run. --strict alarms
+# only on hijack signals, not on the known-outstanding header findings.
+spam-check:
+	@python3 scripts/check-spam.py
 
 dev-zola: sync
 	@cd zola && zola serve --interface 0.0.0.0 --port 1111

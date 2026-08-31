@@ -64,9 +64,6 @@ Zola is in the Arch `extra` repository: `sudo pacman -S zola`.
 - `docs/status.md` — where the work stands, what is open, what is next
 - `docs/bake-off.md` — the Zola vs Astro comparison, written from measured output
 - `docs/preview-hosting.md` — how the three previews are served, and what breaks them
-
 - `docs/release-bump.md` — how to publish a new ISO release, written from the Titan Nova bump
-
-Planned, and listed in `docs/status.md`:
-
-- `docs/seo-recovery.md` — reclaiming the search index from the injected spam
+- `docs/seo-recovery.md` — reclaiming the search index from the injected spam, and why the
+  static launch does not do it on its own
