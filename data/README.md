@@ -3,11 +3,14 @@
 This is the single source of truth for the site. **Both** the Zola and the Astro
 build read these files, so the two cannot disagree, and neither one owns them.
 
-Nothing here is markup. Editing a file in this directory is a normal pull
-request that needs no toolchain installed — CI validates it and rebuilds the
-site.
+Nothing here is markup, so editing a file in this directory needs no toolchain
+installed — that is the point of the split, and it is what lets a mirror
+maintainer add a mirror without cloning the site.
 
-Run `make check` after any edit. It is fast and it will catch you.
+Validation is `make check`, run by whoever holds the repo. Run it after any
+edit: it is fast and it will catch you. Once the repo is hosted somewhere the
+team can send changes to, that check belongs in CI so a contributor without the
+toolchain gets the same answer without waiting on anyone.
 
 ## `release.toml`
 
