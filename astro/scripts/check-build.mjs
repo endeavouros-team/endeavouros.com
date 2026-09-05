@@ -102,12 +102,16 @@ if (update) {
 }
 
 // The CSP and the hash allowlist must agree, or one silently drifts. The policy
-// is restated in two places — _headers for Cloudflare Pages, the nginx conf for
-// the preview host — and only checking one lets the other rot. A stale nginx
-// conf blocks the theme bootstrap, which shows up as a flash of the wrong theme
-// on the preview and nowhere else.
+// is restated in both nginx configs, and only checking one lets the other rot.
+// A stale preview conf blocks the theme bootstrap, which shows up as a flash of
+// the wrong theme on the preview and nowhere else; a stale production conf does
+// the same thing to everybody.
+//
+// This used to check public/_headers, which was Cloudflare Pages syntax that
+// nginx ignores -- a file describing a policy that nothing enforced. It is gone,
+// and the production config it was standing in for is checked instead.
 const policies = {
-  'public/_headers': join(root, 'public/_headers'),
+  '../deploy/nginx-production.conf': join(root, '..', 'deploy', 'nginx-production.conf'),
   '../deploy/nginx-preview.conf': join(root, '..', 'deploy', 'nginx-preview.conf'),
 };
 for (const [label, path] of Object.entries(policies)) {
@@ -121,7 +125,8 @@ if (fails.length) {
   console.error(`\n  check-build: ${fails.length} problem(s)\n`);
   for (const f of fails) console.error(`    ${f}`);
   console.error('\n  If an inline script changed on purpose: npm run check:build -- --update,');
-  console.error('  then paste the new hashes into public/_headers AND deploy/nginx-preview.conf.\n');
+  console.error('  then paste the new hashes into BOTH deploy/nginx-production.conf');
+  console.error('  and deploy/nginx-preview.conf.\n');
   process.exit(1);
 }
 
