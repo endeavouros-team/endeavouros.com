@@ -43,7 +43,18 @@ code, kbd, pre { font-family: var(--font-mono); font-size: 0.9375em; }
 .section   { padding-block: clamp(3rem, 8vw, 5.5rem); }
 .section--sunken { background: var(--bg-sunken); }
 .stack > * + * { margin-block-start: var(--gap); }
-.lede { font-size: 1.125rem; color: var(--ink-2); max-width: 60ch; }
+/*
+ * A standfirst, not body copy. It was capped at 60ch, which is the right measure
+ * for prose but wrong here: the heading above and the tables below both span the
+ * container, so a 60ch intro broke into one full line plus a stub with half the
+ * row empty beside it, and read as a mistake rather than as a choice.
+ *
+ * It spans the container instead, which the 72rem --maxw already caps. Every
+ * intro on the site was measured and shortened to fit one line at that width;
+ * four were simply too wordy for the job they do. `balance` is kept for the
+ * narrower viewports where they still wrap, so the break is even when it comes.
+ */
+.lede { font-size: 1.125rem; color: var(--ink-2); text-wrap: balance; }
 
 .sr-only {
   position: absolute; width: 1px; height: 1px;
