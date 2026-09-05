@@ -1,47 +1,30 @@
 # EndeavourOS website
 
-A statically generated replacement for endeavouros.com.
+The endeavouros.com website. Static HTML built with [Astro](https://astro.build) — no
+runtime, no database, no admin panel, nothing writable in the webroot.
 
-The current site runs WordPress and was affected by a compromise originating upstream in the
-WordPress plugin ecosystem, not on our own infrastructure. A static site has no interpreter,
-no admin panel and no writable webroot, so that entire class of attack disappears.
+## Layout
 
-## Status
+- `astro/` — the main site: home, download, news, ARM, and the info section.
+- `wiki/` — Discovery, on Starlight. Three converted articles so far, not a migration.
+- `data/` — the content that is not markup: release, mirrors, nav, packages, ARM images.
+- `deploy/` — the nginx configs for production and for the preview host.
+- `scripts/` — data validators, the build-output gates, the WordPress importer.
+- `zola/` — an earlier implementation, kept only until the team has looked at it.
+  `docs/bake-off.md` covers why Astro was chosen; it is scheduled for removal.
 
-**Astro, for both the main site and the wiki.** The slice was built twice — once in Zola,
-once in Astro — so the choice rested on real output rather than preference. `docs/bake-off.md`
-records what that measured and why the decision went the way it did.
+News currently holds the release announcements from Mercury onward. `scripts/import-news.py`
+is re-runnable and takes a slug list, so widening that is an edit rather than a rewrite.
 
-- `astro/` — the main site. Homepage, download section and news.
-- `wiki/` — Discovery, on Starlight. A demo with three converted articles, not a migration.
-- `zola/` — the Zola track, frozen at decision time. Kept until the team has read the
-  comparison; it found two real bugs in the Astro track by disagreeing with it.
-
-`docs/status.md` is the current picture: what is done, what is open, and what is next.
-
-The repository lives at `endeavouros-team/endeavouros.com` and is **private**. It should stay
-private until the old host is actually remediated: `docs/seo-recovery.md` is a written
-assessment of a production box that was compromised repeatedly and is not yet fixed, and
-`docs/status.md` names the reachable WordPress endpoints and the typosquatted lookalike
-domain the injection pulls from. That is the right document for whoever fixes the server and
-a map for anybody else.
-
-The project lead has set the content-migration scope: **news announcements from the Mercury
-release onward**, which is 7 posts. They are imported and live under `/news/`. The other 99
-posts and the 19 translated ones stay on WordPress; `scripts/import-news.py` is re-runnable,
-so widening that later means adding slugs to a list.
-
-**The WordPress host went down on 2026-09-05**, returning 500 site-wide, and the launch was
-brought forward to the following day because of it. That removed the fallback the navigation
-relied on — `wip` nav entries pointed at pages on that host — so the sections behind them were
-built from archived captures: EndeavourOS ARM, Info, About us, Contact, Privacy policy, Media
-and logos, and Support us. Every page kept its original WordPress slug except two, which
-redirect; see `deploy/nginx-preview.conf`.
+> **Keep this repository private** until the old WordPress host is remediated.
+> `docs/seo-recovery.md` assesses a production box that was compromised repeatedly and is not
+> yet fixed, naming the endpoints still reachable on it. That is the right document for
+> whoever fixes the server and a map for anyone else.
 
 ## The shared data directory
 
-`data/` is the single source of truth and is read by **both** tracks, so the comparison is
-honest and the two sites cannot drift.
+`data/` is the single source of truth. Nothing in it is markup, so adding a mirror or bumping
+a release needs no toolchain installed — which is the point of the split.
 
 | File | Holds |
 |---|---|
@@ -51,9 +34,13 @@ honest and the two sites cannot drift.
 | `data/packages.toml` | Preset packages and bootloader options |
 | `data/arm-images.toml` | The 6 ARM device images |
 
-Mirror download URLs are **composed**, never stored. Each mirror carries a `base`; the ISO,
-checksum and signature URLs are built from `base` + the ISO filename in `release.toml`.
-Bumping a release therefore edits four lines in one file and regenerates all 78 mirror URLs.
+Download URLs are **composed, never stored.** Each mirror carries a `base`, and the ISO,
+checksum and signature URLs are built from that plus the filename in `release.toml`. Bumping a
+release edits four lines in one file and regenerates all 78 mirror URLs; a checksum link
+cannot drift away from the image it verifies. `data/arm-images.toml` works the same way.
+
+`make check` validates the field contract, `make mirrors` and `make arm` confirm every
+composed URL still resolves.
 
 See `data/README.md` for the field contract.
 
