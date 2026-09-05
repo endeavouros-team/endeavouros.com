@@ -182,10 +182,19 @@ code, kbd, pre { font-family: var(--font-mono); font-size: 0.9375em; }
 .hero__mark { width: clamp(6rem, 14vw, 10.5rem); height: auto; }
 .hero__text { min-width: 0; }
 
-.hero__sub { margin-block-start: 1.25rem; margin-inline: auto; max-width: 46ch;
+/*
+ * 46ch broke the subtitle into three lines and stranded "your side" alone on the
+ * third -- which is the exact orphan the old `text-wrap: pretty` here was
+ * commented as preventing, and was not. pretty only protects the last line when
+ * it has room to pull a word back; at this measure it had none.
+ *
+ * The tagline needs ~1096px for one line and the hero text column is 936px, so
+ * one line is not available without shrinking the type. Two balanced lines is,
+ * and `balance` delivers them evenly rather than long-then-stub.
+ */
+.hero__sub { margin-block-start: 1.25rem; margin-inline: auto;
              font-size: clamp(1.05rem, 2.2vw, 1.3rem); color: var(--ink-2);
-             /* keeps "your side" off a line of its own */
-             text-wrap: pretty; }
+             text-wrap: balance; }
 .hero__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; margin-block-start: 2rem; }
 .hero__meta { margin-block-start: 1.25rem; font-size: 0.875rem; color: var(--ink-3); }
 .hero__meta code { color: var(--ink-2); }
