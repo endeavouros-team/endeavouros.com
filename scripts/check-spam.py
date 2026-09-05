@@ -61,10 +61,25 @@ PERSONAS = (
 # Every term here is one that cannot plausibly occur on a Linux distribution
 # site, which is why "slot" and "bet" are absent: "PCI slot" and "beta" are
 # ordinary words here.
+# Two language families, because the operators are not the same people. The
+# Turkish set is from the August 2026 hijacks; the Indonesian set was added on
+# 2026-09-05, when the site came back cloaked to a "situs toto / slot gacor"
+# page and this check reported "no gambling vocabulary" while the cloaking
+# check was flagging every path. The list is the signal that goes stale, which
+# is exactly why there are two independent signals.
+#
+# Single words that plausibly occur in legitimate Linux copy are deliberately
+# absent: "slot" alone matches a PCIe or memory slot, so the Indonesian entries
+# are phrases. "gacor", "togel" and "maxwin" have no such collision.
 TERMS = (
+    # Turkish — the 2026-08-10 and 2026-08-20 hijacks
     "pusulabet", "bahis", "iddaa", "kumarhane", "kumar", "bettilt",
     "casino", "casino sitesi", "deneme bonusu", "bonus veren",
     "güvenilir bahis", "slot oyunları", "canlı bahis", "betting site",
+    # Indonesian — the 2026-09-05 hijack
+    "gacor", "togel", "maxwin", "judi", "judi online",
+    "situs toto", "situs slot", "slot gacor", "slot online",
+    "bandar togel", "jackpot",
 )
 TERM_RE = re.compile(r"\b(" + "|".join(re.escape(t) for t in TERMS) + r")\b", re.I)
 
