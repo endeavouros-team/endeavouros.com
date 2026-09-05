@@ -1,0 +1,117 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import { siteData } from '../lib/site';
+
+import logoHorizontalBlack from '../assets/media/logo-horizontal-black.png';
+import logoHorizontalWhite from '../assets/media/logo-horizontal-white.png';
+import logoWhiteText from '../assets/media/logo-white-text.png';
+import logoIcon from '../assets/media/logo-icon.png';
+import logoWithText from '../assets/media/logo-with-text.png';
+
+import dePlasma from '../assets/media/de-plasma.png';
+import deGnome from '../assets/media/de-gnome.png';
+import deXfce from '../assets/media/de-xfce4.png';
+import deCinnamon from '../assets/media/de-cinnamon.png';
+import deBudgie from '../assets/media/de-budgie.png';
+import deMate from '../assets/media/de-mate.png';
+import deI3 from '../assets/media/de-i3.png';
+import deLxde from '../assets/media/de-lxde.png';
+import deLxqt from '../assets/media/de-lxqt.png';
+
+const site = await siteData();
+
+const logos = [
+  { src: logoHorizontalBlack, name: 'Horizontal, black text', file: 'Endeavour-horizontal-black.png' },
+  { src: logoHorizontalWhite, name: 'Horizontal, white text', file: 'Endeavour-horizontal-white.png' },
+  { src: logoWhiteText, name: 'For dark backgrounds', file: 'endeavour-logo-dark-background.png' },
+  { src: logoIcon, name: 'Icon only', file: 'eos-icon.png' },
+  { src: logoWithText, name: 'Mark with wordmark', file: 'EndeavourOS-logo3.png' },
+];
+
+// Every desktop and window manager here ships as an install option, so the
+// caption is the name — the screenshot is what a reader is looking for and
+// describing the wallpaper in each would not help anyone choose.
+const desktops = [
+  { src: dePlasma, name: 'KDE Plasma' },
+  { src: deGnome, name: 'GNOME' },
+  { src: deXfce, name: 'Xfce' },
+  { src: deCinnamon, name: 'Cinnamon' },
+  { src: deBudgie, name: 'Budgie' },
+  { src: deMate, name: 'MATE' },
+  { src: deI3, name: 'i3' },
+  { src: deLxde, name: 'LXDE' },
+  { src: deLxqt, name: 'LXQt' },
+];
+---
+<Base
+  title={`Media and logos — ${site.name}`}
+  description="EndeavourOS logos and desktop screenshots for blogs, articles and videos, plus the branding guidelines."
+>
+  <section class="section">
+    <div class="container stack">
+      <h1>Media and logos</h1>
+      <p class="lede">
+        Writing about EndeavourOS, or making a video about it? Help yourself to anything on
+        this page.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--sunken">
+    <div class="container stack">
+      <h2 id="logos">Logos</h2>
+      <ul class="mediagrid mediagrid--logos">
+        {logos.map((l) => (
+          <li>
+            <figure>
+              <Image src={l.src} alt={`EndeavourOS logo — ${l.name.toLowerCase()}`} widths={[320, 640]} sizes="(min-width: 48rem) 16rem, 45vw" />
+              <figcaption>{l.name}</figcaption>
+            </figure>
+          </li>
+        ))}
+      </ul>
+      <p class="hero__actions">
+        <a class="btn btn--primary" href="https://github.com/endeavouros-team/artwork-images-logo/raw/refs/heads/master/Press-Packs/EndeavourOS_Logo_Icons_2025.zip" rel="noopener noreferrer">
+          Download the full logo set
+        </a>
+        <a class="btn btn--ghost" href="https://github.com/endeavouros-team/Branding/blob/main/README.md" rel="noopener noreferrer">
+          Branding guidelines
+        </a>
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container stack">
+      <h2 id="desktops">Desktops and window managers</h2>
+      <p>
+        EndeavourOS installs KDE Plasma by default, and the online installer offers each of
+        these as an alternative.
+      </p>
+      <ul class="mediagrid">
+        {desktops.map((d) => (
+          <li>
+            <figure>
+              <Image src={d.src} alt={`EndeavourOS running ${d.name}`} widths={[480, 960]} sizes="(min-width: 48rem) 22rem, 90vw" />
+              <figcaption>{d.name}</figcaption>
+            </figure>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section--sunken">
+    <div class="container stack">
+      <h2 id="release-artwork">Release artwork</h2>
+      <p>
+        Wallpapers, installer shots and live-session screenshots for each release are published
+        with that release's announcement.
+      </p>
+      <p class="hero__actions">
+        <a class="btn btn--ghost" href="/news/">Browse the release announcements</a>
+      </p>
+    </div>
+  </section>
+</Base>

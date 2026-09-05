@@ -183,9 +183,13 @@ code, kbd, pre { font-family: var(--font-mono); font-size: 0.9375em; }
  * ---------- cards ----------
  */
 .card { padding: 1.25rem; background: var(--bg-elev); border: 1px solid var(--rule); border-radius: var(--radius); }
-.card h3 { margin-block-end: 0.35rem; }
+.card h2, .card h3 { margin-block-end: 0.35rem; font-size: 1.0625rem; }
 .card p  { color: var(--ink-2); font-size: 0.9375rem; }
-.grid { display: grid; gap: var(--gap); grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr)); }
+/* Used on a <div> where it was introduced and on a <ul> on /info/ and
+ * /contact/, so it has to carry the list reset itself -- otherwise the
+ * markers render outside the cards. */
+.grid { display: grid; gap: var(--gap); grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
+        list-style: none; margin: 0; padding: 0; }
 
 .stat { text-align: center; }
 .stat__value { font-family: var(--font-display); font-size: clamp(2rem, 5vw, 2.75rem); color: var(--accent); }
@@ -443,3 +447,98 @@ table.mirrors { width: 100%; border-collapse: collapse; }
   color: var(--ink-2);
 }
 .post__foot > * + * { margin-block-start: 0.5rem; }
+
+/*
+ * ---------- timeline (about us) ----------
+ *
+ * A description list in spirit: a date and what happened. Rendered as an <ol>
+ * because the order is the point, with the marker suppressed -- the dates are
+ * the enumeration and a second set of numbers beside them reads as noise.
+ */
+.timeline { list-style: none; margin: 0; padding: 0; }
+.timeline li { padding-block: 0.9rem; border-block-start: 1px solid var(--rule); }
+.timeline li:first-child { border-block-start: 0; }
+.timeline time {
+  display: block; font-family: var(--font-display);
+  color: var(--accent); font-size: 0.875rem; letter-spacing: 0.02em;
+}
+.timeline p { margin-block-start: 0.25rem; color: var(--ink-2); }
+
+@media (min-width: 44rem) {
+  .timeline li { display: grid; grid-template-columns: 11rem 1fr; gap: 1.25rem; align-items: baseline; }
+  .timeline p { margin-block-start: 0; }
+}
+
+/*
+ * ---------- media grid (press kit) ----------
+ *
+ * Logos are small and sit several to a row; screenshots need to be readable, so
+ * they claim a wider minimum. One class, two minimums, set per section.
+ */
+.mediagrid {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; gap: var(--gap);
+  grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr));
+}
+.mediagrid figure { margin: 0; }
+.mediagrid img {
+  width: 100%; height: auto; display: block;
+  background: var(--bg-elev);
+  border: 1px solid var(--rule); border-radius: var(--radius);
+}
+.mediagrid figcaption { margin-block-start: 0.5rem; color: var(--ink-2); font-size: 0.9375rem; }
+
+/*
+ * ---------- figures in prose ----------
+ */
+.post__body figure { margin: 1.5rem 0; }
+.post__body figure img { margin-block: 0; }
+.post__body figcaption {
+  margin-block-start: 0.5rem; color: var(--ink-3);
+  font-size: 0.9375rem; font-style: italic;
+}
+
+/*
+ * A code block outside .post__body -- the ARM install steps sit in a plain
+ * .stack, and without this they would render unboxed against the page.
+ */
+.stack pre {
+  padding: 0.9rem 1rem; overflow-x: auto;
+  background: var(--code-bg); border: 1px solid var(--rule); border-radius: var(--radius);
+}
+
+/*
+ * The two ARM tables are stacked and otherwise size their columns from their
+ * own content, so the device column lands in a different place in each and the
+ * pair reads as misaligned. One shared grid for both.
+ */
+.mirrors--arm { table-layout: fixed; }
+.mirrors--arm th:first-child { width: 34%; }
+.mirrors--arm td:last-child, .mirrors--arm th:last-child { width: 6.5rem; }
+
+/*
+ * ---------- logo swatches ----------
+ *
+ * Two problems the plain media grid cannot solve. The logos are supplied for
+ * use on someone else's page, so the set deliberately includes a black-text
+ * mark and a white-text one -- and each is invisible against the theme it was
+ * not drawn for. And they range from wide wordmarks to square icons, so a grid
+ * sized by content leaves ragged holes between rows.
+ *
+ * The checkerboard is the press-kit convention for "this PNG is transparent",
+ * and it is the one backing both marks read against in either theme. A fixed
+ * box with object-fit: contain squares up the rows without cropping anything.
+ */
+.mediagrid--logos { grid-template-columns: repeat(auto-fit, minmax(min(14rem, 100%), 1fr)); }
+.mediagrid--logos img {
+  aspect-ratio: 16 / 9;
+  object-fit: contain;
+  padding: 1rem;
+  --sq: #8e8e99;
+  background-color: #c8c8d0;
+  background-image:
+    linear-gradient(45deg, var(--sq) 25%, transparent 25%, transparent 75%, var(--sq) 75%),
+    linear-gradient(45deg, var(--sq) 25%, transparent 25%, transparent 75%, var(--sq) 75%);
+  background-size: 16px 16px;
+  background-position: 0 0, 8px 8px;
+}

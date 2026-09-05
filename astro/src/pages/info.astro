@@ -1,0 +1,72 @@
+---
+import Base from '../layouts/Base.astro';
+import { siteData } from '../lib/site';
+const site = await siteData();
+
+// The WordPress page was a bare list of six links with no indication of where
+// any of them led. Each card carries a line of description instead, so the hub
+// is useful on its own rather than a menu you have to click to understand.
+const cards = [
+  {
+    name: 'About us',
+    href: '/about-us/',
+    desc: 'How EndeavourOS started out of the Antergos community in 2019, and every notable release since.',
+  },
+  {
+    name: 'Media and logos',
+    href: '/media-images/',
+    desc: 'Logos and screenshots for blogs, articles and videos, with the branding guidelines.',
+  },
+  {
+    name: 'Contact',
+    href: '/contact/',
+    desc: 'How to reach the team, and where to go instead for help with a running system.',
+  },
+  {
+    name: 'Privacy policy',
+    href: '/privacy-policy/',
+    desc: 'What we collect, how long we keep it, and what rights you have over it.',
+  },
+  {
+    name: 'Development',
+    href: 'https://endeavouros-team.github.io/EndeavourOS-Development/',
+    desc: 'The development handbook: how the ISO is built and how to contribute to it.',
+    external: true,
+  },
+  {
+    name: 'ARM on GitHub',
+    href: 'https://github.com/endeavouros-arm',
+    desc: 'Source and image releases for the ARM edition, including the issue tracker.',
+    external: true,
+  },
+];
+---
+<Base
+  title={`Info — ${site.name}`}
+  description="About EndeavourOS, media and logos, contact, privacy policy and the development handbook."
+>
+  <section class="section">
+    <div class="container stack">
+      <h1>Info</h1>
+      <p class="lede">
+        Background on the project, material you can use to write about it, and how to get in
+        touch.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--sunken">
+    <div class="container">
+      <ul class="grid">
+        {cards.map((c) => (
+          <li class="card">
+            <h2>
+              <a href={c.href} {...(c.external ? { rel: 'noopener noreferrer' } : {})}>{c.name}</a>
+            </h2>
+            <p>{c.desc}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Base>

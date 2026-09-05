@@ -1,0 +1,107 @@
+---
+import Base from '../layouts/Base.astro';
+import { siteData } from '../lib/site';
+const site = await siteData();
+
+// Substantively revised from the WordPress policy of 29 October 2019, because
+// that document described machinery this site does not have: registration,
+// comments, login cookies, Akismet, and a WordPress server. Repeating it here
+// would be a false statement about how we handle data, which is worse than
+// having no policy. What survives unchanged is everything still true: the
+// Open Collective payment route, the OIN licensing, and the forum's own policy.
+//
+// NOT YET APPROVED BY THE PROJECT LEAD. See docs/status.md.
+const updated = '2026-09-05';
+---
+<Base
+  title={`Privacy policy — ${site.name}`}
+  description="What this website collects, what it does not, and what applies to the forum and donations instead."
+>
+  <section class="section">
+    <div class="container stack">
+      <h1>Privacy policy</h1>
+      <p class="lede">
+        This policy covers <strong>this website</strong>. The forum, the knowledge base and our
+        donation platform are separate services with their own policies, linked below.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--sunken">
+    <div class="container stack post__body">
+      <h2 id="what-we-collect">What this website collects</h2>
+      <p>
+        Nothing that identifies you. This site is a set of static files. There are no accounts,
+        no comments, no contact form, no analytics and no advertising or tracking scripts of
+        any kind. We do not set cookies.
+      </p>
+      <p>
+        The only thing stored on your device is your light or dark theme choice, kept in your
+        browser's local storage so the site does not flash the wrong theme on your next visit.
+        It never leaves your browser and we never see it. Clearing your browser's site data
+        removes it.
+      </p>
+      <p>
+        Our web server keeps standard request logs, which include IP addresses. We make a good
+        faith effort to retain those for no more than 90 days, and they are used only to keep
+        the site running and secure.
+      </p>
+
+      <h2 id="other-services">Services with their own policies</h2>
+      <ul>
+        <li>
+          <strong>The forum.</strong> Accounts, posts and everything around them are covered by
+          the <a href="https://forum.endeavouros.com/t/privacy-policy/6" rel="noopener noreferrer">forum's
+          own privacy policy</a>.
+        </li>
+        <li>
+          <strong>Donations.</strong> Handled
+          by <a href="https://opencollective.com/" rel="noopener noreferrer">Open Collective</a>, with
+          Open Collective Europe ASBL as fiscal host.
+          Their <a href="https://opencollective.com/tos" rel="noopener noreferrer">terms of service</a> apply
+          to anything you send them; we never receive your payment details.
+        </li>
+        <li>
+          <strong>Download mirrors.</strong> The ISO is served by mirrors run by other
+          organisations. Following a download link takes you to their server, under their own
+          logging and privacy practices.
+        </li>
+      </ul>
+
+      <h2 id="embedded">Embedded content from other websites</h2>
+      <p>
+        Pages may link to content elsewhere — videos, images or articles. Following such a link
+        behaves exactly as visiting that website directly does, and those sites may collect
+        data about you under their own terms.
+      </p>
+
+      <h2 id="sharing">Sharing your information</h2>
+      <p>
+        We do not sell, trade or rent personal information, because we do not collect any here.
+      </p>
+
+      <h2 id="free-software">Free software</h2>
+      <p>
+        EndeavourOS develops free software. Our tools are and always will be free software.
+        EndeavourOS has been part of
+        the <a href="https://openinventionnetwork.com/community-of-licensees/" rel="noopener noreferrer">Open
+        Invention Network</a> since July 2019. To check the licence of any package on your own
+        system, ask pacman, or look in <code>/usr/share/licenses/</code>.
+      </p>
+
+      <h2 id="changes">Changes to this policy</h2>
+      <p>
+        We may update this policy. When we do, the date below changes. Continuing to use the
+        site after a change means you accept it.
+      </p>
+
+      <h2 id="contact">Questions</h2>
+      <p>
+        Ask on the <a href="https://forum.endeavouros.com/" rel="noopener noreferrer">forum</a>, or see
+        the <a href="/contact/">contact page</a>.
+      </p>
+
+      <p><em>Last updated <time datetime={updated}>5 September 2026</time>.</em></p>
+    </div>
+  </section>
+</Base>

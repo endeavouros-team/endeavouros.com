@@ -1,0 +1,66 @@
+---
+import Base from '../layouts/Base.astro';
+import { siteData } from '../lib/site';
+const site = await siteData();
+---
+<Base
+  title={`Support us — ${site.name}`}
+  description="EndeavourOS is free to download. Donations cover servers, hardware and development, handled transparently through Open Collective."
+>
+  <section class="section">
+    <div class="container stack">
+      <h1>Support us</h1>
+      <p class="lede">
+        The ISO is free to download and always will be. If you would like to help keep the
+        distro running, you can support us with a donation.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--sunken">
+    <div class="container stack">
+      <h2 id="what-for">Where donations go</h2>
+      <ul>
+        <li>Server infrastructure, and donations to the software we build on</li>
+        <li>Future hardware upgrades</li>
+        <li>Fees paid to developers</li>
+      </ul>
+      <p>
+        Donations are handled in full transparency by the open-source
+        organisation <a href="https://opencollective.com/endeavouros" rel="noopener noreferrer">Open Collective</a>,
+        with Open Collective Europe ASBL as our fiscal host. You can see exactly how much we
+        collect and what we spend it on.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container stack">
+      <h2 id="how">How to donate</h2>
+      <p>There are two models:</p>
+      <ul>
+        <li><strong>As a contributor</strong> — a one-time amount, whatever you think it is worth.</li>
+        <li><strong>As a backer</strong> — a monthly donation of five euros or more.</li>
+      </ul>
+      <p>
+        We are grateful for any amount you consider donating. Every single one makes a
+        difference.
+      </p>
+      <p class="hero__actions">
+        <a class="btn btn--primary" href="https://opencollective.com/endeavouros" rel="noopener noreferrer">
+          Donate on Open Collective
+        </a>
+      </p>
+      <div class="callout">
+        <p>
+          Not everything that helps is money. Answering a question on
+          the <a href="https://forum.endeavouros.com/" rel="noopener noreferrer">forum</a>, improving an
+          article in <a href="https://discovery.endeavouros.com/" rel="noopener noreferrer">Discovery</a>,
+          or filing a good bug report
+          on <a href="https://github.com/endeavouros-team" rel="noopener noreferrer">GitHub</a> all
+          count, and the community is the reason this distro exists.
+        </p>
+      </div>
+    </div>
+  </section>
+</Base>

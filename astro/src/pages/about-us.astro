@@ -1,0 +1,148 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import { siteData } from '../lib/site';
+
+import heroImg from '../assets/about/endeavouros-4.jpg';
+import antergosImg from '../assets/about/antergos-blue.png';
+import wallImg from '../assets/about/endeavour-wall-9.jpg';
+import firstSiteImg from '../assets/about/first-website.png';
+import armImg from '../assets/about/arm-announcement.jpg';
+
+const site = await siteData();
+
+/**
+ * Notable releases, oldest first. Kept here rather than in ../data because it
+ * is prose about each release rather than a field contract anything composes a
+ * URL from — the data directory is for values the build derives things from.
+ *
+ * A release bump adds a row here; docs/release-bump.md says so.
+ */
+const milestones: { date: string; label: string; text: string }[] = [
+  { date: '2019-06-23', label: '23 June 2019', text: 'The EndeavourOS website launched.' },
+  { date: '2019-07-02', label: '2 July 2019', text: 'Launch of the forum.' },
+  { date: '2019-07-15', label: '15 July 2019', text: 'First offline stable release, with the customised Xfce desktop.' },
+  { date: '2019-11-02', label: '2 November 2019', text: 'Discovery magazine was launched.' },
+  { date: '2019-12-22', label: '22 December 2019', text: 'Our first mirror, Alpix, became available.' },
+  { date: '2019-12-23', label: '23 December 2019', text: 'The first ISO with the combined offline and online installer.' },
+  { date: '2020-09-19', label: '19 September 2020', text: 'The launch of EndeavourOS ARM.' },
+  { date: '2021-04-03', label: '3 April 2021', text: 'Discovery magazine was discontinued and became the EndeavourOS knowledge base.' },
+  { date: '2021-04-17', label: '17 April 2021', text: 'BSPWM and Sway community editions were added to the installer.' },
+  { date: '2021-08-27', label: '27 August 2021', text: 'The redesigned ISO-Next launched, with a faster installation.' },
+  { date: '2021-12-03', label: '3 December 2021', text: 'Atlantis 21.4, the first release named after a spacecraft, and the first with the HotFix tool for patching a released ISO.' },
+  { date: '2021-12-17', label: '17 December 2021', text: 'Atlantis Neo, the first intermediate release to carry the “Neo” suffix, adding the Openbox and Qtile community editions.' },
+  { date: '2022-04-08', label: '8 April 2022', text: 'Apollo, introducing Worm, an EndeavourOS-exclusive window manager by community editions developer Codic12.' },
+  { date: '2022-06-24', label: '24 June 2022', text: 'Artemis, shipping semi-automatic ARM installation through Calamares for Odroid and Raspberry Pi — the first major ARM improvement by main developer Sradjoker since the 2020 launch.' },
+  { date: '2022-12-19', label: '19 December 2022', text: 'Cassini, the first release offering a bootloader choice of none, systemd-boot or GRUB, and the first with Dracut by default instead of mkinitcpio. ARM added official PineBook Pro support.' },
+  { date: '2023-02-11', label: '11 February 2023', text: 'Cassini Neo, with bug fixes for the newest Intel and Arc machines.' },
+  { date: '2023-03-08', label: '8 March 2023', text: 'Cassini Nova, with minor but necessary fixes and refreshed package versions.' },
+  { date: '2023-03-30', label: '30 March 2023', text: 'Cassini Nova R1, a silent rebuild of the Nova ISO.' },
+  { date: '2023-06-05', label: '5 June 2023', text: 'Cassini Nova R2, bridging the timeline to the Galileo release.' },
+  { date: '2024-01-27', label: '27 January 2024', text: 'Galileo Neo, on kernel 6.7.1, with Plasma offline and Calamares fixes.' },
+  { date: '2024-04-08', label: '8 April 2024', text: 'Galileo, streamlining the team’s workflow. KDE Plasma replaced Xfce in the live environment and the offline install, and the community editions were dropped from the installer. ARM added the Raspberry Pi 5b and the Radxa ROCK 5b.' },
+  { date: '2024-04-23', label: '23 April 2024', text: 'Gemini, the first release built on Qt 6, and the first without ARM install images.' },
+  { date: '2024-06-30', label: '30 June 2024', text: 'Endeavour, marking the fifth anniversary and the return of ARM support through separate downloadable images.' },
+  { date: '2024-09-22', label: '22 September 2024', text: 'Endeavour Neo, with fixes for upstream changes to makepkg and pacman, and package renames.' },
+  { date: '2025-02-10', label: '10 February 2025', text: 'Mercury, adding a memtest entry to the EFI boot options and defaulting the larger desktops to dark mode.' },
+  { date: '2025-11-29', label: '29 November 2025', text: 'Ganymede, with new support for nvidia-open modules, and broadcom-wl inserted only when needed rather than loaded by default.' },
+  { date: '2026-01-15', label: '15 January 2026', text: 'Ganymede Neo, with fixes for upstream Nvidia packaging and support changes.' },
+  { date: '2026-03-12', label: '12 March 2026', text: 'Titan, adding hardware detection for all GPUs and VMs through the new eos-hwtool, and improved mirrorlist handling.' },
+  { date: '2026-05-01', label: '1 May 2026', text: 'Titan Neo, switching from SDDM to plasma-login-manager on KDE Plasma, with package and mirrorlist generation fixes.' },
+  { date: '2026-08-28', label: '28 August 2026', text: 'Titan Nova, an update boost bridging the gap to the upcoming Triton release, which will run Wayland in the live environment.' },
+];
+---
+<Base
+  title={`About us — ${site.name}`}
+  description="How EndeavourOS grew out of the Antergos community in 2019, what it set out to be, and every notable release since."
+>
+  <section class="section">
+    <div class="container stack">
+      <h1>About us</h1>
+      <p class="lede">
+        EndeavourOS began with a community that refused to disband, and it is still the reason
+        the distro exists.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container stack post__body">
+      <Image src={heroImg} alt="" widths={[640, 1024]} sizes="(min-width: 60rem) 60rem, 100vw" />
+
+      <p>
+        When the popular Arch-based distro Antergos ended its run in May 2019, it left a
+        friendly and extremely helpful community behind. Within days of the announcement,
+        Bryan Poerwoatmodjo put forward the idea of continuing that community feeling on a new
+        forum, open to any Arch or Arch-based Linux user. The response was enthusiastic enough
+        to get the project going.
+      </p>
+      <p>
+        Johannes Kamprad, Fernando Omiechuk Frozi and Manuel quickly joined him to set the
+        project up, and when they did, the plan changed: from preserving the old community on
+        a new forum, to creating a new distro with that community at its core.
+      </p>
+
+      <Image src={antergosImg} alt="" widths={[640, 1024]} sizes="(min-width: 60rem) 60rem, 100vw" />
+      <Image src={wallImg} alt="" widths={[640, 1024]} sizes="(min-width: 60rem) 60rem, 100vw" />
+
+      <p>
+        In turning Endeavour into EndeavourOS, we deliberately travelled a different road than
+        Antergos did. It never was and never will be our intention to be an Antergos clone —
+        our departure point was the Antergos <em>community</em>, not the distro. That is why we
+        let go of our predecessor's look and feel and found our own voice instead.
+      </p>
+      <p>
+        To keep the project manageable, we decided early in development to provide a basic
+        system that stays close to Arch Linux. We aim at a Linux user with an intermediate
+        level of knowledge, who likes a system that needs hands-on customisation from the
+        outset — with the help of our main standout feature, a vibrant and friendly community.
+      </p>
+
+      <figure>
+        <Image
+          src={firstSiteImg}
+          alt="The first EndeavourOS website: a dark page headed “EndeavourOS”, with the purple and grey planet logo above a short introduction and a download link."
+          widths={[640, 1024]}
+          sizes="(min-width: 60rem) 60rem, 100vw"
+        />
+        <figcaption>First release, and a snapshot of the original website.</figcaption>
+      </figure>
+
+      <p>
+        The result was a distro that is lightweight and ships with a minimum of preinstalled
+        apps — an almost blank canvas, ready to personalise. Our first release shipped only an
+        offline installer with our customised Xfce desktop; the online installer arrived on the
+        ISO in December of the same year.
+      </p>
+
+      <figure>
+        <Image src={armImg} alt="" widths={[640, 1024]} sizes="(min-width: 60rem) 60rem, 100vw" />
+        <figcaption>The EndeavourOS ARM announcement.</figcaption>
+      </figure>
+
+      <p>
+        After the online installer launched, community member Pudge challenged himself to get
+        EndeavourOS running on an ARM device. It was meant to be an article for the
+        now-discontinued Discovery magazine, but we approached him about turning it into an
+        official community-driven release instead.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--sunken">
+    <div class="container stack">
+      <h2 id="notable-releases">Notable releases</h2>
+      <ol class="timeline">
+        {milestones.map((m) => (
+          <li>
+            <time datetime={m.date}>{m.label}</time>
+            <p>{m.text}</p>
+          </li>
+        ))}
+      </ol>
+      <p>
+        The <a href="/news/">news archive</a> carries the full announcement for each release.
+      </p>
+    </div>
+  </section>
+</Base>

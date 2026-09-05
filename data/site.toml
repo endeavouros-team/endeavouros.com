@@ -16,6 +16,10 @@ url         = "https://endeavouros.com"
 contentOrigins = [
   "https://github.com",
   "https://archlinux.org",
+  # Cited by the privacy policy for the licensing EndeavourOS is covered by.
+  "https://openinventionnetwork.com",
+  # The development handbook, linked from /info/.
+  "https://endeavouros-team.github.io",
 ]
 
 # Primary navigation.
@@ -33,10 +37,8 @@ name = "News"
 url  = "/news/"
 
 [[nav]]
-name     = "EndeavourOS ARM"
-url      = "https://endeavouros.com/endeavouros-arm/"
-external = true
-wip      = true
+name = "EndeavourOS ARM"
+url  = "/endeavouros-arm/"
 
 [[nav]]
 name     = "Help"
@@ -49,16 +51,12 @@ url      = "https://forum.endeavouros.com/"
 external = true
 
 [[nav]]
-name     = "Info"
-url      = "https://endeavouros.com/info/"
-external = true
-wip      = true
+name = "Info"
+url  = "/info/"
 
 [[nav]]
-name     = "Support us"
-url      = "https://endeavouros.com/donate/"
-external = true
-wip      = true
+name = "Support us"
+url  = "/donate/"
 
 [[nav]]
 name = "Download"

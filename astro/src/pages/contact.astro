@@ -1,0 +1,72 @@
+---
+import Base from '../layouts/Base.astro';
+import { siteData } from '../lib/site';
+const site = await siteData();
+---
+<Base
+  title={`Contact — ${site.name}`}
+  description="How to reach the EndeavourOS team, and where to go instead for help with a running system."
+>
+  <section class="section">
+    <div class="container stack">
+      <h1>Contact</h1>
+      <p class="lede">
+        Get in touch if you want to take part in the project, or would like us to take part in
+        your open-source project. We answer as soon as we can.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--sunken">
+    <div class="container stack">
+      <h2 id="support">Having trouble with your system?</h2>
+      <p>
+        Support questions are answered by the community, not by email — that way the answer
+        helps everyone who searches for it later. There is a very good chance yours has already
+        been answered.
+      </p>
+      <ul class="grid">
+        <li class="card">
+          <h3><a href="https://forum.endeavouros.com/" rel="noopener noreferrer">Forum</a></h3>
+          <p>
+            The main place for help. Search first — most questions already have an answer. You
+            need an account to post, but not to read.
+          </p>
+        </li>
+        <li class="card">
+          <h3><a href="https://t.me/Endeavouros" rel="noopener noreferrer">Telegram</a></h3>
+          <p>
+            Faster, more conversational, and no registration required if you already use
+            Telegram.
+          </p>
+        </li>
+        <li class="card">
+          <h3><a href="https://discovery.endeavouros.com/" rel="noopener noreferrer">Discovery</a></h3>
+          <p>
+            Our knowledge base: install guides, hardware notes and how-tos, including the ARM
+            articles.
+          </p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container stack">
+      <h2 id="everything-else">Everything else</h2>
+      <p>
+        Questions about downloading the ISO itself, about taking part in the project, or
+        general enquiries unrelated to running the OS are welcome. Technical support questions
+        sent this way will be pointed back to the forum.
+      </p>
+      <div class="callout">
+        <p>
+          The contact form is being rebuilt along with the rest of the site. In the meantime,
+          reach the team through
+          the <a href="https://forum.endeavouros.com/" rel="noopener noreferrer">forum</a> — a
+          direct message to a team member there reaches the same people the form did.
+        </p>
+      </div>
+    </div>
+  </section>
+</Base>
