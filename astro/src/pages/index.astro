@@ -1,17 +1,23 @@
 ---
 import Base from '../layouts/Base.astro';
 import Hero from '../components/Hero.astro';
-import MirrorList from '../components/MirrorList.astro';
-import VerifyInstructions from '../components/VerifyInstructions.astro';
 import SystemRequirements from '../components/SystemRequirements.astro';
 import PresetPackages from '../components/PresetPackages.astro';
 import BootloaderChoice from '../components/BootloaderChoice.astro';
 import ContributeCta from '../components/ContributeCta.astro';
+
+/*
+ * The 26-mirror table and the checksum/GPG instructions used to render here as
+ * well as on /download/, from these same two components -- the homepage carried
+ * the entire download section a second time and buried everything below it.
+ *
+ * They live on /download/ only. The hero's primary button goes there rather than
+ * to an in-page anchor, which is also why Hero.astro no longer links to
+ * "#download": that id belonged to MirrorList and left with it.
+ */
 ---
 <Base>
   <Hero />
-  <MirrorList />
-  <VerifyInstructions />
   <SystemRequirements />
   <PresetPackages />
   <BootloaderChoice />
