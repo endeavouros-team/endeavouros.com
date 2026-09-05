@@ -124,6 +124,34 @@ const site = defineCollection({
     }),
 });
 
+/**
+ * EndeavourOS ARM images. One row for the whole file, like site.toml: the
+ * top-level `base` and `sha512Suffix` are the composition rule and belong with
+ * the devices they apply to, not split into a separate entry.
+ *
+ * The image filenames are `-latest` release assets, so they are stable across
+ * rebuilds. `make arm` HEADs every composed URL, which is the ARM equivalent of
+ * `make mirrors` and the only thing that can prove this file still describes
+ * what upstream actually publishes.
+ */
+const arm = defineCollection({
+  loader: file('../data/arm-images.toml', {
+    parser: (text) => [{ id: 'arm', ...(parseToml(text) as Record<string, unknown>) }],
+  }),
+  schema: z.object({
+    id: z.string(),
+    base: z.string().url().refine((u) => !u.endsWith('/'), 'drop the trailing slash, URLs are composed'),
+    sha512Suffix: z.string().startsWith('.'),
+    devices: z.array(z.object({
+      id: z.string().regex(/^[a-z0-9-]+$/),
+      name: z.string().min(2),
+      tag: z.string().min(2),
+      image: z.string().regex(/\.img\.xz$/, 'image must be an .img.xz filename'),
+      server: z.boolean().default(false),
+    })).min(1),
+  }),
+});
+
 const packages = defineCollection({
   loader: tomlRows('../data/packages.toml', 'packages'),
   schema: z.object({
@@ -168,4 +196,4 @@ const news = defineCollection({
   }),
 });
 
-export const collections = { mirrors, release, site, packages, bootloaders, news };
+export const collections = { mirrors, release, site, packages, bootloaders, news, arm };

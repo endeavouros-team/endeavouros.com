@@ -1,0 +1,139 @@
+---
+import Base from '../layouts/Base.astro';
+import { armImages, siteData } from '../lib/site';
+
+const site = await siteData();
+const { devices } = await armImages();
+const desktop = devices.filter((d) => !d.server);
+const servers = devices.filter((d) => d.server);
+---
+<Base
+  title={`EndeavourOS ARM — ${site.name}`}
+  description="EndeavourOS images for Raspberry Pi, Odroid and PineBook Pro, and how to install them."
+>
+  <section class="section">
+    <div class="container stack">
+      <h1>EndeavourOS ARM</h1>
+      <p class="lede">
+        EndeavourOS runs on ARM single-board computers and laptops as a community-driven
+        release. Pick an image for your device, verify it, and write it to a storage device.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--sunken">
+    <div class="container stack">
+      <h2 id="images">Download ARM images</h2>
+      <table class="mirrors mirrors--arm">
+        <caption class="sr-only">
+          EndeavourOS ARM images by device. Each row links to the image and to its sha512
+          checksum.
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col">Device</th>
+            <th scope="col">Image</th>
+            <th scope="col">Verify</th>
+          </tr>
+        </thead>
+        <tbody>
+          {desktop.map((d) => (
+            <tr>
+              <th scope="row" class="c-loc">{d.name}</th>
+              <td class="c-name">
+                <a href={d.img} rel="noopener noreferrer">
+                  {d.image}<span class="sr-only"> — download the {d.name} image</span>
+                </a>
+              </td>
+              <td class="c-verify">
+                <a href={d.sha512} rel="noopener noreferrer">
+                  sha512<span class="sr-only"> checksum for {d.name}</span>
+                </a>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <h3 id="server-images">Headless server images</h3>
+      <p>
+        The server images install exactly as the desktop ones do, with one difference noted
+        below: write them to a micro SD card only.
+      </p>
+      <table class="mirrors mirrors--arm">
+        <caption class="sr-only">Headless server images by device.</caption>
+        <thead>
+          <tr>
+            <th scope="col">Device</th>
+            <th scope="col">Image</th>
+            <th scope="col">Verify</th>
+          </tr>
+        </thead>
+        <tbody>
+          {servers.map((d) => (
+            <tr>
+              <th scope="row" class="c-loc">{d.name}</th>
+              <td class="c-name">
+                <a href={d.img} rel="noopener noreferrer">
+                  {d.image}<span class="sr-only"> — download the {d.name} image</span>
+                </a>
+              </td>
+              <td class="c-verify">
+                <a href={d.sha512} rel="noopener noreferrer">
+                  sha512<span class="sr-only"> checksum for {d.name}</span>
+                </a>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container stack">
+      <h2 id="install">Installation</h2>
+      <p>
+        Download both files for your device — the image and its <code>.sha512sum</code>. In a
+        terminal, change to the directory they were downloaded to and verify the image:
+      </p>
+      <pre><code>sha512sum -c enosLinuxARM-rpi5-latest.img.xz.sha512sum</code></pre>
+      <p>
+        That must come back <code>OK</code>. If it does not, the download is damaged or
+        tampered with — fetch it again rather than writing it.
+      </p>
+      <p>
+        Write the verified image to a storage device — a micro SD card, eMMC module or USB SSD
+        — with whichever flashing tool you prefer. Connect it to your ARM device and boot.
+      </p>
+      <p>
+        The device logs in automatically and runs a setup script that asks for your details.
+        Answer its questions; when it finishes, the device reboots into a working desktop or
+        window manager.
+      </p>
+
+      <h3 id="server-install">Headless server setup</h3>
+      <p>
+        Follow the steps above, but write the server image to a micro SD card only. Connect
+        the card to a Raspberry Pi 4b or 5b that has a monitor, keyboard and mouse attached.
+      </p>
+      <p>
+        If you want the script to partition and format a data drive, connect a USB 3 SSD to a
+        USB 3 port before booting. It will create the mount points and add them
+        to <code>/etc/fstab</code> so the drive mounts on every boot.
+      </p>
+      <p>
+        Boot the Pi and answer the configuration prompts. From the second boot onward you can
+        remove the monitor, keyboard and mouse and run the server headless.
+      </p>
+      <div class="callout">
+        <p>
+          The <a href="https://discovery.endeavouros.com/category/arm/" rel="noopener noreferrer">ARM
+          articles in Discovery</a> carry the rest: Homeserver 1, 2, 3 and 7 walk through
+          setting up a Linux LAN file server, and there are further how-tos for SAMBA and
+          miniDLNA.
+        </p>
+      </div>
+    </div>
+  </section>
+</Base>

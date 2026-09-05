@@ -1,0 +1,57 @@
+# EndeavourOS ARM images.
+#
+# Same composition rule as mirrors.toml: nothing here stores a full URL. Each
+# device carries a release `tag` and an `image` filename, and the download and
+# checksum URLs are built from `base` + tag + image. Adding a device is one
+# stanza; the checksum URL cannot drift away from the image it verifies.
+#
+# The upstream releases are tagged `-latest`, so these URLs stay correct across
+# image rebuilds and this file only changes when a device is added or dropped.
+# `make arm` HEADs every composed URL and is what proves that.
+
+base = "https://github.com/endeavouros-arm/images/releases/download"
+
+# Appended to `image` to build the checksum URL.
+sha512Suffix = ".sha512sum"
+
+[[devices]]
+id    = "rpi-4b"
+name  = "Raspberry Pi 4b"
+tag   = "rpi-4b-image"
+image = "enosLinuxARM-rpi4-latest.img.xz"
+
+[[devices]]
+id    = "rpi-5b"
+name  = "Raspberry Pi 5b"
+tag   = "rpi-5b-image"
+image = "enosLinuxARM-rpi5-latest.img.xz"
+
+[[devices]]
+id    = "odroid-n2"
+name  = "Odroid N2"
+tag   = "odroid-n2-image"
+image = "enosLinuxARM-odroid-n2-latest.img.xz"
+
+[[devices]]
+id    = "pinebook-pro"
+name  = "PineBook Pro"
+tag   = "pinebook-pro-image"
+image = "enosLinuxARM-pbp-latest.img.xz"
+
+# The two headless server images install the same way as the desktop ones, but
+# onto a micro SD card only. Grouped by `server = true` rather than by a
+# separate table, so one loop renders both halves of the table.
+
+[[devices]]
+id     = "server-rpi"
+name   = "Headless server, Raspberry Pi 4b & 5b"
+tag    = "server-rpi-image"
+image  = "enosLinuxARM-server-rpi-latest.img.xz"
+server = true
+
+[[devices]]
+id     = "server-odroid-n2"
+name   = "Headless server, Odroid N2"
+tag    = "server-odroid-n2-image"
+image  = "enosLinuxARM-server-odroid-n2-latest.img.xz"
+server = true

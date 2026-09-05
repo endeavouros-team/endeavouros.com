@@ -2,7 +2,7 @@
 # so the shared data directory is mirrored into zola/ before every build.
 # zola/data/ is gitignored: data/ stays the only committed copy.
 
-.PHONY: sync check lint mirrors spam-check verify dev-zola build-zola dev-astro build-astro build-wiki build serve deploy-preview clean
+.PHONY: sync check lint mirrors arm spam-check verify dev-zola build-zola dev-astro build-astro build-wiki build serve deploy-preview clean
 
 sync:
 	@rm -rf zola/data && cp -r data zola/data
@@ -24,6 +24,12 @@ lint:
 
 mirrors:
 	@python3 scripts/check-mirrors.py
+
+# The ARM images are GitHub release assets tagged `-latest`, so data/arm-images.toml
+# stays correct across rebuilds and nothing in the repo notices a device dropped
+# or a tag renamed upstream. Only a request does.
+arm:
+	@python3 scripts/check-arm.py
 
 # Probe the live production site for a recurrence of the referrer-cloak hijack.
 # Needs no access to that host, which is why it is ours to run. --strict alarms

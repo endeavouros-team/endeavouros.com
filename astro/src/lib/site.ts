@@ -82,3 +82,28 @@ export async function forumUrl(): Promise<string> {
   if (!found) throw new Error('data/site.toml has no forum link for news post footers');
   return found;
 }
+
+export type ArmDevice = { id: string; name: string; tag: string; image: string; server: boolean };
+
+/**
+ * ARM images, with their URLs composed the same way mirror URLs are: from a
+ * base plus the parts, never stored. Stated once here so the table and the
+ * build gate cannot disagree about where an image lives.
+ */
+export async function armImages() {
+  const e = await getEntry('arm', 'arm');
+  if (!e) throw new Error('data/arm-images.toml failed to load');
+  const { base, sha512Suffix, devices } = e.data;
+  return {
+    devices: devices.map((d) => {
+      const img = `${base}/${d.tag}/${d.image}`;
+      return { ...d, img, sha512: img + sha512Suffix };
+    }),
+  };
+}
+
+/** Consumed by scripts/check-build.mjs to allowlist the ARM image origin. */
+export async function armOrigin() {
+  const e = await getEntry('arm', 'arm');
+  return e ? new URL(e.data.base).origin : null;
+}
