@@ -77,7 +77,13 @@ Identity, navigation and footer.
 Nav entries marked `wip = true` point at the current WordPress site because that
 section is not migrated yet. They render muted with a tooltip, so an internal
 reviewer sees the real nav shape without us pretending the pages exist. Clear
-`wip` and `external` as each section lands.
+`wip` and `external` as each section lands — as News, EndeavourOS ARM, Info and
+Support us have.
+
+That fallback stopped being safe on 2026-09-05, when the WordPress host began
+returning 500 site-wide. A `wip` entry now points at a page that does not
+answer, so anything still marked `wip` is a dead link rather than a degraded
+one.
 
 `contentOrigins` is the allowlist of outbound hosts that imported news bodies may
 link to. Both build-output gates read it, and nothing else grants an origin to
@@ -86,6 +92,30 @@ would let an injected link authorise itself, which is precisely what the gates
 exist to catch. Adding a host is a reviewed one-line diff; each entry must be a
 bare `https://` origin with no path or trailing slash, which
 `scripts/validate-data.py` enforces.
+
+## `arm-images.toml`
+
+The EndeavourOS ARM images, one `[[devices]]` stanza per device.
+
+| Field | Contract |
+|---|---|
+| `base` | Release-download root, https, no trailing slash |
+| `sha512Suffix` | Appended to `image` to build the checksum URL |
+| `devices[].id` | Lowercase alphanumeric and hyphens |
+| `devices[].name` | Shown in the Device column |
+| `devices[].tag` | Upstream release tag |
+| `devices[].image` | Asset filename, must end `.img.xz` |
+| `devices[].server` | `true` for the headless images, which render in their own table |
+
+Same composition rule as `mirrors.toml`: no full URL is ever stored. The download
+and checksum URLs are built from `base` + `tag` + `image`, so a checksum link
+cannot drift away from the image it verifies.
+
+The upstream tags end in `-latest` and are reused across image rebuilds, which is
+what keeps this file stable — and also what makes `make arm` necessary. A device
+dropped upstream, or a tag renamed, changes nothing here and would ship as a dead
+download link. `make arm` HEADs all of them; it is the ARM counterpart of
+`make mirrors` and should be run for the same reasons.
 
 ## `packages.toml`
 

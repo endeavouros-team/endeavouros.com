@@ -24,6 +24,13 @@ release onward**, which is 7 posts. They are imported and live under `/news/`. T
 posts and the 19 translated ones stay on WordPress; `scripts/import-news.py` is re-runnable,
 so widening that later means adding slugs to a list.
 
+**The WordPress host went down on 2026-09-05**, returning 500 site-wide, and the launch was
+brought forward to the following day because of it. That removed the fallback the navigation
+relied on — `wip` nav entries pointed at pages on that host — so the sections behind them were
+built from archived captures: EndeavourOS ARM, Info, About us, Contact, Privacy policy, Media
+and logos, and Support us. Every page kept its original WordPress slug except two, which
+redirect; see `deploy/nginx-preview.conf`.
+
 ## The shared data directory
 
 `data/` is the single source of truth and is read by **both** tracks, so the comparison is
@@ -35,6 +42,7 @@ honest and the two sites cannot drift.
 | `data/mirrors.toml` | The 26 download mirrors |
 | `data/site.toml` | Navigation, taglines, footer links |
 | `data/packages.toml` | Preset packages and bootloader options |
+| `data/arm-images.toml` | The 6 ARM device images |
 
 Mirror download URLs are **composed**, never stored. Each mirror carries a `base`; the ISO,
 checksum and signature URLs are built from `base` + the ISO filename in `release.toml`.
@@ -46,6 +54,7 @@ See `data/README.md` for the field contract.
 
     make check       # validate data/ against the field contract
     make mirrors     # check every composed mirror URL is reachable
+    make arm         # check every composed ARM image URL is reachable
 
     make dev-zola    # zola serve on :1111
     make build-zola  # -> zola/public/

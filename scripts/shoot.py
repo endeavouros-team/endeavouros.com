@@ -26,7 +26,18 @@ PAGES = {"home": "/", "download": "/download/", "news": "/news/"}
 # News was built on the Astro track only, so the Zola track has just the stub
 # that keeps the shared navigation from dead-ending. A post page exists on one
 # track and there is nothing to compare it against.
-ASTRO_ONLY = {"post": "/news/titan-nova-is-available/"}
+ASTRO_ONLY = {
+    "post": "/news/titan-nova-is-available/",
+    # The sections ported off WordPress when it went down, all Astro-only for
+    # the same reason: the toolchain decision was made before they were built.
+    "arm": "/endeavouros-arm/",
+    "info": "/info/",
+    "about": "/about-us/",
+    "donate": "/donate/",
+    "contact": "/contact/",
+    "privacy": "/privacy-policy/",
+    "media": "/media-images/",
+}
 WIDTHS = (390, 768, 1440)
 THEMES = ("dark", "light")
 
