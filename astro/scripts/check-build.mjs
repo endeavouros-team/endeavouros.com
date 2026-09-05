@@ -77,6 +77,21 @@ for (const file of walk(dist)) {
   for (const bad of ['eval(', 'document.write(', 'atob(']) {
     if (html.includes(bad)) fails.push(`${rel}: dynamic-code construct ${bad}`);
   }
+
+  /*
+   * Astro trims the newline and indent before an element that starts a line, so
+   * a link wrapped onto its own line renders as "through the<a>forum</a>" --
+   * "theforum" on the page. It is invisible in the source, survives review, and
+   * we shipped seven of them in one sitting building the info section.
+   *
+   * Only inline elements that carry visible text count. An sr-only <span> holds
+   * its own leading space inside the element and is correct as written.
+   */
+  const body = html.split('<main')[1] ?? '';
+  for (const m of body.matchAll(/\w<(a|code|strong|em)\b/g)) {
+    const at = body.slice(Math.max(0, m.index - 40), m.index + m[0].length);
+    fails.push(`${rel}: missing space before <${m[1]}> — ...${at.replace(/\s+/g, ' ')}...`);
+  }
 }
 
 if (update) {
