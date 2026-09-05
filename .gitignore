@@ -1,12 +1,7 @@
 # build output
-zola/public/
-zola/static/processed_images/
 astro/dist/
 astro/.astro/
 astro/node_modules/
-
-# generated copy of the shared data dir (see Makefile: make sync)
-zola/data/
 
 # scratch
 *.log
@@ -15,6 +10,3 @@ shots/
 
 # Python bytecode from scripts/ importing wp_common
 __pycache__/
-
-# temporary helper for the commit-message rewrite; delete after
-.strip-trailers.py
