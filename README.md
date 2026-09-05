@@ -10,8 +10,6 @@ runtime, no database, no admin panel, nothing writable in the webroot.
 - `data/` — the content that is not markup: release, mirrors, nav, packages, ARM images.
 - `deploy/` — the nginx configs for production and for the preview host.
 - `scripts/` — data validators, the build-output gates, the WordPress importer.
-- `zola/` — an earlier implementation, kept only until the team has looked at it.
-  `docs/bake-off.md` covers why Astro was chosen; it is scheduled for removal.
 
 News currently holds the release announcements from Mercury onward. `scripts/import-news.py`
 is re-runnable and takes a slug list, so widening that is an edit rather than a rewrite.
@@ -50,17 +48,12 @@ See `data/README.md` for the field contract.
     make mirrors     # check every composed mirror URL is reachable
     make arm         # check every composed ARM image URL is reachable
 
-    make dev-zola    # zola serve on :1111
-    make build-zola  # -> zola/public/
-
     make dev-astro   # astro dev on :4321
     make build-astro # -> astro/dist/
     make build-wiki  # -> wiki/dist/
 
-    make verify      # build everything, then run both integrity gates
+    make verify      # build, then run the build-output gate
     make deploy-preview
-
-Zola is in the Arch `extra` repository: `sudo pacman -S zola`.
 
 ## Deploying to production
 

@@ -1,8 +1,0 @@
-{%- if config.extra.public %}
-User-agent: *
-Allow: /
-Sitemap: {{ get_url(path="sitemap.xml") }}
-{%- else %}
-User-agent: *
-Disallow: /
-{%- endif %}

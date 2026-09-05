@@ -1,6 +1,0 @@
-// Single compiled entry point -> /main.css
-// Load order matters: tokens first, everything after reads them.
-@use "tokens";
-@use "base";
-@use "components";
-@use "mirrors";

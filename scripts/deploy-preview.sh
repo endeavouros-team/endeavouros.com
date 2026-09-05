@@ -21,13 +21,13 @@ cd "$ROOT"
 
 say() { printf '\n\033[1m%s\033[0m\n' "$*"; }
 
-say "Building all three"
+say "Building both"
 make build
 make build-wiki
 
 if [[ "${1:-}" == "--setup" ]]; then
   say "Provisioning the preview stack on $HOST"
-  ssh "$HOST" "mkdir -p $REMOTE/zola $REMOTE/astro $REMOTE/wiki $REMOTE/conf $REMOTE/conf-wiki"
+  ssh "$HOST" "mkdir -p $REMOTE/astro $REMOTE/wiki $REMOTE/conf $REMOTE/conf-wiki"
   rsync -az deploy/docker-compose.yml "$HOST:$REMOTE/"
   rsync -az deploy/nginx-preview.conf "$HOST:$REMOTE/conf/default.conf"
   rsync -az deploy/nginx-wiki.conf "$HOST:$REMOTE/conf-wiki/default.conf"
@@ -36,7 +36,6 @@ if [[ "${1:-}" == "--setup" ]]; then
 fi
 
 say "Syncing content"
-rsync -az --delete zola/public/  "$HOST:$REMOTE/zola/"
 rsync -az --delete astro/dist/   "$HOST:$REMOTE/astro/"
 rsync -az --delete wiki/dist/    "$HOST:$REMOTE/wiki/"
 
@@ -46,12 +45,12 @@ rsync -az deploy/nginx-wiki.conf "$HOST:$REMOTE/conf-wiki/default.conf"
 
 say "Reloading nginx"
 # Config is bind-mounted, so a reload picks up header changes without downtime.
-ssh "$HOST" "for c in eos-zola eos-astro eos-wiki; do \
+ssh "$HOST" "for c in eos-astro eos-wiki; do \
                sudo docker exec \$c nginx -s reload 2>/dev/null || true; done"
 
 say "Checking the origin responds"
 ssh "$HOST" '
-for p in 8081 8082 8083; do
+for p in 8082 8083; do
   code=$(curl -s -o /dev/null -w "%{http_code}" "http://127.0.0.1:$p/" || echo ---)
   printf "  localhost:%s  ->  %s\n" "$p" "$code"
 done'
@@ -60,7 +59,6 @@ cat <<'DONE'
 
 Deployed. Public URLs, once the tunnel hostnames exist:
 
-  https://eos-zola.sradjoker.cc
   https://eos-astro.sradjoker.cc
   https://eos-wiki.sradjoker.cc
 

@@ -15,15 +15,6 @@
 # container would keep serving the old config forever with no visible error.
 
 services:
-  eos-zola:
-    image: nginx:alpine
-    container_name: eos-zola
-    ports:
-      - "127.0.0.1:8081:80"
-    volumes:
-      - ./zola:/usr/share/nginx/html:ro
-      - ./conf:/etc/nginx/conf.d:ro
-    restart: unless-stopped
 
   eos-astro:
     image: nginx:alpine
