@@ -1,5 +1,10 @@
 # Contributing
 
+A change gets in through a pull request against `main`. CI
+(`.github/workflows/check.yml`) runs on the pull request, and a maintainer
+merges it. Merging publishes nothing: releases are cut by pushing a `v*` tag,
+which the README covers.
+
 ## Editing content
 
 Most changes do not touch markup. `data/` holds the release, the mirrors, the
@@ -11,23 +16,30 @@ from it — so adding a mirror or bumping a release needs no toolchain installed
 
 - `make check` after any edit under `data/`. It validates the field contract and
   is fast.
-- `make verify` before anything that changes build output. It runs the
-  build-output gate, which asserts the built site contains no script we did not
-  write and no outbound origin absent from `data/`. It fails the build rather
-  than warning — that is deliberate, and it is the WordPress compromise
-  mechanised.
+- `make verify` before anything that changes build output. It builds the site,
+  then runs the build-output gate over `astro/dist/`. The gate fails on an
+  inline script that is not one of ours and on an outbound link to a host that
+  is not listed in `contentOrigins` in `data/site.toml`. Failing rather than
+  warning is deliberate: it is the check that would have caught the WordPress
+  compromise.
+- `make links` after `make verify`. It checks that every internal link in the
+  build resolves, which is the one error that is invisible in review. CI runs
+  it too.
 - `make mirrors` and `make arm` after a release bump, to confirm every composed
   URL still resolves.
 
 ## What CI does
 
-Every push and pull request runs `.github/workflows/check.yml`: the data validator, the
-lockfile audit, the build-output gate, the wiki build and an internal link check. It
-publishes nothing.
+Every push to `main` and every pull request runs `.github/workflows/check.yml`:
+the data validator, the lockfile audit, the build-output gate, the internal link
+check, then the wiki build and a check that the CSP snippet it regenerates
+matches the committed one. It publishes nothing.
 
-Pushing a `v*` tag runs `.github/workflows/build.yml` instead, which does all of that plus
-builds with `PUBLIC_INDEXABLE=true` and attaches a tarball to a GitHub Release. That tarball
-is what gets deployed — see the README. Ordinary commits never produce a release.
+Pushing a `v*` tag runs `.github/workflows/build.yml` instead. It runs the same
+steps except the wiki build, since the wiki does not ship. It then builds with
+`PUBLIC_INDEXABLE=true`, asserts the result is actually indexable, and attaches
+a tarball to a GitHub Release. That tarball is what gets deployed — see the
+README. Ordinary commits never produce a release.
 
 ## Commit messages
 
@@ -42,6 +54,12 @@ Both look like success and are expensive to miss.
 - **`PUBLIC_INDEXABLE=true` is required for a production build.** Without it
   every page ships `noindex` and `/robots.txt` serves `Disallow: /`. The build
   succeeds and the site is invisible to search.
-- **The CSP script hashes are restated in both files in `deploy/`.**
-  `astro/scripts/check-build.mjs` cross-checks them against the build, so if the
-  inline scripts change, all three move together or the build fails.
+- **The CSP script hashes are restated in `deploy/nginx-production.conf` and
+  `deploy/preview/nginx-preview.conf`.** `astro/scripts/check-build.mjs`
+  cross-checks both against the build, so if the inline scripts change, all
+  three move together or the build fails. It checks in both directions and
+  prints one line per problem, naming the file and the hash: `CSP is missing
+  <hash>` means a config does not allow a script the build ships, and `CSP has
+  a stale <hash>` means a hash is left over from a script we no longer ship.
+  When it fires, run `npm run check:build -- --update` to re-record the
+  expected set, then copy the hashes it names into both configs.

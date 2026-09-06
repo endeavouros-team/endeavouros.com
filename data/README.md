@@ -4,13 +4,13 @@ This is the single source of truth for the site. The Astro content layer reads
 these files directly from `../data`, so there is no second copy to drift.
 
 Nothing here is markup, so editing a file in this directory needs no toolchain
-installed — that is the point of the split, and it is what lets a mirror
-maintainer add a mirror without cloning the site.
+installed. That is the point of the split: a mirror maintainer can add a mirror
+without building the site.
 
-Validation is `make check`. Run it after any edit: it is fast and it will catch
-you. Once the repo is hosted somewhere the
-team can send changes to, that check belongs in CI so a contributor without the
-toolchain gets the same answer without waiting on anyone.
+Run `make check` after any edit. It checks every file here against the field
+contract below, and it is fast. CI runs it on every push and every pull request
+as well, so an edit made without the toolchain gets the same answer without
+waiting on anyone.
 
 ## `release.toml`
 
@@ -27,8 +27,20 @@ one.
 | `sha512Suffix` / `sigSuffix` | Appended to `iso` to build the other two URLs |
 | `magnet` | A `magnet:?xt=urn:btih:` URI |
 | `torrent` | https URL |
+| `signing.name` | Key owner, as shown on the download page |
+| `signing.email` | Key owner's address, must parse as an email address |
 | `signing.fingerprint` | 40 hex characters in 10 space-separated groups of 4 |
-| `signing.shortKey` | Must be the tail of the fingerprint |
+| `signing.shortKey` | 8 uppercase hex characters, must be the tail of the fingerprint |
+| `signing.keyserver` | Hostname the key can be fetched from, e.g. `keyserver.ubuntu.com` |
+| `requirements.diskGb` | Positive integer, free disk space |
+| `requirements.ramGb` | Positive integer |
+| `requirements.cpu` | One line, e.g. `64-bit dual-core Intel or AMD processor` |
+| `requirements.note` | One sentence of caveat, shown under the table |
+
+Both `[current.signing]` and `[current.requirements]` are whole tables: every
+field above is required, and a missing one fails the build. `make check` covers
+most of them and the Astro schema in `astro/src/content.config.ts` covers the
+rest, so run a build as well as `make check` if you change either table.
 
 The checksum and the fingerprint are what users verify a download against, so
 both are rendered verbatim and both are format-checked on every build. A
@@ -74,22 +86,28 @@ down should never block a build. Check any warning by hand before acting on it.
 
 Identity, navigation and footer.
 
-Nav entries marked `wip = true` point at the current WordPress site because that
-section is not migrated yet. They render muted with a tooltip, so an internal
-reviewer sees the real nav shape without us pretending the pages exist. Clear
-`wip` and `external` as each section lands — as News, EndeavourOS ARM, Info and
-Support us have.
+| Field | Contract |
+|---|---|
+| `name` / `tagline` / `subtitle` / `description` | Required, non-empty |
+| `url` | The canonical site origin, https |
+| `nav[].name` | Required, the label shown |
+| `nav[].url` | Required. Root-relative (`/download/`) unless `external` |
+| `nav[].external` | Optional, default `false`. `true` requires an https URL |
+| `nav[].cta` | Optional, default `false`. Renders as the highlighted button; only Download uses it |
+| `footer[].heading` | Required, the column heading |
+| `footer[].links[].name` / `.url` | Required. One `[[footer.links]]` stanza per link, at least one per column |
 
-That fallback stopped being safe on 2026-09-05, when the WordPress host began
-returning 500 site-wide. A `wip` entry now points at a page that does not
-answer, so anything still marked `wip` is a dead link rather than a degraded
-one.
+Nav and footer render in file order, so moving a stanza moves the item.
+
+One link to an `https://forum.` host is required somewhere in nav or footer:
+the discuss-this link on every news post is resolved from it by origin, and
+`make check` fails if none is left.
 
 `contentOrigins` is the allowlist of outbound hosts that imported news bodies may
-link to. Both build-output gates read it, and nothing else grants an origin to
+link to. The build-output gate reads it, and nothing else grants an origin to
 post content. It is hand-maintained on purpose: deriving it from the content
-would let an injected link authorise itself, which is precisely what the gates
-exist to catch. Adding a host is a reviewed one-line diff; each entry must be a
+would let an injected link authorise itself, which is precisely what the gate
+exists to catch. Adding a host is a reviewed one-line diff; each entry must be a
 bare `https://` origin with no path or trailing slash, which
 `scripts/validate-data.py` enforces.
 
@@ -120,4 +138,17 @@ download link. `make arm` HEADs all of them; it is the ARM counterpart of
 ## `packages.toml`
 
 The preset software list and the bootloader options shown on the homepage. Copy
-lives here so it can be corrected without touching either site's markup.
+lives here so it can be corrected without touching the site's markup.
+
+| Field | Contract |
+|---|---|
+| `packages[].name` | Required, the package as users would name it |
+| `packages[].desc` | Required, one sentence |
+| `packages[].url` | Optional. Upstream project page; must be a full URL |
+| `bootloaders[].name` | Required |
+| `bootloaders[].desc` | Required, one sentence on when to pick it |
+
+One `[[packages]]` stanza per package and one `[[bootloaders]]` stanza per
+option, both rendered in file order. `make check` requires at least one package
+and at least two bootloaders — a single option is not a choice, and the homepage
+presents it as one.
