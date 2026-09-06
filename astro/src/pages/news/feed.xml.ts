@@ -11,6 +11,11 @@ import { newsPosts, siteData } from '../../lib/site';
  *
  * Everything below is escaped and every URL is absolute, which is all RSS 2.0
  * actually requires of us.
+ *
+ * The byline goes in <dc:creator>, not <author>: RSS 2.0 defines <author> as an
+ * email address, and ours is a display name. Putting a name there is invalid and
+ * some readers show it as a broken mailto. Dublin Core is what every reader
+ * already expects a name in, so the namespace is declared on <rss> below.
  */
 const escape = (s: string) =>
   s.replace(/&/g, '&amp;')
@@ -31,13 +36,13 @@ export const GET: APIRoute = async ({ site }) => {
       <link>${url}</link>
       <guid isPermaLink="true">${url}</guid>
       <pubDate>${post.data.date.toUTCString()}</pubDate>
-      <author>${escape(post.data.author)}</author>
+      <dc:creator>${escape(post.data.author)}</dc:creator>
       <description>${escape(post.data.description)}</description>
     </item>`;
   }).join('\n');
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
   <channel>
     <title>${escape(s.name)} News</title>
     <link>${new URL('/news/', site).href}</link>

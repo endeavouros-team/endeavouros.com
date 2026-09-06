@@ -119,9 +119,14 @@ def rewrite_links(body: str, slugs: set[str]) -> tuple[str, int]:
 
     Three cases, all faithful rather than editorial:
       - a post we now host                -> /news/<slug>/
-      - the old homepage                  -> /
       - the old homepage's #Download      -> /download/, which is where that
         section now lives; the anchor no longer exists to link to.
+      - the bare old homepage             -> /download/ as well. On WordPress
+        the homepage *was* the download page: it carried the ISO, torrent and
+        magnet links, which is why every announcement ends by pointing readers
+        at "our homepage". Here that page is /download/, so a bare homepage
+        link means downloads and sending it to / would drop the reader
+        somewhere the ISO is not.
 
     Everything else stays absolute. Links to sections not rebuilt yet keep
     pointing at the current site, which is allowed: endeavouros.com is already
@@ -138,14 +143,19 @@ def rewrite_links(body: str, slugs: set[str]) -> tuple[str, int]:
                 return m.group(0)
             target = f"/news/{slug}/"
         else:
-            target = "/download/" if frag == "#Download" else "/"
+            # Both the #Download anchor and the bare homepage; see above.
+            target = "/download/"
         n += 1
         return f"]({target})"
 
+    # The trailing slash is optional throughout: the old posts wrote the
+    # homepage both ways, as https://endeavouros.com/ and as
+    # https://endeavouros.com. The news alternative is tried first so a post
+    # URL is never mistaken for the homepage.
     pattern = (
-        r"\]\(https?://endeavouros\.com/"
-        r"(?:news/(?P<slug>[a-z0-9-]+)/?"
-        r"|(?P<frag>#[A-Za-z]+)?)"
+        r"\]\(https?://endeavouros\.com"
+        r"(?:/news/(?P<slug>[a-z0-9-]+)/?"
+        r"|/?(?P<frag>#[A-Za-z]+)?)"
         r"\)"
     )
     return re.sub(pattern, sub, body), n

@@ -1,6 +1,6 @@
 ---
 title: "Ganymede Neo is out with core updates and upstream NVIDIA changes"
-description: "We’re kicking off 2026 with the release of Ganymede Neo. As you are accustomed to with our Neo releases, this release includes upstream updates and minor..."
+description: "Ganymede Neo ships Linux 6.18.4 and Calamares 26.01, fixes the slow installer start, and switches the proprietary NVIDIA option to nvidia-open."
 date: 2026-01-15
 author: "Bryanpwo"
 hero: "../../assets/news/2025/EndeavourOS_Ganymede__3840x2160-scaled.jpg"
@@ -35,4 +35,4 @@ And has the following bugfixes:
 
 These are all the changes Ganymede Neo ships with to ensure a smooth ISO boot and installation. We are currently hard at work with further refinements and additions for Ganymede’s successor,** *Titan****.* So keep an eye out for our announcements.
 
-Ganymede Neo is available on [our homepage](/).
+Ganymede Neo is available on [our homepage](/download/).

@@ -1,6 +1,6 @@
 ---
 title: "The long wait is over, Ganymede has arrived"
-description: "Yes, we know it has been a long time since we released an ISO refresh. So, before I start the announcement, I want to get rid of a concern or rumour: our..."
+description: "Ganymede ships Linux 6.17.8, detects your GPU and installs nvidia or nvidia-open automatically, and only enables broadcom-wl when a device needs it."
 date: 2025-11-29
 author: "Bryanpwo"
 hero: "../../assets/news/2025/EndeavourOS_Ganymede__3840x2160-scaled.jpg"
@@ -87,4 +87,4 @@ We recommend following the instructions below for such cases, with a major shout
 
 We want to thank the ISO test group for their infinite and meticulous testing of our release candidates over the past few months and our entire community for reporting bugs and thinking with us in solving them. And last but certainly not least @UncleSpellbinder for his amazing contribution in creating the Ganymede wallpaper.
 
-The ISO can be grabbed from our website’s [homepage](/).
+The ISO can be grabbed from our website’s [homepage](/download/).

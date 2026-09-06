@@ -1,6 +1,6 @@
 ---
 title: "Our new ISO release is here, meet Mercury"
-description: "It has been a while since we released our last ISO, Endeavour Neo, and even though this new ISO comes with many improvements and technical challenges we..."
+description: "Mercury arrives with Linux 6.13.1, a memory test in the EFI boot menu, dark themes by default on the larger desktops, and a fix for BIOS and legacy installs."
 date: 2025-02-10
 author: "Bryanpwo"
 hero: "../../assets/news/2025/EndeavourOS_Mercury_livesession.png"

@@ -5,6 +5,8 @@ import { release, siteData, formatBytes } from '../lib/site';
 import Mark from '../../../brand/mark.svg';
 const rel = await release();
 const site = await siteData();
+// The datestamp in the ISO filename, not the day the release was announced,
+// which is why the line below says "image dated" rather than "released".
 const date = rel.date.toISOString().slice(0, 10);
 ---
 <section class="hero">
@@ -18,7 +20,7 @@ const date = rel.date.toISOString().slice(0, 10);
       <a class="btn btn--ghost" href={rel.magnet}>Magnet</a>
       <a class="btn btn--ghost" href={rel.torrent} rel="noopener noreferrer">Torrent</a>
     </div>
-    <p class="hero__meta"><code>{rel.iso}</code> · {formatBytes(rel.sizeBytes)} · released {date}</p>
+    <p class="hero__meta"><code>{rel.iso}</code> · {formatBytes(rel.sizeBytes)} · image dated {date}</p>
     <p class="hero__meta">
       The magnet and torrent links need a torrent client. A DHT-capable client is required and a
       WebSeed-capable one downloads fastest. If you have bandwidth to spare, keep seeding afterwards.

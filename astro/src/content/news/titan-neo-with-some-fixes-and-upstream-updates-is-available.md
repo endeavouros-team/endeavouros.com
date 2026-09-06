@@ -50,4 +50,4 @@ Titan Neo’s live environment and offline installer are shipping with:
 
 - Torrent downloads have been improved to provide a faster download speed.
 
-You can download Titan Neo from our [homepage](/).
+You can download Titan Neo from our [homepage](/download/).

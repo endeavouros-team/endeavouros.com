@@ -1,6 +1,6 @@
 ---
 title: "Titan Nova is available"
-description: "It’s been a while since we released Titan Neo back in March. And to be honest, we thought we would have our next major release, Triton, out by now. But as..."
+description: "Titan Nova is an update boost on the way to Triton: Linux 7.1.8, a keyboard setup fix, better Nouveau support, and Budgie temporarily removed."
 date: 2026-08-28
 author: "Bryanpwo"
 hero: "../../assets/news/2026/Titan-Nova-2.png"
@@ -46,4 +46,4 @@ Titan Nova’s live environment and offline installer are shipping with:
 
 Last but not least, a big shoutout to our community testing team for your patience and to Unclespellbinder for providing us with that great Titan Nova wallpaper!
 
-[You can download and/or seed the Torrent or Magnet files over here.](/)
+[You can download and/or seed the Torrent or Magnet files over here.](/download/)

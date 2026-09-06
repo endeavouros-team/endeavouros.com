@@ -1,6 +1,6 @@
 ---
 title: "What’s New in EndeavourOS Titan Release?"
-description: "Earlier this month, the Linux kernel 6.19 was released, and that was a good excuse to refresh our ISO. And as you can read from the title, the changes for..."
+description: "Titan brings Linux 6.19.6, hardware detection for every GPU and VM, GPU drivers loaded early, and eos-hwtool for adding or removing them yourself."
 date: 2026-03-12
 author: "Bryanpwo"
 hero: "../../assets/news/2026/EndeavourOS_TITAN__3840x2160-scaled.jpg"
@@ -60,4 +60,4 @@ A very noticeable change also, is the slight increase in size of the ISO in comp
 
 I hope you have fun with Titan, as we’ve had fun creating it for you, and we would like to thank all of our wonderful community members who were involved in giving feedback on our forum/Telegram group, creating and testing this release. We think the world of you!
 
-Titan is available for download on [our homepage](/).
+Titan is available for download on [our homepage](/download/).

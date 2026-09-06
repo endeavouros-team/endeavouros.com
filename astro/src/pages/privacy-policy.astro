@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import { siteData } from '../lib/site';
+import { siteData, formatDate } from '../lib/site';
 const site = await siteData();
 
 // Substantively revised from the WordPress policy of 29 October 2019, because
@@ -11,6 +11,7 @@ const site = await siteData();
 // Open Collective payment route, the OIN licensing, and the forum's own policy.
 //
 // NOT YET APPROVED BY THE PROJECT LEAD.
+// One source for the date: the sentence at the foot is formatted from it.
 const updated = '2026-09-05';
 ---
 <Base
@@ -21,8 +22,8 @@ const updated = '2026-09-05';
     <div class="container stack">
       <h1>Privacy policy</h1>
       <p class="lede">
-        This policy covers <strong>this website</strong>. The forum, knowledge base and
-        donation platform have their own, linked below.
+        This policy covers <strong>this website</strong>. The forum and the donation
+        platform have their own, linked below.
       </p>
     </div>
   </section>
@@ -84,7 +85,7 @@ const updated = '2026-09-05';
       <p>
         EndeavourOS develops free software. Our tools are and always will be free software.
         EndeavourOS has been part of
-        the <a href="https://openinventionnetwork.com/community-of-licensees/" rel="noopener noreferrer">Open
+        the <a href="https://openinventionnetwork.com/community-directory-alphabetical/" rel="noopener noreferrer">Open
         Invention Network</a> since July 2019. To check the licence of any package on your own
         system, ask pacman, or look in <code>/usr/share/licenses/</code>.
       </p>
@@ -101,7 +102,7 @@ const updated = '2026-09-05';
         the <a href="/contact/">contact page</a>.
       </p>
 
-      <p><em>Last updated <time datetime={updated}>5 September 2026</time>.</em></p>
+      <p><em>Last updated <time datetime={updated}>{formatDate(new Date(updated))}</time>.</em></p>
     </div>
   </section>
 </Base>

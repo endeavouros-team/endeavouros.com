@@ -6,6 +6,10 @@ const site = await siteData();
 const { devices } = await armImages();
 const desktop = devices.filter((d) => !d.server);
 const servers = devices.filter((d) => d.server);
+// The verify example has to name a file the table below actually offers, so
+// take its basename off the first device's composed checksum URL rather than
+// writing a filename here that data/arm-images.toml can move out from under.
+const checksumFile = devices[0].sha512.slice(devices[0].sha512.lastIndexOf('/') + 1);
 ---
 <Base
   title={`EndeavourOS ARM — ${site.name}`}
@@ -96,7 +100,7 @@ const servers = devices.filter((d) => d.server);
         Download both files for your device — the image and its <code>.sha512sum</code>. In a
         terminal, change to the directory they were downloaded to and verify the image:
       </p>
-      <pre><code>sha512sum -c enosLinuxARM-rpi5-latest.img.xz.sha512sum</code></pre>
+      <pre><code>sha512sum -c {checksumFile}</code></pre>
       <p>
         That must come back <code>OK</code>. If it does not, the download is damaged or
         tampered with — fetch it again rather than writing it.
@@ -114,7 +118,7 @@ const servers = devices.filter((d) => d.server);
       <h3 id="server-install">Headless server setup</h3>
       <p>
         Follow the steps above, but write the server image to a micro SD card only. Connect
-        the card to a Raspberry Pi 4b or 5b that has a monitor, keyboard and mouse attached.
+        the card to the device the image is for, with a monitor, keyboard and mouse attached.
       </p>
       <p>
         If you want the script to partition and format a data drive, connect a USB 3 SSD to a
@@ -122,7 +126,7 @@ const servers = devices.filter((d) => d.server);
         to <code>/etc/fstab</code> so the drive mounts on every boot.
       </p>
       <p>
-        Boot the Pi and answer the configuration prompts. From the second boot onward you can
+        Boot it and answer the configuration prompts. From the second boot onward you can
         remove the monitor, keyboard and mouse and run the server headless.
       </p>
       <div class="callout">

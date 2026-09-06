@@ -5,12 +5,18 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { siteData } from '../lib/site';
 
-interface Props { title?: string; description?: string; image?: string }
+interface Props { title?: string; description?: string; image?: string; ogType?: 'website' | 'article' }
 const site = await siteData();
-const { title = `${site.name} — ${site.description}`, description = site.description, image } = Astro.props;
+const {
+  title = `${site.name} — ${site.description}`,
+  description = site.description,
+  image,
+  ogType = 'website',
+} = Astro.props;
 
-// Unset until the public launch, so every internal review build is noindex and
-// cannot compete with the live site while the ranking problem is still open.
+// Unset by default, so every local and preview build is noindex. Only the release
+// workflow (.github/workflows/build.yml) sets it, which is what keeps a hand-built
+// copy from ever being indexed by accident.
 const indexable = import.meta.env.PUBLIC_INDEXABLE === 'true';
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 // Absolute, because og:image is read by crawlers that have no page context.
@@ -29,7 +35,8 @@ const ogImage = image ? new URL(image, Astro.site).href : undefined;
   <link rel="canonical" href={canonical} />
   <link rel="alternate" type="application/rss+xml" title={`${site.name} News`} href="/news/feed.xml" />
   {!indexable && <meta name="robots" content="noindex, nofollow" />}
-  <meta property="og:type" content="website" />
+  <meta property="og:type" content={ogType} />
+  <meta property="og:url" content={canonical} />
   <meta property="og:site_name" content={site.name} />
   <meta property="og:title" content={title} />
   <meta property="og:description" content={description} />

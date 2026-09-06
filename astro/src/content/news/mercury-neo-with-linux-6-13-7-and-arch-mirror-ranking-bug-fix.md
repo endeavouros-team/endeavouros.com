@@ -1,6 +1,6 @@
 ---
 title: "Mercury Neo with Linux 6.13.7 and Arch mirror ranking bug fix"
-description: "Our refresh release, Mercury Neo, is now available with updated core packages for the offline installation option and the live environment and a few bug..."
+description: "Mercury Neo refreshes the ISO with Linux 6.13.7, fixes the Arch mirror ranking bug that failed installs in some regions, and doubles the EFI partition to 2GB."
 date: 2025-03-23
 author: "Bryanpwo"
 hero: "../../assets/news/2025/Mercury_Neo-LiveSession.png"
