@@ -1,0 +1,108 @@
+# Build the site and attach the result to a Release.
+#
+# This exists because nothing in the deploy path can build the site. The
+# production host runs Node 12.22 and Python 3.10 -- both below what this
+# project needs -- and installing newer ones there would put a toolchain back on
+# a box whose whole premise is that nothing runs on it. So the build happens
+# here and the output is rsynced.
+#
+# It also pins PUBLIC_INDEXABLE. Forgetting that flag produces a site that looks
+# perfect and is invisible to search, which is the exact problem the rebuild
+# exists to solve. It belongs in a file, not in someone's memory at cutover.
+#
+# The actions are pinned to full commit SHAs rather than the @v4 tags used
+# elsewhere in the org. A tag can be repointed by whoever controls it, which is
+# the spoofed-dependency pattern that took the old site down; a SHA cannot. The
+# release is cut with the gh CLI, which is preinstalled on the runner, so no
+# third-party action is trusted at all.
+
+name: Build site
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to create the release against, e.g. v2026.09.06"
+        required: true
+
+permissions:
+  contents: write   # needed only to create the release
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: astro/.nvmrc
+          cache: npm
+          cache-dependency-path: astro/package-lock.json
+
+      # Validates data/ against the field contract. Needs Python 3.11+ for
+      # tomllib; the runner has it, the production host does not, which is one
+      # of the reasons this job exists.
+      - name: Validate the data layer
+        run: make check
+
+      # npm ci, not npm install: the lockfile stays authoritative. The build
+      # script runs audit-lock.mjs before any dependency code executes, then
+      # check-build.mjs over the output. Both fail the build rather than warn.
+      - name: Install dependencies
+        working-directory: astro
+        run: npm ci
+
+      - name: Build
+        working-directory: astro
+        env:
+          PUBLIC_INDEXABLE: "true"
+        run: npm run build
+
+      # The build is worthless if it ships noindex, and that failure is
+      # invisible in the output. Assert it rather than trust it.
+      - name: Assert the build is indexable
+        run: |
+          grep -q '^Allow: /' astro/dist/robots.txt \
+            || { echo "robots.txt does not allow indexing"; exit 1; }
+          grep -q '^Sitemap: ' astro/dist/robots.txt \
+            || { echo "robots.txt names no sitemap"; exit 1; }
+          if grep -rl 'noindex' astro/dist --include='*.html' | grep .; then
+            echo "pages above still carry noindex"; exit 1
+          fi
+          echo "indexable: robots.txt allows, sitemap named, no page carries noindex"
+
+      - name: Package
+        id: package
+        run: |
+          tag="${{ github.event.inputs.tag || github.ref_name }}"
+          name="eos-site-${tag}-$(git rev-parse --short HEAD).tar.gz"
+          tar -czf "$name" -C astro/dist .
+          echo "name=$name" >> "$GITHUB_OUTPUT"
+          echo "tag=$tag"    >> "$GITHUB_OUTPUT"
+          sha256sum "$name"
+
+      # gh is preinstalled on the runner, so the release is cut without
+      # trusting a marketplace action. --clobber lets a tag be rebuilt.
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="${{ steps.package.outputs.tag }}"
+          name="${{ steps.package.outputs.name }}"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            gh release upload "$tag" "$name" --clobber
+          else
+            gh release create "$tag" "$name" \
+              --title "$tag" \
+              --notes "Static build of \`${{ github.sha }}\`.
+          Extract into the webroot and reload nginx:
+              tar -xzf $name -C /var/www/endeavouros.com/
+          Built with PUBLIC_INDEXABLE=true; the data validator and the build-output gate both passed."
+          fi
