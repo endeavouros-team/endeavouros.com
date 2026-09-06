@@ -76,7 +76,7 @@ cannot compete with the live site.
 
     make verify
 
-Builds both tracks and runs both integrity gates. They assert the output contains no script
+Builds the site and runs the build-output gate, which asserts the output contains no script
 we did not write and no outbound origin that is not in `data/`. This is the WordPress lesson
 mechanised: the compromise showed up as injected markup in served pages, so this fails rather
 than warns. **If it fails, do not deploy.**
