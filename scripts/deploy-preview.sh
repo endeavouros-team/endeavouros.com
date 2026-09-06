@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# Build both tracks and publish them to the preview host.
+# Build the main site and the wiki, and publish both to the preview host.
 #
 # The preview runs on sra-oracle behind the Cloudflare Tunnel that already
 # serves shiny and koito there, so it stays up regardless of whether this
 # laptop is on. That is the whole point: the project lead needs a link, not a
 # VPN invite and a machine that has to stay awake.
 #
-#   scripts/deploy-preview.sh          build, then sync both tracks
+#   scripts/deploy-preview.sh          build, then sync both builds
 #   scripts/deploy-preview.sh --setup  also push the compose stack and start it
 #
 # Dashboard routing is one-time and not scriptable: the tunnel is token-managed.
@@ -27,9 +27,12 @@ make build-wiki
 if [[ "${1:-}" == "--setup" ]]; then
   say "Provisioning the preview stack on $HOST"
   ssh "$HOST" "mkdir -p $REMOTE/astro $REMOTE/wiki $REMOTE/conf $REMOTE/conf-wiki"
-  rsync -az deploy/docker-compose.yml "$HOST:$REMOTE/"
-  rsync -az deploy/nginx-preview.conf "$HOST:$REMOTE/conf/default.conf"
-  rsync -az deploy/nginx-wiki.conf "$HOST:$REMOTE/conf-wiki/default.conf"
+  rsync -az deploy/preview/docker-compose.yml "$HOST:$REMOTE/"
+  rsync -az deploy/preview/nginx-preview.conf "$HOST:$REMOTE/conf/default.conf"
+  rsync -az deploy/preview/nginx-wiki.conf "$HOST:$REMOTE/conf-wiki/default.conf"
+  # nginx-wiki.conf includes this by absolute path; without it nginx refuses to
+  # start and the wiki container restart-loops instead of serving anything.
+  rsync -az deploy/preview/nginx-wiki-csp.conf "$HOST:$REMOTE/conf-wiki/"
   # compose v2 ships as a docker plugin here
   ssh "$HOST" "cd $REMOTE && sudo docker compose up -d"
 fi
@@ -39,8 +42,9 @@ rsync -az --delete astro/dist/   "$HOST:$REMOTE/astro/"
 rsync -az --delete wiki/dist/    "$HOST:$REMOTE/wiki/"
 
 say "Syncing nginx config"
-rsync -az deploy/nginx-preview.conf "$HOST:$REMOTE/conf/default.conf"
-rsync -az deploy/nginx-wiki.conf "$HOST:$REMOTE/conf-wiki/default.conf"
+rsync -az deploy/preview/nginx-preview.conf "$HOST:$REMOTE/conf/default.conf"
+rsync -az deploy/preview/nginx-wiki.conf "$HOST:$REMOTE/conf-wiki/default.conf"
+rsync -az deploy/preview/nginx-wiki-csp.conf "$HOST:$REMOTE/conf-wiki/"
 
 say "Reloading nginx"
 # Config is bind-mounted, so a reload picks up header changes without downtime.

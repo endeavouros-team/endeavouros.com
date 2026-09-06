@@ -112,12 +112,24 @@ if (update) {
 // and the production config it was standing in for is checked instead.
 const policies = {
   '../deploy/nginx-production.conf': join(root, '..', 'deploy', 'nginx-production.conf'),
-  '../deploy/nginx-preview.conf': join(root, '..', 'deploy', 'nginx-preview.conf'),
+  '../deploy/preview/nginx-preview.conf': join(root, '..', 'deploy', 'preview', 'nginx-preview.conf'),
 };
 for (const [label, path] of Object.entries(policies)) {
   const text = readFileSync(path, 'utf8');
   for (const h of EXPECTED) {
     if (!text.includes(`'${h}'`)) fails.push(`${label}: CSP is missing ${h}`);
+  }
+  // And the other direction. A hash left behind when an inline script changed
+  // permits a script we no longer ship, which the check above cannot see: the
+  // policy still contains everything it should, plus one thing it should not.
+  // The policy is restated per location, so gather a set — the same hash listed
+  // twice in one file is one hash, not a finding.
+  const listed = new Set();
+  for (const directive of text.matchAll(/script-src[^;"]*/g)) {
+    for (const h of directive[0].matchAll(/'(sha256-[^']*)'/g)) listed.add(h[1]);
+  }
+  for (const h of listed) {
+    if (!EXPECTED.has(h)) fails.push(`${label}: CSP has a stale ${h}`);
   }
 }
 
@@ -126,7 +138,7 @@ if (fails.length) {
   for (const f of fails) console.error(`    ${f}`);
   console.error('\n  If an inline script changed on purpose: npm run check:build -- --update,');
   console.error('  then paste the new hashes into BOTH deploy/nginx-production.conf');
-  console.error('  and deploy/nginx-preview.conf.\n');
+  console.error('  and deploy/preview/nginx-preview.conf.\n');
   process.exit(1);
 }
 
