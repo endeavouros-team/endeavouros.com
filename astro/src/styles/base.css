@@ -210,7 +210,14 @@ code, kbd, pre { font-family: var(--font-mono); font-size: 0.9375em; }
         list-style: none; margin: 0; padding: 0; }
 
 .stat { text-align: center; }
-.stat__value { font-family: var(--font-display); font-size: clamp(2rem, 5vw, 2.75rem); color: var(--accent); }
+/* Two classes, not one: the value is a <p> inside .card, and `.card p` above
+ * scores (0,1,1) and outranks a lone class -- which is how these figures
+ * shipped at 15px in body colour instead of the accent-coloured clamp. */
+.stat .stat__value {
+  font-family: var(--font-display); font-size: clamp(2rem, 5vw, 2.75rem);
+  color: var(--accent); font-weight: 700; line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
 .stat__label { color: var(--ink-2); font-size: 0.9375rem; }
 
 /*
@@ -480,6 +487,7 @@ table.mirrors { width: 100%; border-collapse: collapse; }
 .timeline time {
   display: block; font-family: var(--font-display);
   color: var(--accent); font-size: 0.875rem; letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
 }
 .timeline p { margin-block-start: 0.25rem; color: var(--ink-2); }
 

@@ -24,7 +24,15 @@
   --eos-oxford: #08052b;
   --eos-jet: #2c2c2c;
 
-  --font-display: "Ailerons", ui-sans-serif, system-ui, sans-serif;
+  /*
+   * The brand face, Ailerons, was named here but never served: no @font-face,
+   * no font file. It rendered only for visitors who happened to have it
+   * installed -- a thin all-caps face for them, system-ui for everyone else --
+   * and its licence is free for personal use only, so it cannot be shipped as
+   * a webfont. This variable stays as the one place a licensed display face
+   * would go.
+   */
+  --font-display: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", Cantarell, sans-serif;
   --font-body: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", Cantarell, sans-serif;
   --font-mono: ui-monospace, "JetBrains Mono", "Fira Code", "SFMono-Regular", Menlo, monospace;
 

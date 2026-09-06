@@ -85,7 +85,7 @@ name = "Mastodon"
 url  = "https://mastodon.social/@endeavouros"
 [[footer.links]]
 name = "Bluesky"
-url  = "https://bsky.app/profile/endeavouros.com"
+url  = "https://bsky.app/profile/endeavouros.com.web.brid.gy"
 
 [[footer]]
 heading = "Support us"
