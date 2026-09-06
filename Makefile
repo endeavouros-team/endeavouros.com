@@ -2,10 +2,15 @@
 # read straight from ../data by the content layer, so there is nothing to copy
 # into place before a build.
 
-.PHONY: check mirrors arm spam-check dev-astro build-astro build-wiki build verify serve deploy-preview clean
+.PHONY: check links mirrors arm spam-check dev-astro build-astro build-wiki build verify serve deploy-preview clean
 
 check:
 	@python3 scripts/validate-data.py
+
+# A link to a page that does not exist is invisible in review and only shows up
+# when someone clicks. Needs a build in astro/dist to check against.
+links:
+	@python3 scripts/check-links.py
 
 mirrors:
 	@python3 scripts/check-mirrors.py
@@ -40,6 +45,7 @@ verify: build
 
 # Preview the build on the LAN/tailnet for team review.
 serve:
+	@test -d astro/dist || { echo "  no astro/dist — run make build first"; exit 1; }
 	@echo "  astro -> http://$$(hostname):8812"
 	@(cd astro/dist && python3 -m http.server 8812 --bind 0.0.0.0 >/dev/null 2>&1 &) ; \
 	 echo "  serving; stop with: pkill -f 'http.server 8812'"
@@ -49,4 +55,4 @@ deploy-preview:
 	@scripts/deploy-preview.sh
 
 clean:
-	@rm -rf astro/dist astro/.astro
+	@rm -rf astro/dist astro/.astro wiki/dist wiki/.astro

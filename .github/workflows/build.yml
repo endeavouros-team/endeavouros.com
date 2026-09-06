@@ -38,6 +38,10 @@ jobs:
     steps:
       - name: Check out
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # A manual dispatch names the tag to build; without this it would
+          # check out whatever ref the dispatch was started from instead.
+          ref: ${{ inputs.tag || github.ref }}
 
       - name: Set up Node
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
@@ -65,6 +69,11 @@ jobs:
           PUBLIC_INDEXABLE: "true"
         run: npm run build
 
+      # Cheap, and it catches the class of error that is invisible in review:
+      # a link to a page that does not exist in the build.
+      - name: Check internal links
+        run: make links
+
       # The build is worthless if it ships noindex, and that failure is
       # invisible in the output. Assert it rather than trust it.
       - name: Assert the build is indexable
@@ -86,6 +95,9 @@ jobs:
           tar -czf "$name" -C astro/dist .
           echo "name=$name" >> "$GITHUB_OUTPUT"
           echo "tag=$tag"    >> "$GITHUB_OUTPUT"
+          # The commit actually built, which on a manual dispatch is the tag's
+          # and not the ref the run was started from.
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
           sha256sum "$name"
 
       # gh is preinstalled on the runner, so the release is cut without
@@ -96,13 +108,26 @@ jobs:
         run: |
           tag="${{ steps.package.outputs.tag }}"
           name="${{ steps.package.outputs.name }}"
+          # Written to a file rather than passed inline: a multi-line
+          # double-quoted YAML scalar folds to a single line, which is how the
+          # extract command ended up buried mid-paragraph on the release page.
+          cat > notes.md <<'EOF'
+          Static build of `${{ steps.package.outputs.sha }}`, built with
+          `PUBLIC_INDEXABLE=true`; the data validator, the lockfile audit, the
+          build-output gate and the link check all passed.
+
+          ```
+          tar -xzf ${{ steps.package.outputs.name }} -C /var/www/endeavouros.com/
+          sudo nginx -t && sudo systemctl reload nginx
+          ```
+
+          The webroot must hold only this site — if you rsync an extracted copy
+          instead, use `--delete`. See the README.
+          EOF
           if gh release view "$tag" >/dev/null 2>&1; then
             gh release upload "$tag" "$name" --clobber
           else
             gh release create "$tag" "$name" \
               --title "$tag" \
-              --notes "Static build of \`${{ github.sha }}\`.
-          Extract into the webroot and reload nginx:
-              tar -xzf $name -C /var/www/endeavouros.com/
-          Built with PUBLIC_INDEXABLE=true; the data validator and the build-output gate both passed."
+              --notes-file notes.md
           fi
