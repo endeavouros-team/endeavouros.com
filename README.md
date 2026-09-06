@@ -14,10 +14,8 @@ runtime, no database, no admin panel, nothing writable in the webroot.
 News currently holds the release announcements from Mercury onward. `scripts/import-news.py`
 is re-runnable and takes a slug list, so widening that is an edit rather than a rewrite.
 
-> **Keep this repository private** until the old WordPress host is remediated.
-> `docs/seo-recovery.md` assesses a production box that was compromised repeatedly and is not
-> yet fixed, naming the endpoints still reachable on it. That is the right document for
-> whoever fixes the server and a map for anyone else.
+Operational notes — the release runbook, the preview host, the search-index recovery — are
+kept outside this repository.
 
 ## The shared data directory
 
@@ -136,14 +134,8 @@ for no more than 90 days, so logrotate on the host must be set to match that pro
 
 `make spam-check` fetches the live site as a browser, as Googlebot and as a click arriving
 from Google, and reports any divergence between them plus any gambling vocabulary. It needs
-no access to the host. Run it after every deploy, and read `docs/seo-recovery.md` for what a
-clean result does and does not prove.
+no access to the host. Run it after every deploy. A clean result is not an all-clear: Google
+verifies Googlebot by IP rather than user-agent, so a cloak keyed to real crawler ranges
+cannot be seen from outside at all — only Search Console's URL Inspection settles that.
 
-## Documentation
 
-- `docs/status.md` — where the work stands, what is open, what is next
-- `docs/bake-off.md` — the Zola vs Astro comparison, written from measured output
-- `docs/preview-hosting.md` — how the three previews are served, and what breaks them
-- `docs/release-bump.md` — how to publish a new ISO release, written from the Titan Nova bump
-- `docs/seo-recovery.md` — reclaiming the search index from the injected spam, and why the
-  static launch does not do it on its own

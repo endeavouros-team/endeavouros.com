@@ -44,7 +44,7 @@ serve:
 	@(cd astro/dist && python3 -m http.server 8812 --bind 0.0.0.0 >/dev/null 2>&1 &) ; \
 	 echo "  serving; stop with: pkill -f 'http.server 8812'"
 
-# Publish to the always-on preview host (see docs/preview-hosting.md).
+# Publish to the always-on preview host.
 deploy-preview:
 	@scripts/deploy-preview.sh
 

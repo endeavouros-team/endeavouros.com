@@ -9,8 +9,7 @@
 #   scripts/deploy-preview.sh          build, then sync both tracks
 #   scripts/deploy-preview.sh --setup  also push the compose stack and start it
 #
-# Dashboard routing (one-time, and not scriptable because the tunnel is
-# token-managed) is documented in docs/preview-hosting.md.
+# Dashboard routing is one-time and not scriptable: the tunnel is token-managed.
 
 set -euo pipefail
 
@@ -63,5 +62,4 @@ Deployed. Public URLs, once the tunnel hostnames exist:
   https://eos-wiki.sradjoker.cc
 
 If those 404 or hang, the dashboard routing is not set up yet.
-See docs/preview-hosting.md.
 DONE

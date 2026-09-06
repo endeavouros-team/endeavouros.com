@@ -6,7 +6,7 @@ newer. That is the seven posts in SLUGS below. The other 99 posts and the 19
 translated ones stay on WordPress for now; widening the scope means adding
 slugs here and re-running.
 
-The WordPress export named in docs/status.md is not needed -- the REST API is
+A WordPress export is not needed -- the REST API is
 open and gives clean structured JSON, which is what wiki/scripts/convert-wp.py
 already consumes for Discovery. The Gutenberg handling is shared with it, in
 scripts/wp_common.py.

@@ -24,7 +24,7 @@ Caveat worth stating, because it bounds what a clean run proves: Google verifies
 Googlebot by IP, not by user-agent string. A cloak keyed to real Googlebot
 address ranges will not fire for this script, and no external prober can make it.
 Only Search Console's URL Inspection ("View Crawled Page") shows what Google
-actually received. See docs/seo-recovery.md.
+actually received.
 """
 
 import argparse
@@ -83,8 +83,8 @@ TERMS = (
 )
 TERM_RE = re.compile(r"\b(" + "|".join(re.escape(t) for t in TERMS) + r")\b", re.I)
 
-# The five the build expects and production does not send. See docs/status.md
-# issue 1 — tracked here so this doubles as the regression test when that lands.
+# The five headers the build expects and production does not send. Tracked here
+# so this doubles as the regression test when the production config lands.
 HEADERS = (
     "content-security-policy",
     "strict-transport-security",
@@ -262,7 +262,7 @@ def main() -> int:
     print()
     if hijack:
         print(f"  HIJACK SIGNALS: {hijack} — the site may be compromised again.")
-        print("  Escalate to whoever administers the host; see docs/seo-recovery.md.")
+        print("  Escalate to whoever administers the host.")
     else:
         print("  no hijack signals — cloaking and keyword checks both clean")
         print("  (a cloak keyed to verified Googlebot IPs cannot be seen from here;")
