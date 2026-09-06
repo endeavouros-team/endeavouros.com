@@ -44,6 +44,19 @@ See `data/README.md` for the field contract.
 
 ## Building
 
+Node 22 and the dependencies, once per checkout. Both `.nvmrc` files pin the version, and
+both lockfiles are committed:
+
+    (cd astro && nvm use && npm ci)
+    (cd wiki  && nvm use && npm ci)
+
+`npm ci` rather than `npm install`: it installs exactly what the lockfile pins. `npm run
+build` then runs `scripts/audit-lock.mjs` before anything else, which refuses a package that
+executes an install script, resolves off-registry, or ships without an integrity hash unless
+it is in the allowlist there — the control the WordPress plugin system never had.
+
+Then:
+
     make check       # validate data/ against the field contract
     make mirrors     # check every composed mirror URL is reachable
     make arm         # check every composed ARM image URL is reachable
@@ -54,6 +67,10 @@ See `data/README.md` for the field contract.
 
     make verify      # build, then run the build-output gate
     make deploy-preview
+
+There is no separate asset step. Everything under `astro/dist/_astro/` is produced by the
+build — the images in `astro/src/assets/` come out fingerprinted, resized and converted. That
+output is gitignored, so a clean checkout and `make build-astro` reproduces it exactly.
 
 ## Deploying to production
 
