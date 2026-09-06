@@ -31,15 +31,13 @@ from it — so adding a mirror or bumping a release needs no toolchain installed
 ## What CI does
 
 Every push to `main` and every pull request runs `.github/workflows/check.yml`:
-the data validator, the lockfile audit, the build-output gate, the internal link
-check, then the wiki build and a check that the CSP snippet it regenerates
-matches the committed one. It publishes nothing.
+the data validator, the lockfile audit, the build-output gate and the internal
+link check. It publishes nothing.
 
 Pushing a `v*` tag runs `.github/workflows/build.yml` instead. It runs the same
-steps except the wiki build, since the wiki does not ship. It then builds with
-`PUBLIC_INDEXABLE=true`, asserts the result is actually indexable, and attaches
-a tarball to a GitHub Release. That tarball is what gets deployed — see the
-README. Ordinary commits never produce a release.
+steps, then builds with `PUBLIC_INDEXABLE=true`, asserts the result is actually
+indexable, and attaches a tarball to a GitHub Release. That tarball is what gets
+deployed — see the README. Ordinary commits never produce a release.
 
 ## Commit messages
 

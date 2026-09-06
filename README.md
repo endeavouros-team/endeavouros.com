@@ -13,17 +13,15 @@ Three tasks cover most of what people come here for:
 ## Layout
 
 - `astro/` — the main site: home, download, news, ARM, and the info section.
-- `wiki/` — Discovery, on Starlight. Three converted articles so far, not a migration.
 - `data/` — the content that is not markup: release, mirrors, nav, packages, ARM images.
 - `brand/` — the logo SVGs and the colour tokens the site's CSS derives from.
 - `deploy/` — `nginx-production.conf` is the live site. Everything else is the preview
-  host's and sits in `deploy/preview/`: `nginx-preview.conf`, `nginx-wiki.conf`, the
-  generated `nginx-wiki-csp.conf`, and `docker-compose.yml`.
+  host's and sits in `deploy/preview/`: `nginx-preview.conf` and `docker-compose.yml`.
 - `scripts/` — the data validators, the link check, the WordPress importer. The
   build-output gates live in `astro/scripts/`, where the build can run them.
 
-`wiki/` is built by CI as a check that it still builds; it is **not** part of the release
-tarball and does not ship with the site.
+Discovery, the wiki, lives in its own repository at
+`https://github.com/endeavouros-team/discovery.endeavouros.com`, laid out the same way.
 
 News currently holds the release announcements from Mercury onward. They were imported from
 the WordPress REST API before the cutover. That API is gone with the WordPress install, so
@@ -62,11 +60,10 @@ See `data/README.md` for the field contract.
 
 ## Building
 
-Node 22.12 or later and the dependencies, once per checkout. Both `.nvmrc` files pin the
-version, and both lockfiles are committed:
+Node 22.12 or later and the dependencies, once per checkout. The `.nvmrc` pins the
+version and the lockfile is committed:
 
     (cd astro && nvm use && npm ci)
-    (cd wiki  && nvm use && npm ci)
 
 `npm ci` rather than `npm install`: it installs exactly what the lockfile pins. The main
 site's `npm run build` then runs `astro/scripts/audit-lock.mjs` before anything else, which
@@ -83,12 +80,11 @@ Then:
 
     make dev-astro      # astro dev on :4321
     make build-astro    # -> astro/dist/
-    make build-wiki     # -> wiki/dist/
 
     make verify         # build, then run the build-output gate
     make serve          # serve astro/dist/ on :8812 for LAN review
-    make deploy-preview # build both, rsync to the preview host
-    make clean          # drop both dist/ and .astro/ trees
+    make deploy-preview # build, rsync to the preview host
+    make clean          # drop the dist/ and .astro/ trees
 
 There is no separate asset step. Everything under `astro/dist/_astro/` is produced by the
 build — the images in `astro/src/assets/` come out fingerprinted, resized and converted. That

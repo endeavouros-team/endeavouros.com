@@ -2,7 +2,7 @@
 # read straight from ../data by the content layer, so there is nothing to copy
 # into place before a build.
 
-.PHONY: check links mirrors arm spam-check dev-astro build-astro build-wiki build verify serve deploy-preview clean
+.PHONY: check links mirrors arm spam-check dev-astro build-astro build verify serve deploy-preview clean
 
 check:
 	@python3 scripts/validate-data.py
@@ -32,9 +32,6 @@ dev-astro:
 build-astro: check
 	@cd astro && npm run build
 
-build-wiki:
-	@cd wiki && npm run build
-
 build: build-astro
 
 # Assert the build output contains no script we did not write and no outbound
@@ -55,4 +52,4 @@ deploy-preview:
 	@scripts/deploy-preview.sh
 
 clean:
-	@rm -rf astro/dist astro/.astro wiki/dist wiki/.astro
+	@rm -rf astro/dist astro/.astro

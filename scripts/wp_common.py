@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 """Shared WordPress -> Markdown conversion, used by both properties.
 
+The two properties are two repositories now, and the Discovery one carries a
+copy of this file, kept identical by hand: a fix to the Gutenberg handling has
+to land in both.
+
 Discovery's wiki articles and the main site's news posts come out of the same
 Gutenberg editor and share the same three problems, so the block splitting,
 the <pre> unwrapping and the inline conversion live here rather than being

@@ -1,8 +1,7 @@
 # Preview stack for the EndeavourOS draft site on sra-oracle.
 #
-# The main site and the wiki get a container each, because both builds emit
-# root-relative URLs (/main.css, /favicon.svg, /download/) and neither can be
-# moved under a path prefix to share one. That means one hostname each.
+# One container, for the main site. Discovery, the wiki, lives in its own
+# repository and runs from that repository's own stack on this same host.
 #
 # Bound to 127.0.0.1: only cloudflared needs to reach these. The box's iptables
 # already rejects external traffic on these ports, so this is a second layer.
@@ -24,14 +23,4 @@ services:
     volumes:
       - ./astro:/usr/share/nginx/html:ro
       - ./conf:/etc/nginx/conf.d:ro
-    restart: unless-stopped
-
-  eos-wiki:
-    image: nginx:alpine
-    container_name: eos-wiki
-    ports:
-      - "127.0.0.1:8083:80"
-    volumes:
-      - ./wiki:/usr/share/nginx/html:ro
-      - ./conf-wiki:/etc/nginx/conf.d:ro
     restart: unless-stopped

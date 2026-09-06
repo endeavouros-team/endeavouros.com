@@ -58,13 +58,3 @@ jobs:
       # a link to a page that does not exist in the build.
       - name: Check internal links
         run: make links
-
-      - name: Build the wiki
-        working-directory: wiki
-        run: npm ci && npm run build
-
-      # The wiki build regenerates deploy/preview/nginx-wiki-csp.conf. A
-      # committed copy that has drifted from what the build produces fails here
-      # rather than shipping stale script hashes to the wiki host.
-      - name: Check the wiki CSP snippet is current
-        run: git diff --exit-code deploy/preview/nginx-wiki-csp.conf

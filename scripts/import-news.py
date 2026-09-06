@@ -6,10 +6,10 @@ newer. That is the seven posts in SLUGS below. The other 99 posts and the 19
 translated ones stay on WordPress for now; widening the scope means adding
 slugs here and re-running.
 
-A WordPress export is not needed -- the REST API is
-open and gives clean structured JSON, which is what wiki/scripts/convert-wp.py
-already consumes for Discovery. The Gutenberg handling is shared with it, in
-scripts/wp_common.py.
+A WordPress export is not needed -- the REST API is open and gives clean
+structured JSON, which is what scripts/convert-wp.py in the Discovery repository
+already consumes for the wiki. The Gutenberg handling is shared with it, in
+scripts/wp_common.py -- a copy in each repository.
 
 Media is downloaded rather than hotlinked. Hotlinking would leave the new site
 depending on the compromised host, and the build-output gates would reject
