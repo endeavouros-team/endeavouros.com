@@ -1,0 +1,93 @@
+# Validate every change. Publishes nothing.
+#
+# The release workflow only runs on a v* tag, so until now an ordinary commit
+# was checked by whoever remembered to run make verify locally -- and a change
+# that broke the build would surface at release time, which is the worst moment
+# to find it.
+#
+# This also makes the data layer's promise true. data/ is meant to be editable
+# by a mirror maintainer with no toolchain installed; that only holds if
+# something runs the validator on their behalf, which nothing did.
+#
+# Read-only token, and the actions are pinned to full commit SHAs for the same
+# reason as in build.yml: a tag can be repointed by whoever controls it.
+
+name: Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: astro/.nvmrc
+          cache: npm
+          cache-dependency-path: astro/package-lock.json
+
+      # Enforces the field contract in data/README.md. Needs Python 3.11+ for
+      # tomllib, which the runner has.
+      - name: Validate the data layer
+        run: make check
+
+      - name: Install dependencies
+        working-directory: astro
+        run: npm ci
+
+      # audit-lock.mjs before any dependency code runs, then the build, then
+      # check-build.mjs over the output. All three fail rather than warn.
+      - name: Build and run the output gate
+        working-directory: astro
+        run: npm run build
+
+      - name: Build the wiki
+        working-directory: wiki
+        run: npm ci && npm run build
+
+      # Cheap, and it catches the class of error that is invisible in review:
+      # a link to a page that does not exist in the build.
+      - name: Check internal links
+        run: |
+          python3 - <<'EOF'
+          import re, sys
+          from pathlib import Path
+          dist = Path('astro/dist')
+          bad, n = [], 0
+          for f in dist.rglob('*.html'):
+              html = f.read_text(encoding='utf-8', errors='replace')
+              for href in re.findall(r'(?:href|src)="([^"]+)"', html):
+                  if href.startswith(('http', 'mailto:', 'data:', 'magnet:', '//')):
+                      continue
+                  if href.startswith('#'):
+                      a = href[1:]
+                      if a and f'id="{a}"' not in html:
+                          bad.append(f'{f.relative_to(dist)} -> dead anchor {href}')
+                      continue
+                  n += 1
+                  p = href.split('#')[0].split('?')[0].lstrip('/')
+                  if not p:
+                      continue
+                  if p.endswith('/'):
+                      p += 'index.html'
+                  if not ((dist/p).exists() or (dist/(p+'/index.html')).exists()
+                          or (dist/(p+'.html')).exists()):
+                      bad.append(f'{f.relative_to(dist)} -> missing {href}')
+          print(f'checked {n} internal links')
+          if bad:
+              print('\n'.join('  ' + b for b in bad))
+              sys.exit(1)
+          EOF

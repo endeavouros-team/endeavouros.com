@@ -537,6 +537,31 @@ table.mirrors { width: 100%; border-collapse: collapse; }
 .mirrors--arm td:last-child, .mirrors--arm th:last-child { width: 6.5rem; }
 
 /*
+ * .c-loc is the mirror table's location cell and sets white-space: nowrap,
+ * which is right for "South Korea" and wrong for "Headless server, Raspberry
+ * Pi 4b & 5b". Reusing the class here meant device names could not wrap, and
+ * under table-layout: fixed a cell that cannot wrap overflows its column
+ * instead of widening it -- so on a phone the device name printed straight
+ * over the filename beside it.
+ */
+.mirrors--arm .c-loc { white-space: normal; }
+.mirrors--arm .c-name a { overflow-wrap: anywhere; }
+
+/*
+ * The fixed column widths exist to line the two ARM tables up with each other,
+ * which is a desktop concern. On a narrow screen they starve the filename
+ * column instead: 34% of 390px is not enough for a device name, and what is
+ * left will not hold enosLinuxARM-server-odroid-n2-latest.img.xz. Below the
+ * point where that stops fitting, let the content size the columns.
+ */
+@media (max-width: 48rem) {
+  .mirrors--arm { table-layout: auto; }
+  .mirrors--arm th:first-child,
+  .mirrors--arm th:last-child,
+  .mirrors--arm td:last-child { width: auto; }
+}
+
+/*
  * ---------- logo swatches ----------
  *
  * Two problems the plain media grid cannot solve. The logos are supplied for
