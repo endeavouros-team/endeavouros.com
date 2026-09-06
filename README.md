@@ -147,6 +147,12 @@ certificate paths, and the `arm.endeavouros.com` block at the end. That last one
 checks. The certificate must cover `arm.`, and the WordPress vhost still answering for that
 name has to be disabled as this config loads.
 
+The certificate must cover all three names — `endeavouros.com`, `www.endeavouros.com` and
+`arm.endeavouros.com` — because `www` and `arm` are HTTPS redirects, and a redirect cannot
+be sent until the handshake succeeds. The `www` block's comment carries the `certbot
+--expand` command; at launch the lineage covered only the bare name, and browsers that go
+HTTPS-first refused `www` outright.
+
     sudo cp deploy/nginx-production.conf /etc/nginx/sites-available/endeavouros.com
     sudo ln -sf /etc/nginx/sites-available/endeavouros.com /etc/nginx/sites-enabled/
     sudo nginx -t && sudo systemctl reload nginx
@@ -168,6 +174,7 @@ for no more than 90 days, so logrotate on the host must be set to match that pro
     curl -sI https://endeavouros.com/endeavouros-arm-install/   # 301 -> /endeavouros-arm/
     curl -sI https://endeavouros.com/privacy-policy-2/          # 301 -> /privacy-policy/
     curl -sI https://arm.endeavouros.com/                       # 301 -> /endeavouros-arm/
+    curl -sI https://www.endeavouros.com/                       # 301 -> https://endeavouros.com/, no TLS error
 
     make spam-check
 
