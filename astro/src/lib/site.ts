@@ -36,11 +36,6 @@ export async function mirrorsByContinent() {
   })).filter((g) => g.items.length > 0);
 }
 
-/** Consumed by scripts/check-build.mjs to allowlist outbound origins. */
-export async function mirrorOrigins() {
-  return [...new Set((await getCollection('mirrors')).map((m) => new URL(m.data.base).origin))];
-}
-
 export function formatBytes(n: number) {
   return `${(n / 1024 ** 3).toFixed(2)} GiB`;
 }
@@ -87,8 +82,8 @@ export type ArmDevice = { id: string; name: string; tag: string; image: string; 
 
 /**
  * ARM images, with their URLs composed the same way mirror URLs are: from a
- * base plus the parts, never stored. Stated once here so the table and the
- * build gate cannot disagree about where an image lives.
+ * base plus the parts, never stored. Stated once here so the download link and
+ * the checksum link beside it cannot disagree about where an image lives.
  */
 export async function armImages() {
   const e = await getEntry('arm', 'arm');
@@ -100,10 +95,4 @@ export async function armImages() {
       return { ...d, img, sha512: img + sha512Suffix };
     }),
   };
-}
-
-/** Consumed by scripts/check-build.mjs to allowlist the ARM image origin. */
-export async function armOrigin() {
-  const e = await getEntry('arm', 'arm');
-  return e ? new URL(e.data.base).origin : null;
 }

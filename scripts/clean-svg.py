@@ -11,7 +11,7 @@ backgrounds, #ffffff for dark). Setting that one path to currentColor reproduces
 both from a single asset, so the wordmark follows the theme and the tri-colour
 mark stays fixed.
 
-    scripts/clean-svg.py in.svg out.svg [--fill-index N=currentColor] [--replace OLD=NEW]
+    scripts/clean-svg.py in.svg out.svg [--fill-index=N:VALUE] [--replace=OLD:NEW]
 """
 
 import re

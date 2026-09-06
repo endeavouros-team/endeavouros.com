@@ -268,10 +268,10 @@ def main() -> int:
         print("  (a cloak keyed to verified Googlebot IPs cannot be seen from here;")
         print("   confirm with Search Console URL Inspection → View Crawled Page)")
     if hygiene:
-        print(f"  {hygiene} hygiene finding(s) — outstanding deployment work, see status.md issue 1")
+        print(f"  {hygiene} hygiene finding(s) — outstanding deployment work on the host")
 
     # --strict alarms only on hijack signals. The hygiene findings are known and
-    # will stay outstanding until someone with server access acts on issue 1;
+    # will stay outstanding until someone with server access acts on them;
     # tripping the alarm on them every run is how a scheduled check gets ignored.
     if args.strict_all and (hijack or hygiene):
         return 1

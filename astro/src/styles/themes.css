@@ -1,10 +1,9 @@
 /*
  * Two palettes, one contract.
  *
- * Layout code only ever reads these custom properties, never a literal colour.
- * Token names are deliberately identical to the Zola track's _tokens.scss, so
- * any visual difference between the two builds is a framework difference rather
- * than a styling one.
+ * Layout code only ever reads these custom properties, never a literal colour,
+ * so the two palettes are a swap of this file's values and nothing else has to
+ * know which one is in force.
  *
  * Palette: github.com/endeavouros-team/Branding
  *   blue-violet #7f3fbf · tropical-indigo #7f7fff · light-red #ff7f7f

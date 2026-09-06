@@ -1,6 +1,6 @@
 # The preset software shown on the homepage, and the bootloader choice offered
 # by the installer. Copy lives here rather than in a template so it can be
-# edited without touching either site's markup.
+# edited without touching the site's markup.
 
 [[packages]]
 name = "Firefox"
@@ -54,6 +54,3 @@ desc = "Fast and minimal, for modern EFI systems. The EndeavourOS default."
 [[bootloaders]]
 name = "GRUB"
 desc = "Broad compatibility across EFI and older BIOS systems, and the only option on legacy hardware."
-
-[bootloaderNote]
-text = "You can also skip bootloader installation entirely and add EndeavourOS to an existing bootloader yourself."

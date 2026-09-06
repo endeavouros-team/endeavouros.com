@@ -3,9 +3,9 @@ import { file, glob } from 'astro/loaders';
 import { parse as parseToml } from 'smol-toml';
 
 /**
- * The shared ../data directory is the single source of truth and is read by the
- * Zola build too, so neither track owns it. Astro's file() loader reads paths
- * outside the project root, which Zola's load_data() refuses to do.
+ * The shared ../data directory is the single source of truth: the file() loader
+ * reads it in place, outside the project root, so there is no copy of it inside
+ * astro/ to drift from the one people edit.
  *
  * TOML's top level is always a table, so `[[mirrors]]` parses to
  * { mirrors: [...] }. The loader wants one entry per row carrying an `id`.
@@ -93,7 +93,6 @@ const navItem = z.object({
   name: z.string(),
   url: z.string(),
   external: z.boolean().default(false),
-  wip: z.boolean().default(false),
   cta: z.boolean().default(false),
 });
 

@@ -1,9 +1,9 @@
 /*
  * Layout, components and the mirror table.
  *
- * Kept in step with the Zola track's sass/_base.scss, _components.scss and
- * _mirrors.scss so the bake-off compares frameworks and not two different
- * designs. Colours come only from themes.css.
+ * Every rule the site's own pages need, in one file: there is one build and one
+ * stylesheet, so a component's layout lives here and nowhere else. Colours come
+ * only from themes.css.
  */
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -142,8 +142,6 @@ code, kbd, pre { font-family: var(--font-mono); font-size: 0.9375em; }
 }
 .nav__link:hover { color: var(--ink); background: var(--bg-elev); }
 .nav__link[aria-current="page"] { color: var(--ink); font-weight: 600; }
-.nav__link--wip { color: var(--ink-3); }
-.nav__link--wip::after { content: "\2197"; font-size: 0.75em; margin-inline-start: 0.2em; vertical-align: super; }
 .nav__link--cta { background: var(--accent-fill); color: var(--on-fill); font-weight: 600; }
 .nav__link--cta:hover { background: var(--accent-hover); color: var(--on-fill); }
 
@@ -411,10 +409,6 @@ table.mirrors { width: 100%; border-collapse: collapse; }
 
 /*
  * ---------- news ----------
- *
- * Astro-only. News is the first content the two tracks do not share, so unlike
- * everything above there is no counterpart in the Zola track's sass to keep in
- * step with.
  */
 .newslist { list-style: none; padding: 0; display: grid; gap: clamp(1.5rem, 4vw, 2.5rem); }
 

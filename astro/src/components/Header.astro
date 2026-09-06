@@ -24,10 +24,9 @@ const here = Astro.url.pathname;
         {site.nav.map((item) => (
           <li>
             <a
-              class:list={['nav__link', { 'nav__link--cta': item.cta, 'nav__link--wip': item.wip }]}
+              class:list={['nav__link', { 'nav__link--cta': item.cta }]}
               href={item.url}
               rel={item.external ? 'noopener noreferrer' : undefined}
-              title={item.wip ? 'Opens the current site' : undefined}
               aria-current={!item.external && here === item.url ? 'page' : undefined}
             >{item.name}</a>
           </li>
@@ -56,7 +55,7 @@ const here = Astro.url.pathname;
 </header>
 
 <script>
-  // A disclosure, not a dialog: no focus trap and no scroll lock. Nine links
+  // A disclosure, not a dialog: no focus trap and no scroll lock. Eight links
   // fit a phone without either, and both are a common source of iOS bugs.
   const btn = document.getElementById('nav-toggle');
   const list = document.getElementById('nav-list');

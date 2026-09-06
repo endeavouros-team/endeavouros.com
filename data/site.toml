@@ -1,5 +1,5 @@
-# Site chrome: identity, navigation and footer. Read by both tracks so the two
-# builds cannot disagree about what the site is called or where it links.
+# Site chrome: identity, navigation and footer. The content layer reads this
+# file directly, so the site's name and every link it offers have one home.
 
 name        = "EndeavourOS"
 tagline     = "Start your Endeavour"
@@ -24,9 +24,9 @@ contentOrigins = [
 
 # Primary navigation.
 #
-# `external = true` points at the current site for sections that are not rebuilt
-# yet, so the full navigation is visible and every link goes somewhere real.
-# `wip = true` renders them muted. Clear both as each section lands.
+# `external = true` marks an entry that leaves the site: it must be an https URL,
+# it is given rel="noopener noreferrer", and it is never marked as the current
+# page. `cta = true` is the one emphasised link.
 
 [[nav]]
 name = "Home"

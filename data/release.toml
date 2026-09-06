@@ -1,6 +1,7 @@
 # The current EndeavourOS release.
 #
-# PUBLISHING A NEW RELEASE: edit the five values in [current] below, then run
+# PUBLISHING A NEW RELEASE: edit the [current] values below, and the `magnet`
+# and `torrent` lines under them -- they carry the ISO filename too. Then run
 # `make check` and `make mirrors`. Every mirror URL, every shell command in the
 # verification instructions, and the download buttons regenerate from these.
 # No HTML is ever touched.

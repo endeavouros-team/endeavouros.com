@@ -14,7 +14,7 @@ import re
 import sys
 import tomllib
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import quote, urlparse
 
 DATA = Path(__file__).resolve().parent.parent / "data"
 CONTINENTS = ["Africa", "Asia", "Europe", "North America", "South America", "Oceania"]
@@ -58,10 +58,20 @@ def check_release(doc: dict) -> str:
     if not isinstance(size, int) or size <= 0:
         fail("release.toml", "sizeBytes must be a positive integer")
 
-    if not cur.get("magnet", "").startswith("magnet:?xt=urn:btih:"):
+    magnet = cur.get("magnet", "")
+    torrent = cur.get("torrent", "")
+    if not magnet.startswith("magnet:?xt=urn:btih:"):
         fail("release.toml", "magnet is not a btih magnet URI")
-    if not cur.get("torrent", "").startswith("https://"):
+    if not torrent.startswith("https://"):
         fail("release.toml", "torrent must be an https URL")
+
+    # Both embed the ISO filename, and they sit below [current] rather than in
+    # it — they are the two values a release bump forgets. A magnet may
+    # percent-encode its display name, so accept either spelling.
+    if iso and magnet and f"dn={iso}" not in magnet and f"dn={quote(iso)}" not in magnet:
+        fail("release.toml", f"magnet does not carry dn={iso} — it still names an older ISO")
+    if iso and torrent and not torrent.endswith(f"{iso}.torrent"):
+        fail("release.toml", f"torrent does not end in {iso}.torrent — it still names an older ISO")
 
     for key in ("sha512Suffix", "sigSuffix"):
         if not cur.get(key, "").startswith("."):
@@ -148,6 +158,88 @@ def check_site(doc: dict) -> None:
         if not n.get("external") and not url.startswith("/"):
             fail(where, "internal links must be root-relative")
 
+    # The footer is half the outbound links on every page, and check-build.mjs
+    # allowlists every origin it names — a malformed column is a broken column
+    # sitewide, not on one page.
+    footer = doc.get("footer", [])
+    if not footer:
+        fail("site.toml", "no [[footer]] columns")
+    for i, col in enumerate(footer):
+        where = f"site.toml footer[{i}] {col.get('heading', '?')!r}"
+        if not col.get("heading"):
+            fail(where, "missing 'heading'")
+        links = col.get("links", [])
+        if not links:
+            fail(where, "no [[footer.links]] entries")
+        for j, link in enumerate(links):
+            lwhere = f"{where} links[{j}] {link.get('name', '?')!r}"
+            if not link.get("name"):
+                fail(lwhere, "missing 'name'")
+            url = link.get("url", "")
+            if not url:
+                fail(lwhere, "missing 'url'")
+            elif not url.startswith("https://"):
+                # content.config.ts parses these with z.string().url(), which a
+                # root-relative path fails outright. https rather than any URL
+                # because nothing the site links to is served over plain http.
+                fail(lwhere, f"url must be https, got {url!r}")
+
+    # lib/site.ts forumUrl() resolves the discuss-this link on every news post by
+    # origin rather than by link text, and throws when it finds nothing. Catch
+    # that here, where the message can say which files are involved.
+    urls = [n.get("url", "") for n in nav]
+    urls += [l.get("url", "") for c in footer for l in c.get("links", [])]
+    if not any(u.startswith("https://forum.") for u in urls):
+        fail("site.toml", "no https://forum. link in nav or footer — news post footers need one")
+
+
+def check_arm(doc: dict) -> int:
+    """The ARM images, held to the same composition rule as the mirrors.
+
+    Returns the device count for the summary line. Nothing here stores a full
+    URL: a missing `tag` or a filename that is not an image composes a download
+    link that 404s, and the page still builds.
+    """
+    base = doc.get("base", "")
+    if not base:
+        fail("arm-images.toml", "missing 'base'")
+    else:
+        if not base.startswith("https://"):
+            fail("arm-images.toml", f"base must be https, got {base!r}")
+        if base.endswith("/"):
+            fail("arm-images.toml", "base must not end in a slash — URLs are composed")
+
+    if not doc.get("sha512Suffix", "").startswith("."):
+        fail("arm-images.toml", "sha512Suffix should start with a dot")
+
+    devices = doc.get("devices", [])
+    if not devices:
+        fail("arm-images.toml", "no [[devices]] entries")
+
+    seen_ids: dict[str, int] = {}
+    for i, d in enumerate(devices):
+        where = f"arm-images.toml[{i}] {d.get('name', '?')!r}"
+
+        for key in ("id", "name", "tag", "image"):
+            if not d.get(key):
+                fail(where, f"missing {key!r}")
+
+        did = d.get("id", "")
+        if did and not re.fullmatch(r"[a-z0-9-]+", did):
+            fail(where, f"id {did!r} must be lowercase alphanumeric and hyphens")
+        if did in seen_ids:
+            fail(where, f"duplicate id {did!r}, first seen at index {seen_ids[did]}")
+        seen_ids[did] = i
+
+        image = d.get("image", "")
+        if image and not image.endswith(".img.xz"):
+            fail(where, f"image {image!r} must be an .img.xz filename")
+
+        if "server" in d and not isinstance(d["server"], bool):
+            fail(where, f"server must be true or false, got {d['server']!r}")
+
+    return len(devices)
+
 
 def check_packages(doc: dict) -> None:
     if len(doc.get("packages", [])) == 0:
@@ -166,6 +258,7 @@ def main() -> int:
     check_mirrors(mirrors)
     check_site(load("site.toml"))
     check_packages(load("packages.toml"))
+    devices = check_arm(load("arm-images.toml"))
 
     if problems:
         print(f"\n  {len(problems)} problem(s) in data/\n", file=sys.stderr)
@@ -175,7 +268,10 @@ def main() -> int:
         return 1
 
     n = len(mirrors.get("mirrors", []))
-    print(f"  data ok — {n} mirrors, {n * 3} composed URLs, checksum and fingerprint well-formed")
+    print(
+        f"  data ok — {n} mirrors, {n * 3} composed URLs, {devices} ARM devices, "
+        "checksum and fingerprint well-formed"
+    )
     return 0
 
 
