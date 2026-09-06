@@ -72,51 +72,56 @@ output is gitignored, so a clean checkout and `make build-astro` reproduces it e
 
 ## Deploying to production
 
-The whole deploy is: build with one environment variable set, check it, rsync the output,
-install one nginx config. Nothing is installed on the server — there is no runtime, no
-interpreter and no build step there.
+The build does not happen on the server, and the server needs no toolchain — no runtime, no
+interpreter, no build step. CI builds it and attaches a tarball to a GitHub Release; the
+deploy is downloading that and unpacking it into the webroot.
 
-### 1. Build for production
+### 1. Cut a release
 
-    PUBLIC_INDEXABLE=true make build-astro
+    git tag -a v2026.09.06 -m "Titan Nova site launch"
+    git push origin v2026.09.06
 
-**`PUBLIC_INDEXABLE=true` is not optional and it fails silently.** Without it every page
-ships `<meta name="robots" content="noindex, nofollow">` and `/robots.txt` serves
-`Disallow: /` — see `astro/src/layouts/Base.astro` and `astro/src/pages/robots.txt.ts`.
-The site would look perfect and be invisible to search, which is precisely the problem this
-project exists to fix. It is unset by default so that every preview build is noindex and
-cannot compete with the live site.
+Pushing a `v*` tag is what triggers a build. **Pushing to `main` does not** — ordinary
+commits are checked by `.github/workflows/check.yml` and publish nothing, so refactors and
+doc edits never produce a release.
 
-### 2. Check before copying anything
+The release job (`.github/workflows/build.yml`) validates `data/`, audits the lockfile,
+builds with `PUBLIC_INDEXABLE=true`, runs the build-output gate, then asserts the result is
+actually indexable — `robots.txt` allows crawling and names the sitemap, and no page carries
+`noindex`. It fails rather than publishing a build with that flag missing, which is the one
+deploy mistake that is invisible in the output.
 
-    make verify
+    gh run watch --repo endeavouros-team/endeavouros.com
 
-Builds the site and runs the build-output gate, which asserts the output contains no script
-we did not write and no outbound origin that is not in `data/`. This is the WordPress lesson
-mechanised: the compromise showed up as injected markup in served pages, so this fails rather
-than warns. **If it fails, do not deploy.**
+### 2. Get the tarball
 
-### 3. Copy the build
+    gh release download v2026.09.06 --repo endeavouros-team/endeavouros.com
 
-    rsync -avz --delete astro/dist/ user@endeavouros.com:/var/www/endeavouros.com/
+Or from the Releases page. The filename carries the tag and the short commit it was built
+from, e.g. `eos-site-v2026.09.06-4a92b64.tar.gz`.
 
-`--delete` is load-bearing. The webroot currently holds a compromised WordPress install;
-without it, every old PHP file stays reachable beside the new site and the static-site
-argument buys nothing. That also means the target must be a directory holding **only** this
-site — check it before running with `--delete`.
+### 3. Put it on the server
+
+    tar -xzf eos-site-v2026.09.06-*.tar.gz -C /var/www/endeavouros.com/
+
+If you would rather rsync an extracted copy, use `--delete`. It is load-bearing: the webroot
+holds a compromised WordPress install, and without it every old PHP file stays reachable
+beside the new site and the static-site argument buys nothing. That also means the target
+must hold **only** this site — check before running it.
 
 ### 4. Install the nginx config
 
-`deploy/nginx-production.conf`. Three values are marked `CONFIRM` in the file and must be
-checked against the box: the webroot, the `server_name`, and the TLS certificate paths.
+`deploy/nginx-production.conf`. Four `CONFIRM` comments mark what must be checked against the
+box: the `server_name` and whether www DNS points here, the webroot, and the TLS certificate
+paths.
 
     sudo cp deploy/nginx-production.conf /etc/nginx/sites-available/endeavouros.com
     sudo ln -sf /etc/nginx/sites-available/endeavouros.com /etc/nginx/sites-enabled/
     sudo nginx -t && sudo systemctl reload nginx
 
 It carries the CSP, HSTS and the other security headers — the live site currently sends
-**none** of them — plus permanent caching for `/_astro/*` and the six redirects that keep
-old WordPress URLs working.
+**none** of them — plus permanent caching for `/_astro/*` and the six redirects that keep old
+WordPress URLs working.
 
 Access logs are deliberately left on. `/privacy-policy/` tells visitors we keep request logs
 for no more than 90 days, so logrotate on the host must be set to match that promise.
@@ -138,4 +143,15 @@ no access to the host. Run it after every deploy. A clean result is not an all-c
 verifies Googlebot by IP rather than user-agent, so a cloak keyed to real crawler ranges
 cannot be seen from outside at all — only Search Console's URL Inspection settles that.
 
+### Building by hand, if CI is unavailable
+
+    PUBLIC_INDEXABLE=true make build-astro     # -> astro/dist/
+    make verify
+
+**`PUBLIC_INDEXABLE=true` is not optional and it fails silently.** Without it every page
+ships `<meta name="robots" content="noindex, nofollow">` and `/robots.txt` serves
+`Disallow: /` — see `astro/src/layouts/Base.astro` and `astro/src/pages/robots.txt.ts`. The
+site would look perfect and be invisible to search, which is precisely the problem this
+project exists to fix. It is unset by default so every preview build is noindex. Letting CI
+set it is the reason to prefer the release tarball over a hand-rolled build.
 

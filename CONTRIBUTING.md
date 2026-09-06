@@ -19,6 +19,16 @@ from it — so adding a mirror or bumping a release needs no toolchain installed
 - `make mirrors` and `make arm` after a release bump, to confirm every composed
   URL still resolves.
 
+## What CI does
+
+Every push and pull request runs `.github/workflows/check.yml`: the data validator, the
+lockfile audit, the build-output gate, the wiki build and an internal link check. It
+publishes nothing.
+
+Pushing a `v*` tag runs `.github/workflows/build.yml` instead, which does all of that plus
+builds with `PUBLIC_INDEXABLE=true` and attaches a tarball to a GitHub Release. That tarball
+is what gets deployed — see the README. Ordinary commits never produce a release.
+
 ## Commit messages
 
 Lowercase `area: summary` subject, imperative mood, wrapped at 76 columns, and a
