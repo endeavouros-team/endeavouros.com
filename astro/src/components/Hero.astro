@@ -1,13 +1,15 @@
 ---
-import { release, siteData, formatBytes } from '../lib/site';
+import { release, siteData } from '../lib/site';
 // The mark rather than the full lockup: the header already carries the
 // wordmark, and a 3.8:1 lockup does not sit beside a block of text.
 import Mark from '../../../brand/mark.svg';
 const rel = await release();
 const site = await siteData();
-// The datestamp in the ISO filename, not the day the release was announced,
-// which is why the line below says "image dated" rather than "released".
-const date = rel.date.toISOString().slice(0, 10);
+// One button. The magnet and torrent links, the ISO line and the note about
+// torrent clients stood here too until 2026-09-20; they are on /download/ now,
+// with the mirrors and the checksums, which is where a reader choosing how to
+// download is. Joe and Bryan asked for the single button once the download
+// page existed on its own.
 ---
 <section class="hero">
   <div class="container hero__inner">
@@ -17,14 +19,7 @@ const date = rel.date.toISOString().slice(0, 10);
     <p class="hero__sub">{site.subtitle}</p>
     <div class="hero__actions">
       <a class="btn btn--primary" href="/download/">Download {rel.codename}</a>
-      <a class="btn btn--ghost" href={rel.magnet}>Magnet</a>
-      <a class="btn btn--ghost" href={rel.torrent} rel="noopener noreferrer">Torrent</a>
     </div>
-    <p class="hero__meta"><code>{rel.iso}</code> · {formatBytes(rel.sizeBytes)} · image dated {date}</p>
-    <p class="hero__meta">
-      The magnet and torrent links need a torrent client. A DHT-capable client is required and a
-      WebSeed-capable one downloads fastest. If you have bandwidth to spare, keep seeding afterwards.
-    </p>
     </div>
   </div>
 </section>

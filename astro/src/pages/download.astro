@@ -2,16 +2,31 @@
 import Base from '../layouts/Base.astro';
 import MirrorList from '../components/MirrorList.astro';
 import VerifyInstructions from '../components/VerifyInstructions.astro';
-import { siteData } from '../lib/site';
+import { release, siteData, formatBytes } from '../lib/site';
 const site = await siteData();
+const rel = await release();
+// The datestamp in the ISO filename, not the day the release was announced,
+// which is why the line below says "image dated" rather than "released".
+const date = rel.date.toISOString().slice(0, 10);
 ---
 <Base title={`Download — ${site.name}`} description="Download EndeavourOS from a mirror near you, and verify it.">
   <section class="section">
     <div class="container stack">
       <h1>Download EndeavourOS</h1>
       <p class="lede">
-        Pick a mirror near you, then verify what you downloaded against the checksum and the
-        GPG signature below.
+        Pick a mirror near you, or take the torrent, then verify what you downloaded against
+        the checksum and the GPG signature below.
+      </p>
+      <p class="hero__meta"><code>{rel.iso}</code> · {formatBytes(rel.sizeBytes)} · image dated {date}</p>
+      {/* Moved here from the homepage hero on 2026-09-20, which keeps the one
+          Download button. Same button-row class the donate page reuses. */}
+      <p class="hero__actions">
+        <a class="btn btn--ghost" href={rel.magnet}>Magnet</a>
+        <a class="btn btn--ghost" href={rel.torrent} rel="noopener noreferrer">Torrent</a>
+      </p>
+      <p class="hero__meta">
+        The magnet and torrent links need a torrent client. A DHT-capable client is required and a
+        WebSeed-capable one downloads fastest. If you have bandwidth to spare, keep seeding afterwards.
       </p>
     </div>
   </section>

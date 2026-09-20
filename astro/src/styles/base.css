@@ -345,9 +345,9 @@ table.mirrors { width: 100%; border-collapse: collapse; }
   .hero__inner {
     grid-template-columns: auto minmax(0, 1fr);
     justify-items: start;
-    /* Aligned to the top of the text, not its centre: the meta paragraphs make
-       the column tall, and centring leaves the mark drifting by the subtitle
-       instead of anchoring the headline. */
+    /* Aligned to the top of the text, not its centre: centring leaves the
+       mark drifting by the subtitle instead of anchoring the headline, and the
+       column is tall enough for that to show at the narrower widths. */
     align-items: start;
   }
   .hero__mark { margin-block-start: 0.35em; }
