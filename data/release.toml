@@ -33,8 +33,16 @@ fingerprint = "8F43 FC37 4CD4 CEEA 19CE E323 E3D8 752A CDF5 95A1"
 shortKey    = "CDF595A1"
 keyserver   = "keyserver.ubuntu.com"
 
+# Minimum and recommended system requirements for the current release.
+# [current.requirements] holds the *minimum* values 
+# [current.requirements.recommended] holds what we suggest for a comfortable experience.
 [current.requirements]
 diskGb = 15
 ramGb  = 4
 cpu    = "64-bit dual-core Intel or AMD processor"
-note   = "The installer still handles older machines, but modern EFI (UEFI) systems without legacy CSM mode work best."
+note   = "These are the bare minimum requirements. The installer still handles older machines (Bios/MBR), but modern EFI (UEFI/gpt) systems without legacy CSM mode work best."
+
+[current.requirements.recommended]
+diskGb = 25
+ramGb  = 8
+cpu    = "64-bit quad-core Intel or AMD processor"
