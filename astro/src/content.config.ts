@@ -76,11 +76,22 @@ const release = defineCollection({
       shortKey: z.string().regex(/^[0-9A-F]{8}$/),
       keyserver: z.string(),
     }),
+    // System requirements: [current.requirements] holds the minimum values,
+    // [current.requirements.recommended] the suggested ones (both in
+    // data/release.toml). `recommended` is optional so branches/releases
+    // without it still validate; the component renders that row only when set.
     requirements: z.object({
       diskGb: z.number().int().positive(),
       ramGb: z.number().int().positive(),
       cpu: z.string(),
       note: z.string(),
+      recommended: z
+        .object({
+          diskGb: z.number().int().positive(),
+          ramGb: z.number().int().positive(),
+          cpu: z.string(),
+        })
+        .optional(),
     }),
   }),
 });
