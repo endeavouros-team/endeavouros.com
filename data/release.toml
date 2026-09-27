@@ -34,7 +34,7 @@ shortKey    = "CDF595A1"
 keyserver   = "keyserver.ubuntu.com"
 
 # Minimum and recommended system requirements for the current release.
-# [current.requirements] holds the *minimum* values 
+# [current.requirements] holds the minimum values 
 # [current.requirements.recommended] holds what we suggest for a comfortable experience.
 [current.requirements]
 diskGb = 15
