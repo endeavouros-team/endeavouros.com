@@ -87,9 +87,33 @@ def check_release(doc: dict) -> str:
         fail("release.toml", f"signing.shortKey {short!r} is not the tail of the fingerprint")
 
     req = cur.get("requirements", {})
-    for key in ("diskGb", "ramGb"):
-        if not isinstance(req.get(key), int) or req[key] <= 0:
+    minimum_values = {}
+    for key in ("diskGb", "ramGb", "cores"):
+        value = req.get(key)
+        if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
             fail("release.toml", f"requirements.{key} must be a positive integer")
+        else:
+            minimum_values[key] = value
+    if not isinstance(req.get("cpu"), str) or not req["cpu"].strip():
+        fail("release.toml", "requirements.cpu must be a non-empty string")
+
+    recommended = req.get("recommended")
+    if recommended is None:
+        fail("release.toml", "requirements.recommended is missing")
+    elif not isinstance(recommended, dict):
+        fail("release.toml", "requirements.recommended must be a table")
+    else:
+        for key in ("diskGb", "ramGb", "cores"):
+            value = recommended.get(key)
+            if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
+                fail("release.toml", f"requirements.recommended.{key} must be a positive integer")
+            elif key in minimum_values and value < minimum_values[key]:
+                fail(
+                    "release.toml",
+                    f"requirements.recommended.{key} ({value}) is below the minimum ({minimum_values[key]})",
+                )
+        if not isinstance(recommended.get("cpu"), str) or not recommended["cpu"].strip():
+            fail("release.toml", "requirements.recommended.cpu must be a non-empty string")
 
     return iso
 

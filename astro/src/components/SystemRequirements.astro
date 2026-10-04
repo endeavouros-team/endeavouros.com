@@ -1,16 +1,21 @@
 ---
 import { release } from '../lib/site';
 const rel = await release();
-const r = rel.requirements;
+const req = rel.requirements;
+// One template renders both rows so their cards cannot drift apart.
+const rows = [{ label: 'Minimum', r: req }, { label: 'Recommended', r: req.recommended }];
 ---
 <section class="section section--sunken" id="requirements">
   <div class="container stack">
     <h2>System requirements</h2>
-    <div class="grid">
-      <div class="card stat"><p class="stat__value">{r.diskGb} GB</p><p class="stat__label">free disk space</p></div>
-      <div class="card stat"><p class="stat__value">{r.ramGb} GB</p><p class="stat__label">RAM</p></div>
-      <div class="card stat"><p class="stat__value">64-bit</p><p class="stat__label">{r.cpu}</p></div>
-    </div>
-    <p class="lede">{r.note}</p>
+    {rows.map(({ label, r }) => <>
+      <h3>{label}</h3>
+      <div class="grid">
+        <div class="card stat"><p class="stat__value">{r.diskGb} GB</p><p class="stat__label">free disk space</p></div>
+        <div class="card stat"><p class="stat__value">{r.ramGb} GB</p><p class="stat__label">RAM</p></div>
+        <div class="card stat"><p class="stat__value">{r.cores} cores</p><p class="stat__label">{r.cpu}</p></div>
+      </div>
+    </>)}
+    <p class="lede">{req.note}</p>
   </div>
 </section>

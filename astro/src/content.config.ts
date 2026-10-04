@@ -76,11 +76,23 @@ const release = defineCollection({
       shortKey: z.string().regex(/^[0-9A-F]{8}$/),
       keyserver: z.string(),
     }),
+    // Minimum values live in [current.requirements] and suggested ones in
+    // [current.requirements.recommended]. Both are required because the
+    // component renders both rows, and an optional table it reads anyway is a
+    // TypeError at build time rather than a message naming the field.
+    // `cores` is the number the CPU card shows.
     requirements: z.object({
       diskGb: z.number().int().positive(),
       ramGb: z.number().int().positive(),
+      cores: z.number().int().positive(),
       cpu: z.string(),
       note: z.string(),
+      recommended: z.object({
+        diskGb: z.number().int().positive(),
+        ramGb: z.number().int().positive(),
+        cores: z.number().int().positive(),
+        cpu: z.string(),
+      }),
     }),
   }),
 });
