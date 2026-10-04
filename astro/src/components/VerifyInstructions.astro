@@ -28,5 +28,12 @@ gpg --verify {rel.iso}{rel.sigSuffix} {rel.iso}</code></pre>
     <p>This ISO is signed by {rel.signing.name} &lt;{rel.signing.email}&gt;, whose primary key fingerprint is:</p>
     <CopyField id="fpr-value" value={rel.signing.fingerprint} />
     <p>Compare that fingerprint against the one above before trusting the key.</p>
+    {/* Held back until the rebuilt wiki was serving: a link from the one place
+        people come to check a download must not land on a host that is down. */}
+    <p>
+      Discovery, the wiki, walks through both checks step by step:
+      <a href="https://discovery.endeavouros.com/how-to-check-and-trust-key-and-signature-for-the-endeavouros-iso/" rel="noopener noreferrer">How
+      to check and trust key and signature for the EndeavourOS ISO</a>.
+    </p>
   </div>
 </section>
