@@ -34,13 +34,20 @@ one.
 | `signing.keyserver` | Hostname the key can be fetched from, e.g. `keyserver.ubuntu.com` |
 | `requirements.diskGb` | Positive integer, free disk space |
 | `requirements.ramGb` | Positive integer |
-| `requirements.cpu` | One line, e.g. `64-bit dual-core Intel or AMD processor` |
-| `requirements.note` | One sentence of caveat, shown under the table |
+| `requirements.cores` | Positive integer, CPU cores, shown as the big figure on the processor card |
+| `requirements.cpu` | One line, e.g. `64-bit Intel or AMD processor` |
+| `requirements.note` | One sentence of caveat, shown under both rows |
+| `requirements.recommended.diskGb` | Positive integer, not below the minimum |
+| `requirements.recommended.ramGb` | Positive integer, not below the minimum |
+| `requirements.recommended.cores` | Positive integer, not below the minimum |
+| `requirements.recommended.cpu` | One line |
 
 Both `[current.signing]` and `[current.requirements]` are whole tables: every
-field above is required, and a missing one fails the build. `make check` covers
-most of them and the Astro schema in `astro/src/content.config.ts` covers the
-rest, so run a build as well as `make check` if you change either table.
+field above is required, and a missing one fails the build.
+`[current.requirements.recommended]` is likewise a whole, required table.
+`make check` covers most of them and the Astro schema in
+`astro/src/content.config.ts` covers the rest, so run a build as well as
+`make check` if you change any of them.
 
 The checksum and the fingerprint are what users verify a download against, so
 both are rendered verbatim and both are format-checked on every build. A
