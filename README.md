@@ -133,19 +133,31 @@ from — `eos-site-<tag>-<short sha>.tar.gz`, so the launch build was
 
     tar -xzf eos-site-v2026.09.06.1-*.tar.gz -C /var/www/endeavouros.com/
 
-If you would rather rsync an extracted copy, use `--delete`. It is load-bearing. The first
-deploy replaced a compromised WordPress install, and `--delete` is what keeps the webroot
-holding this site and nothing else; anything left beside it stays reachable, and the
-static-site argument buys nothing. The target must therefore hold **only** this site —
-check before running it.
+`tar -xzf` adds and replaces files but never removes one, so use it only into an empty
+directory, or a fresh one that is then swapped into place. A page dropped between
+releases, or a file something else left there, otherwise stays reachable. If you would
+rather rsync an extracted copy, use `--delete`. It is load-bearing: it keeps the webroot
+holding this site and nothing else, which mattered most on the first deploy, when the
+directory on the previous host still held a compromised WordPress install. Either way the
+target must hold **only** this site — check before running it.
+
+The webroot and everything in it are owned by root or a dedicated deploy user and are not
+writable by the user nginx runs as, through ownership, group or ACL. The first paragraph
+promises nothing writable in the webroot, but nothing in the tarball or the nginx config
+can enforce that; only the deploy does. On 2026-09-23, the root page on the previous host
+was replaced by a defacement. How that file was written was not established, so this is a
+rule, not a diagnosis.
 
 ### 4. Install the nginx config
 
 `deploy/nginx-production.conf`. The lines marked `CONFIRM` are what has to be checked
 against the box: the `server_name`s and whether www DNS points here, the webroot, the TLS
-certificate paths, and the `arm.endeavouros.com` block at the end. That last one is two
-checks. The certificate must cover `arm.`, and the WordPress vhost still answering for that
-name has to be disabled as this config loads.
+certificate paths, and the `arm.endeavouros.com` block at the end. Confirm that no other
+server block on the host claims any of these names, because two blocks claiming one name
+are resolved by include order. As of 2026-10-04, `arm.endeavouros.com` DNS still points at
+the previous host and answers 200 with the forum's front page, so the `arm.` server blocks
+are not reached. First confirm that the certificate on the new host covers `arm.`, then
+move the DNS record, then check the redirect.
 
 The certificate must cover all three names — `endeavouros.com`, `www.endeavouros.com` and
 `arm.endeavouros.com` — because `www` and `arm` are HTTPS redirects, and a redirect cannot
@@ -178,6 +190,9 @@ for no more than 90 days, so logrotate on the host must be set to match that pro
 
     make spam-check
 
+The `arm.` line is expected to fail for now: on 2026-10-04 its DNS record still pointed at
+the previous host. Step 4 has the order to fix it in.
+
 `make spam-check` fetches the live site as a browser, as Googlebot and as a click arriving
 from Google, and reports any divergence between them plus any gambling vocabulary. It needs
 no access to the host. Run it after every deploy. A clean result is not an all-clear: Google
@@ -198,4 +213,3 @@ ships `<meta name="robots" content="noindex, nofollow">` and `/robots.txt` serve
 site would look perfect and be invisible to search. The flag is unset by default so that
 every preview build is noindex, and letting CI set it is the reason to prefer the release
 tarball over a hand-rolled build.
-

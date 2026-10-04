@@ -20,8 +20,10 @@ from it — so adding a mirror or bumping a release needs no toolchain installed
   then runs the build-output gate over `astro/dist/`. The gate fails on an
   inline script that is not one of ours and on an outbound link to a host that
   is not listed in `contentOrigins` in `data/site.toml`. Failing rather than
-  warning is deliberate: it is the check that would have caught the WordPress
-  compromise.
+  warning is deliberate. A build-time check sees only what the build produces:
+  it guards against an injected script or an unlisted outbound link getting
+  into the build, and cannot see a file changed on the server afterwards.
+  `make spam-check` is what looks at the live site.
 - `make links` after `make verify`. It checks that every internal link in the
   build resolves, which is the one error that is invisible in review. CI runs
   it too.
@@ -59,5 +61,5 @@ Both look like success and are expensive to miss.
   prints one line per problem, naming the file and the hash: `CSP is missing
   <hash>` means a config does not allow a script the build ships, and `CSP has
   a stale <hash>` means a hash is left over from a script we no longer ship.
-  When it fires, run `npm run check:build -- --update` to re-record the
-  expected set, then copy the hashes it names into both configs.
+  When it fires, run `(cd astro && npm run check:build -- --update)` to
+  re-record the expected set, then copy the hashes it names into both configs.
