@@ -116,13 +116,16 @@ jobs:
           `PUBLIC_INDEXABLE=true`; the data validator, the lockfile audit, the
           build-output gate and the link check all passed.
 
+          Unpack it into a fresh directory, never into the live webroot:
+
           ```
-          tar -xzf ${{ steps.package.outputs.name }} -C /var/www/endeavouros.com/
-          sudo nginx -t && sudo systemctl reload nginx
+          sudo rm -rf /var/www/endeavouros.com.new
+          sudo mkdir /var/www/endeavouros.com.new
+          sudo tar -xzf ${{ steps.package.outputs.name }} -C /var/www/endeavouros.com.new/
           ```
 
-          The webroot must hold only this site — if you rsync an extracted copy
-          instead, use `--delete`. See the README.
+          Then swap it into place, reload nginx and run the checks as the
+          README's "Publish" section describes.
           EOF
           if gh release view "$tag" >/dev/null 2>&1; then
             gh release upload "$tag" "$name" --clobber

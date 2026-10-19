@@ -1,9 +1,9 @@
 # Contributing
 
-A change gets in through a pull request against `main`. CI
-(`.github/workflows/check.yml`) runs on the pull request, and a maintainer
-merges it. Merging publishes nothing: releases are cut by pushing a `v*` tag,
-which the README covers.
+Website team members push changes to `main` as the README's "Publish" section
+describes. Anyone else opens a pull request against `main`; CI
+(`.github/workflows/check.yml`) checks it and a maintainer merges it. Pushing or
+merging to `main` publishes nothing: releases are cut by pushing a `v*` tag.
 
 ## Editing content
 
